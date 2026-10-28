@@ -2,327 +2,260 @@
   "groups": [
     {
       "key": "company",
-      "name": "公司与模型",
-      "blurb": "按厂商追踪模型、产品与公司动态"
+      "name": "机构与产品",
+      "blurb": "按监管、交易所、券商、基金公司追踪动态"
     },
     {
       "key": "field",
-      "name": "技术方向",
-      "blurb": "按技术领域深挖：Agent、多模态、具身智能……"
+      "name": "方向",
+      "blurb": "按领域深挖：AI+金融、量化、公募私募、ETF……"
     },
     {
       "key": "genre",
-      "name": "内容类型",
-      "blurb": "按体裁浏览：论文、教程、观点、政策……"
+      "name": "内容形态",
+      "blurb": "按体裁浏览：政策、行情、研报、观点……"
     }
   ],
   "topics": [
     {
-      "slug": "openai",
-      "name": "OpenAI / ChatGPT",
+      "slug": "csrc",
+      "name": "中国证监会",
       "group": "company",
-      "entityId": "openai",
-      "definition": "OpenAI 的 GPT 系列模型、ChatGPT 与 Sora 产品更新，以及公司战略与人事变化。"
+      "entityId": "csrc",
+      "definition": "证监会的规则制定、发行与退市监管、执法处罚、答记者问与人事变化。"
     },
     {
-      "slug": "anthropic",
-      "name": "Anthropic / Claude",
+      "slug": "pbc",
+      "name": "中国人民银行",
       "group": "company",
-      "entityId": "anthropic",
-      "definition": "Anthropic 的 Claude 系列模型、Claude Code 更新，以及安全研究与公司动向。"
+      "entityId": "pbc",
+      "definition": "央行的货币政策操作、利率与汇率政策、金融稳定报告与支付清算制度。"
     },
     {
-      "slug": "google",
-      "name": "Google / Gemini",
+      "slug": "sse",
+      "name": "上交所",
       "group": "company",
-      "entityId": "google",
-      "aliases": [
-        "DeepMind"
-      ],
-      "definition": "Google 与 DeepMind 的 Gemini 模型、Veo 视频生成、前沿研究与各条产品线的 AI 更新。"
+      "entityId": "sse",
+      "definition": "上海证券交易所的上市与交易规则、指数与产品创新、监管问询与自律处分。"
     },
     {
-      "slug": "deepseek",
-      "name": "DeepSeek",
+      "slug": "szse",
+      "name": "深交所",
       "group": "company",
-      "entityId": "deepseek",
-      "definition": "DeepSeek（深度求索）的模型发布、开源权重、技术报告与 API 价格变化。"
+      "entityId": "szse",
+      "definition": "深圳证券交易所的上市与交易规则、创业板动态、监管问询与自律处分。"
     },
     {
-      "slug": "qwen",
-      "name": "千问 Qwen",
+      "slug": "cicc",
+      "name": "中金公司",
       "group": "company",
-      "entityId": "qwen",
-      "definition": "阿里千问 Qwen 系列的模型发布与开源更新，从旗舰大模型到能装进手机的小模型。"
+      "entityId": "cicc",
+      "definition": "中金公司的投行业务、研究观点与策略报告，以及经营与人事动态。"
     },
     {
-      "slug": "kimi",
-      "name": "Kimi / 月之暗面",
+      "slug": "citic-sec",
+      "name": "中信证券",
       "group": "company",
-      "entityId": "kimi",
-      "definition": "月之暗面的 Kimi 产品更新、K 系列开源模型与长文本技术进展。"
+      "entityId": "citic-sec",
+      "definition": "中信证券的投行与经纪业务、研究观点、业绩与监管动态。"
     },
     {
-      "slug": "minimax",
-      "name": "MiniMax",
+      "slug": "huatai",
+      "name": "华泰证券",
       "group": "company",
-      "entityId": "minimax",
-      "definition": "MiniMax 的 M 系列大模型、语音与多模态能力，以及开源与商业化进展。"
+      "entityId": "huatai",
+      "definition": "华泰证券的财富管理与投行业务、研究观点，以及数字化与 AI 投入。"
     },
     {
-      "slug": "zhipu",
-      "name": "智谱 GLM",
+      "slug": "guotai-haitong",
+      "name": "国泰海通",
       "group": "company",
-      "entityId": "zhipu",
-      "definition": "智谱 GLM 系列模型的发布与开源更新，以及编程、推理能力和商业化进展。"
+      "entityId": "guotai-haitong",
+      "definition": "国泰海通的合并整合、投行与研究业务，以及经营与人事动态。"
     },
     {
-      "slug": "xai",
-      "name": "xAI / Grok",
+      "slug": "east-money",
+      "name": "东方财富",
       "group": "company",
-      "entityId": "xai",
-      "definition": "马斯克旗下 xAI 的 Grok 模型更新、算力集群建设与 X 平台整合。"
+      "entityId": "east-money",
+      "definition": "东方财富的证券与基金代销业务、财经平台产品更新与 AI 应用。"
     },
     {
-      "slug": "meta",
-      "name": "Meta / Llama",
+      "slug": "yifangda",
+      "name": "易方达基金",
       "group": "company",
-      "entityId": "meta",
-      "definition": "Meta 的 Llama 与 Muse 系列模型、超级智能实验室与 Meta AI 产品。"
+      "entityId": "yifangda",
+      "definition": "易方达的产品发行与业绩、基金经理变动，以及指数与 ETF 布局。"
     },
     {
-      "slug": "microsoft",
-      "name": "Microsoft / Copilot",
+      "slug": "high-flyer",
+      "name": "幻方量化",
       "group": "company",
-      "entityId": "microsoft",
-      "definition": "微软的 Copilot 系列产品、Azure AI 云服务，以及与 OpenAI 的合作动向。"
+      "entityId": "high-flyer",
+      "definition": "幻方量化的量化策略与规模变化、AI 算力投入，以及与 DeepSeek 的关系。"
     },
     {
-      "slug": "nvidia",
-      "name": "NVIDIA 英伟达",
+      "slug": "ant",
+      "name": "蚂蚁集团",
       "group": "company",
-      "entityId": "nvidia",
-      "definition": "英伟达的 GPU 新品、CUDA 软件生态、机器人平台与 AI 算力供需。"
+      "entityId": "ant",
+      "definition": "蚂蚁集团的支付与财富科技业务、AI 金融产品，以及监管与合规进展。"
     },
     {
-      "slug": "hugging-face",
-      "name": "Hugging Face",
+      "slug": "pingan",
+      "name": "中国平安",
       "group": "company",
-      "entityId": "hugging-face",
-      "definition": "Hugging Face 社区的热门开源模型、数据集、工具与榜单变化。"
+      "entityId": "pingan",
+      "definition": "中国平安的保险、银行与资管业务，以及在医疗与 AI 金融上的进展。"
     },
     {
-      "slug": "cursor",
-      "name": "Cursor",
+      "slug": "cmb",
+      "name": "招商银行",
       "group": "company",
-      "entityId": "cursor",
-      "definition": "Cursor（Anysphere）的编辑器与编码 Agent 更新、自研模型与定价变化。"
+      "entityId": "cmb",
+      "definition": "招商银行的经营业绩、财富管理与零售业务，以及银行 AI 应用。"
     },
     {
-      "slug": "openrouter",
-      "name": "OpenRouter",
+      "slug": "icbc",
+      "name": "中国工商银行",
       "group": "company",
-      "entityId": "openrouter",
-      "definition": "OpenRouter 平台的新模型上架、价格变化与开发者调用量排行。"
+      "entityId": "icbc",
+      "definition": "工商银行的经营业绩、信贷投放与金融科技投入。"
     },
     {
-      "slug": "agent",
-      "name": "Agent 智能体",
+      "slug": "ai-finance",
+      "name": "AI 与金融",
       "group": "field",
       "tags": [
-        "Agent"
+        "AI金融"
       ],
-      "definition": "能自己拆解任务、调用工具、一步步把事办完的 AI 智能体：Claude Code、Manus 等应用，各家 Agent 框架与评测。"
+      "definition": "人工智能落地金融：金融大模型、智能投顾、智能客服与信贷风控，以及金融机构与科技公司的合作。"
     },
     {
-      "slug": "coding",
-      "name": "AI 编码",
+      "slug": "quant",
+      "name": "量化交易",
       "group": "field",
       "tags": [
-        "编码"
+        "量化交易"
       ],
-      "definition": "用 AI 写代码：编程助手、Vibe Coding、代码模型评测，以及开发方式的变化。"
+      "definition": "用量化和算法做交易投研：因子与策略、高频与做市、量化私募的规模与业绩。"
     },
     {
-      "slug": "reasoning",
-      "name": "推理能力",
+      "slug": "robo-advisor",
+      "name": "智能投顾",
       "group": "field",
       "tags": [
-        "推理"
+        "智能投顾"
       ],
-      "definition": "让大模型先想再答的能力：思维链、推理模型，数学与逻辑评测上的突破和争议。"
+      "definition": "让机器给建议：投顾组合、基金投顾试点、AI 选基与资产配置工具。"
     },
     {
-      "slug": "multimodal",
-      "name": "多模态",
+      "slug": "risk-control",
+      "name": "风控与反欺诈",
       "group": "field",
       "tags": [
-        "多模态"
+        "风控/反欺诈"
       ],
-      "definition": "文字之外的能力：看懂图片、图文混合理解、音视频输入输出的模型与产品进展。"
+      "definition": "金融风控技术：信用评分、反欺诈与反洗钱、合规科技与模型风险管理。"
     },
     {
-      "slug": "image-gen",
-      "name": "图像生成",
+      "slug": "public-funds",
+      "name": "公募基金",
       "group": "field",
       "tags": [
-        "图像生成"
+        "公募"
       ],
-      "definition": "AI 画图与修图：文生图模型更新、图像编辑能力与创作工具。"
+      "definition": "公募基金的发行、规模与业绩、费率改革、基金经理流动与产品创新。"
     },
     {
-      "slug": "video",
-      "name": "AI 视频",
+      "slug": "private-funds",
+      "name": "私募基金",
       "group": "field",
       "tags": [
-        "视频"
+        "私募"
       ],
-      "definition": "AI 生成和理解视频：文生视频模型、视频编辑工具，以及影视创作的新做法。"
+      "definition": "私募基金的备案与监管、募资与业绩、策略分布与头部管理人动态。"
     },
     {
-      "slug": "voice",
-      "name": "语音与音频",
+      "slug": "etf",
+      "name": "ETF 与指数",
       "group": "field",
       "tags": [
-        "语音"
+        "ETF/指数"
       ],
-      "definition": "AI 语音与音频：语音合成、实时语音对话、音乐生成与音频理解的模型与产品。"
+      "definition": "ETF 发行与规模、指数编制与调整、被动投资的资金流向。"
     },
     {
-      "slug": "embodied",
-      "name": "具身智能",
+      "slug": "bond",
+      "name": "债券市场",
       "group": "field",
       "tags": [
-        "具身智能"
+        "债券"
       ],
-      "definition": "装进机器人身体里的 AI：人形机器人、具身基础模型，以及在真实环境里动手干活的能力。"
+      "definition": "利率债与信用债的发行、违约与评级，以及债市的资金面与政策变化。"
     },
     {
-      "slug": "on-device",
-      "name": "端侧 AI",
+      "slug": "derivatives",
+      "name": "衍生品",
       "group": "field",
       "tags": [
-        "端侧"
+        "衍生品"
       ],
-      "definition": "直接跑在手机、电脑等设备上的 AI：小模型、在本机运行模型的工具与端侧芯片。"
+      "definition": "期货、期权与场外衍生品的品种上新、交易规则与风险事件。"
     },
     {
-      "slug": "open-source",
-      "name": "开源生态",
+      "slug": "ma",
+      "name": "并购重组",
       "group": "field",
       "tags": [
-        "开源生态",
-        "开源/仓库"
+        "并购重组"
       ],
-      "definition": "开放权重、能下载下来自己部署的模型，开源框架与 GitHub 上爆火的 AI 项目。"
+      "definition": "上市公司与金融机构的并购、重组、控制权变更与监管审核进展。"
     },
     {
-      "slug": "engineering",
-      "name": "部署工程",
+      "slug": "ipo",
+      "name": "IPO 与再融资",
       "group": "field",
       "tags": [
-        "部署/工程"
+        "IPO/再融资"
       ],
-      "definition": "怎么把模型跑得更快更省钱：推理加速、显存与成本、服务部署与基础设施选型。"
+      "definition": "新股发行与审核节奏、再融资与可转债、注册制下的发行制度改革。"
     },
     {
-      "slug": "data-training",
-      "name": "数据与训练",
+      "slug": "broker",
+      "name": "券商",
       "group": "field",
       "tags": [
-        "数据/训练"
+        "券商"
       ],
-      "definition": "大模型是怎么练出来的：数据集构建、合成数据、预训练与后训练方法、算力与训练成本。"
+      "definition": "证券公司的经营、合并与牌照变化，投行业务与研究所的观点。"
     },
     {
-      "slug": "safety",
-      "name": "安全对齐",
+      "slug": "bank",
+      "name": "银行",
       "group": "field",
       "tags": [
-        "安全/对齐"
+        "银行"
       ],
-      "definition": "让 AI 可控、可信、不被滥用：越狱与防御、模型行为研究、安全评测与治理框架。"
+      "definition": "银行的业绩、息差与资产质量，以及理财、零售与金融科技进展。"
     },
     {
-      "slug": "mcp",
-      "name": "MCP 与工具调用",
+      "slug": "insurance",
+      "name": "保险",
       "group": "field",
       "tags": [
-        "MCP/工具调用"
+        "保险"
       ],
-      "definition": "让 AI 连上外部软件和数据：MCP 协议、function calling 工具调用与各类工具集成。"
+      "definition": "保险公司的经营与产品、负债成本与投资端变化，以及险资入市进展。"
     },
     {
-      "slug": "model-releases",
-      "name": "模型发布",
-      "group": "genre",
+      "slug": "digital-asset",
+      "name": "数字资产",
+      "group": "field",
       "tags": [
-        "模型发布"
+        "数字资产"
       ],
-      "definition": "各家新模型的发布、开源与迭代：旗舰更新、开源权重放出、能力与价格变化。"
-    },
-    {
-      "slug": "product-updates",
-      "name": "产品更新",
-      "group": "genre",
-      "tags": [
-        "产品更新"
-      ],
-      "definition": "AI 产品与应用的功能上新、改版与商业化——谁家的产品变强了、变贵了、能用了。"
-    },
-    {
-      "slug": "papers",
-      "name": "论文研究",
-      "group": "genre",
-      "tags": [
-        "论文/研究"
-      ],
-      "definition": "值得读的 AI 论文与研究成果：架构创新、训练方法、能力测量与理论进展。"
-    },
-    {
-      "slug": "benchmarks",
-      "name": "评测基准",
-      "group": "genre",
-      "tags": [
-        "评测/基准"
-      ],
-      "definition": "模型到底谁更强：Benchmark 评测成绩、评测方法的争议与排行榜变化。"
-    },
-    {
-      "slug": "tutorials",
-      "name": "教程实践",
-      "group": "genre",
-      "tags": [
-        "教程/实践"
-      ],
-      "definition": "拿来就能用的实操内容：提示词技巧、工作流搭建、工具用法与踩坑经验。"
-    },
-    {
-      "slug": "opinions",
-      "name": "大佬观点",
-      "group": "genre",
-      "tags": [
-        "大佬观点"
-      ],
-      "definition": "行业关键人物在想什么：创始人访谈、研究者论战与投资人判断。"
-    },
-    {
-      "slug": "trends",
-      "name": "现象与趋势",
-      "group": "genre",
-      "tags": [
-        "现象/趋势"
-      ],
-      "definition": "AI 正在改变什么：大家怎么用 AI、新能力的出现、对社会与市场格局的影响。"
-    },
-    {
-      "slug": "industry",
-      "name": "行业动态",
-      "group": "genre",
-      "tags": [
-        "行业动态"
-      ],
-      "definition": "AI 圈的商业大事：融资并购、人事变动、合作与竞争、政策与市场变化。"
+      "definition": "加密资产与稳定币的监管与市场变化，以及数字人民币等基础设施进展。"
     },
     {
       "slug": "policy",
@@ -331,7 +264,97 @@
       "tags": [
         "政策/监管"
       ],
-      "definition": "AI 相关的政策法规与政府监管：立法进展、出口管制与全球治理。"
+      "definition": "监管机构与交易所的规则、处罚与执法：什么被允许、什么被禁止、边界在哪。"
+    },
+    {
+      "slug": "market",
+      "name": "市场行情",
+      "group": "genre",
+      "tags": [
+        "市场/行情"
+      ],
+      "definition": "A 股与港美股的指数、板块与个股异动，成交、资金面与两融变化。"
+    },
+    {
+      "slug": "research",
+      "name": "券商研报",
+      "group": "genre",
+      "tags": [
+        "研报/研究"
+      ],
+      "definition": "券商研究所与投行的报告：评级、目标价、行业深度与策略判断。"
+    },
+    {
+      "slug": "product-launch",
+      "name": "产品发行",
+      "group": "genre",
+      "tags": [
+        "产品发行"
+      ],
+      "definition": "新基金与资管产品的发行募集、成立与限购，以及费率与产品设计变化。"
+    },
+    {
+      "slug": "deals",
+      "name": "并购融资",
+      "group": "genre",
+      "tags": [
+        "并购/融资"
+      ],
+      "definition": "交易与资本动作：并购重组、股权转让、定增与融资、控制权变化。"
+    },
+    {
+      "slug": "personnel",
+      "name": "人事变动",
+      "group": "genre",
+      "tags": [
+        "人事/团队"
+      ],
+      "definition": "监管、券商、基金公司与上市公司的任免、离职与团队调整。"
+    },
+    {
+      "slug": "risk",
+      "name": "风险与处罚",
+      "group": "genre",
+      "tags": [
+        "风险/处罚"
+      ],
+      "definition": "罚单、立案、诉讼、违约与爆雷：谁被处理了，风险暴露在哪里。"
+    },
+    {
+      "slug": "macro",
+      "name": "宏观货币",
+      "group": "genre",
+      "tags": [
+        "宏观/货币"
+      ],
+      "definition": "货币政策与财政政策、利率与汇率、通胀与信贷数据对市场的影响。"
+    },
+    {
+      "slug": "opinions",
+      "name": "观点策略",
+      "group": "genre",
+      "tags": [
+        "观点/策略"
+      ],
+      "definition": "从业者与观察者在想什么：策略判断、访谈、复盘与争论。"
+    },
+    {
+      "slug": "institution",
+      "name": "机构动态",
+      "group": "genre",
+      "tags": [
+        "机构动态"
+      ],
+      "definition": "券商、银行、保险、基金公司与数据服务商的经营、战略与合作动态。"
+    },
+    {
+      "slug": "data",
+      "name": "数据统计",
+      "group": "genre",
+      "tags": [
+        "数据/统计"
+      ],
+      "definition": "值得记住的数字：资金流向、仓位与业绩排行、行业与市场统计。"
     }
   ]
 }

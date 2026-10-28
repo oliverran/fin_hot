@@ -44,10 +44,10 @@ async function source(suffix: string, tier: string, owner: string | null = null,
     VALUES (${id},${suffix},'rss',${tier},'editorial',${owner},${sql.json(role ? { publisherRole: role } : {})},${tier !== 'T1'},'2100-01-01')`;
   return id;
 }
-async function story(title = "OpenAI 发布 Dots") {
+async function story(title = "中金公司 发布新研报") {
   const [s] = await sql`INSERT INTO stories (public_id,title,first_report_at,latest_at,latest) VALUES (${randomUUID()},${title},${at(100)},${at(0)},'错误的生成进展') RETURNING id, public_id`;
   const [f] = await sql`INSERT INTO facts (public_id,story_id,title,subject,action,object,conditions)
-    VALUES (${`f-${randomUUID()}`},${s!.id},${title},'OpenAI','发布','Dots','自主执行任务消耗额度') RETURNING id, public_id`;
+    VALUES (${`f-${randomUUID()}`},${s!.id},${title},'中金公司','发布','新研报','自主执行任务消耗额度') RETURNING id, public_id`;
   return { storyId: Number(s!.id), storyPublicId: s!.public_id as string, factId: Number(f!.id), factPublicId: f!.public_id as string };
 }
 async function report(sourceId: string, group: Awaited<ReturnType<typeof story>>, opts: { title: string; hours: number; selected?: boolean; score?: number; role?: string }) {
@@ -67,31 +67,31 @@ async function report(sourceId: string, group: Awaited<ReturnType<typeof story>>
 }
 
 test("source tier and event ownership are separate; mentions of an entity do not establish authority", () => {
-  const row = { body_mode: "full" as const, score: 70, timeline_at: now, source_tier: "T2", publisher_role: null, owner_entity_id: null, fact_subject: "OpenAI" };
-  const org = { ...row, source_tier: "T1_5", publisher_role: "organization", owner_entity_id: "openai", score: 60 };
+  const row = { body_mode: "full" as const, score: 70, timeline_at: now, source_tier: "T2", publisher_role: null, owner_entity_id: null, fact_subject: "中金公司" };
+  const org = { ...row, source_tier: "T1_5", publisher_role: "organization", owner_entity_id: "cicc", score: 60 };
   const person = { ...org, publisher_role: "person", score: 90 };
   assert.equal(pickRepresentative([person, org]), org);
   const first = { ...row, source_tier: "T1", score: 40, first_party: false };
   assert.equal(pickRepresentative([org, first]), first, "T1 does not depend on the first_party flag");
-  for (const subject of [null, "Databricks", "OpenAI合作伙伴", "Sam Altman (@sama)"]) {
+  for (const subject of [null, "Databricks", "中金公司合作伙伴", "Sam Altman (@sama)"]) {
     assert.equal(representativePriority({ ...org, fact_subject: subject }), 3, String(subject));
   }
-  assert.equal(representativePriority({ ...org, fact_subject: "ChatGPT" }), 1, "exact configured product alias");
-  assert.equal(representativePriority({ ...org, fact_subject: "OpenAI / Anthropic" }), 1, "explicit co-subject list");
-  assert.equal(representativePriority({ ...org, owner_entity_id: "qwen", fact_subject: "Qwen Team" }), 1, "the company under another of its own names");
-  assert.equal(representativePriority({ ...org, owner_entity_id: "world-labs", fact_subject: "AMD + World Labs" }), 1);
-  assert.equal(representativePriority({ ...org, owner_entity_id: "xai", fact_subject: "SpaceXSI" }), 1, "xAI after its rename to SpaceX Super Intelligence");
-  assert.equal(representativePriority({ ...org, owner_entity_id: "xai", fact_subject: "Grok Bot" }), 1, "xAI's agent product");
-  assert.equal(representativePriority({ ...org, owner_entity_id: "meta", fact_subject: "Muse" }), 1, "Meta's agent product");
-  assert.equal(representativePriority({ ...org, fact_subject: "OpenAI + " }), 3, "incomplete subject list is not evidence");
+  assert.equal(representativePriority({ ...org, fact_subject: "中金研究" }), 1, "exact configured product alias");
+  assert.equal(representativePriority({ ...org, fact_subject: "中金公司 / 中信证券" }), 1, "explicit co-subject list");
+  assert.equal(representativePriority({ ...org, owner_entity_id: "icbc", fact_subject: "工行" }), 1, "the company under another of its own names");
+  assert.equal(representativePriority({ ...org, owner_entity_id: "cmb", fact_subject: "中国工商银行 + 招商银行" }), 1);
+  assert.equal(representativePriority({ ...org, owner_entity_id: "guotai-haitong", fact_subject: "国泰君安" }), 1, "the firm under its former name");
+  assert.equal(representativePriority({ ...org, owner_entity_id: "ant", fact_subject: "支付宝" }), 1, "蚂蚁集团's payment product");
+  assert.equal(representativePriority({ ...org, owner_entity_id: "citic-sec", fact_subject: "中信证券研究" }), 1, "中信证券's research unit");
+  assert.equal(representativePriority({ ...org, fact_subject: "中金公司 + " }), 3, "incomplete subject list is not evidence");
   assert.equal(representativePriority({ ...org, owner_entity_id: null }), 3);
   assert.equal(representativePriority({ ...org, owner_entity_id: "unregistered-org", fact_subject: "unregistered-org" }), 3, "equal unknown strings are not verified identity");
-  assert.equal(representativePriority({ ...org, fact_subject: "OpenAI + unregistered-org" }), 3, "an unrecognized co-subject is not silently accepted");
+  assert.equal(representativePriority({ ...org, fact_subject: "中金公司 + unregistered-org" }), 3, "an unrecognized co-subject is not silently accepted");
   assert.equal(representativePriority({ ...row, first_party: true } as typeof row), 3, "the first_party flag never elevates a source");
 });
 
 test("mentions cannot choose a timeline origin, anchor, representative, or a latest-progress link", async () => {
-  const organization = await source("organization", "T1_5", "openai", "organization");
+  const organization = await source("organization", "T1_5", "cicc", "organization");
   const media = await source("media", "T2");
   const t1 = await source("t1", "T1");
   const g = await story();
@@ -342,23 +342,23 @@ test("the hot board shows an event under its own title, linked to the fact most 
   const s = await source("hot", "T2");
   const official = await source("hot-official", "T1");
   const other = await source("hot-other", "T2");
-  const g = await story("OpenAI 发布 Dots");
-  const fact = async (title: string) => Number((await sql`INSERT INTO facts (public_id,story_id,title,subject) VALUES (${`f-${randomUUID()}`},${g.storyId},${title},'OpenAI') RETURNING id`)[0]!.id);
+  const g = await story("中金公司 发布新研报");
+  const fact = async (title: string) => Number((await sql`INSERT INTO facts (public_id,story_id,title,subject) VALUES (${`f-${randomUUID()}`},${g.storyId},${title},'中金公司') RETURNING id`)[0]!.id);
   // A leak opens the story and a single follow-up scores highest; the launch is what two sources report.
-  const leak = await report(s, { ...g, factId: await fact("OpenAI 常驻助手曝光") }, { title: "发布前的爆料", hours: 30, score: 99 });
+  const leak = await report(s, { ...g, factId: await fact("中金公司 常驻投研助手曝光") }, { title: "发布前的爆料", hours: 30, score: 99 });
   const media = await report(s, g, { title: "Dots 媒体报道", hours: 4, score: 90 });
   const blog = await report(official, g, { title: "Dots 官网发布", hours: 3, score: 60 });
-  const followUp = await report(other, { ...g, factId: await fact("ChatGPT Space 新进展") }, { title: "Space 高分报道", hours: 2, score: 99 });
+  const followUp = await report(other, { ...g, factId: await fact("中金公司与蚂蚁集团合作新进展") }, { title: "Space 高分报道", hours: 2, score: 99 });
   for (const [i, id] of [leak, media, blog, followUp].entries()) await sql`INSERT INTO story_signals (story_id,article_id,source_id,participant_key,kind,observed_at)
     VALUES (${g.storyId},${id},(SELECT source_id FROM articles WHERE id=${id}),${`${key}-participant-${i}`},'editorial',${at(1)})`;
   await computeHotRanking(now);
   const entry = (await latestHotRanking())!.entries.find(e => e.storyId === g.storyId)!;
   assert.ok(entry);
-  assert.equal(entry.title, "OpenAI 发布 Dots");
+  assert.equal(entry.title, "中金公司 发布新研报");
   assert.equal(entry.representativeItemId, blog, "the launch's first-party report, not the earlier leak or a later high score");
   assert.equal(entry.participantCount, 3, "heat still counts each source once");
-  await sql`UPDATE stories SET title='OpenAI 发布常驻智能体 Dots' WHERE id=${g.storyId}`;
-  assert.equal((await latestHotRanking())!.entries.find(e => e.storyId === g.storyId)!.title, "OpenAI 发布常驻智能体 Dots", "a retitled event shows at once");
+  await sql`UPDATE stories SET title='中金公司 发布常驻投研助手' WHERE id=${g.storyId}`;
+  assert.equal((await latestHotRanking())!.entries.find(e => e.storyId === g.storyId)!.title, "中金公司 发布常驻投研助手", "a retitled event shows at once");
   await sql`UPDATE fact_articles SET role='mention' WHERE article_id=${blog}`;
   assert.ok(!(await latestHotRanking())!.entries.some(e => e.storyId === g.storyId), "regrouped or mention-only representatives leave cached rankings immediately");
 });

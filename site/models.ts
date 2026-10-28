@@ -43,6 +43,17 @@ export const PRESETS: Record<string, ModelPreset> = {
     service: "dashscope", model: "qwen3-vl-flash", baseUrlEnv: "DASHSCOPE_BASE_URL", apiKeyEnv: "DASHSCOPE_API_KEY",
     extra: { enable_thinking: false }, jsonMode: false, vision: true,
   },
+  // Kimi（Moonshot）作为默认模型（MiniMax）的备用：它达到限流或报错时接管，见 docs/customize.md 第 8 节。
+  // 走 OpenAI 兼容接口；先想再答，所以给推理留出额度，否则答案会为空。这个模型只接受 temperature=1，
+  // 用 extra 覆盖各步骤自己的温度。
+  kimi: {
+    service: "moonshot", model: "kimi-k2.6", baseUrlEnv: "KIMI_BASE_URL", apiKeyEnv: "KIMI_API_KEY",
+    reasoningTokens: 4000, jsonMode: true, extra: { temperature: 1 },
+    fallbackFor: {
+      prefilter: "default", score: "default", understand: "default", summarize: "default", wording: "default",
+      structure: "default", group: "default", groupReview: "default", digest: "default", report: "default", translate: "default",
+    },
+  },
 };
 
 /**

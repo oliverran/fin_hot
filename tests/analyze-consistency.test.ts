@@ -20,8 +20,8 @@ const provider = await stub(async (_hit, request) => {
   }
   const content = step === "prefilter" ? { label: "PASS", reason: "local fixture" }
     : step === "score" ? { attentionScore: SELECTING_SCORE }
-    : step === "structure" ? { category: "ai-models", tags: [], subjects: [], scope: "single", fact: null }
-    : { itemType: "model_release", authorRole: "principal", tags: ["模型发布"], editorialJudgment: "模型能力提升", titleZh: "实验室发布新模型", summaryZh: "实验室发布新模型，并公布了评测结果与价格。" };
+    : step === "structure" ? { category: "ai-finance", tags: [], subjects: [], scope: "single", fact: null }
+    : { itemType: "product_launch", authorRole: "principal", tags: ["产品发行"], editorialJudgment: "产品规模提升", titleZh: "基金公司发行新基金", summaryZh: "基金公司发行新基金，并公布了费率与募集规模。" };
   return { choices: [{ message: { content: JSON.stringify(content) } }] };
 });
 pointModels(provider.url);
@@ -31,8 +31,8 @@ before(async () => {
 });
 after(async () => { await stopBoss(); await provider.close(); await closeDb(); });
 
-const material = (name: string) => ({ sourceId, url: `https://example.org/${sourceId}/${name}`, title: `A lab releases a model ${name}`,
-  bodyText: `A lab released a model ${name}. ` + "The release includes benchmark results and pricing details. ".repeat(12),
+const material = (name: string) => ({ sourceId, url: `https://example.org/${sourceId}/${name}`, title: `A fund house launches a fund ${name}`,
+  bodyText: `A fund house launched a fund ${name}. ` + "The launch includes fee tables and subscription scale details. ".repeat(12),
   bodyStatus: "ok" as const, via: "fetch" as const, publishedAt: new Date() });
 
 test("a late successful analysis preserves newer input awaiting processing", async () => {
@@ -43,7 +43,7 @@ test("a late successful analysis preserves newer input awaiting processing", asy
   const pending = processArticle(articleId);
   await waiting.entered.promise;
   try {
-    const revised = await upsertMaterial({ ...input, title: "The lab corrects the release", bodyText: "Corrected benchmark and pricing details. ".repeat(12) });
+    const revised = await upsertMaterial({ ...input, title: "The fund house corrects the launch", bodyText: "Corrected fee tables and subscription scale. ".repeat(12) });
     assert.equal(revised.revised, true);
   } finally {
     hold = null;

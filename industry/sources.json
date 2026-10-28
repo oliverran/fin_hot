@@ -1,196 +1,107 @@
 {
-  "$comment": "示范信源：首次启动时导入（scripts/seed.ts），已存在的不会被覆盖。之后在后台“信源”里新建、修改和暂停。字段说明见 docs/customize.md。",
+  "$comment": "示范信源（金融行业）：首次启动时导入（scripts/seed.ts），已存在的不会被覆盖。之后在后台“信源”里新建、修改和暂停。字段说明见 docs/customize.md。这里只放不需要额外凭据、能直接抓到的信源；券商研报原文、微信公众号、雪球热帖这类要靠极致了（DAJIALA_KEY）或自建 RSSHub（PRIVATE_FEED_HOSTS=rsshub），请按 docs/sources.md 在后台补。",
   "sources": [
     {
-      "id": "rss-openai-news",
-      "name": "OpenAI News",
-      "kind": "rss",
+      "id": "json-csrc-news",
+      "name": "中国证监会·证监会要闻",
+      "kind": "json_list",
       "config": {
-        "feedUrl": "https://openai.com/news/rss.xml",
+        "url": "https://www.csrc.gov.cn/searchList/a1a078ee0bc54721ab6b148884c784a8?_isAgg=true&_isJson=true&_pageSize=20&_template=index&_rangeTimeGte=&_channelName=&page=1",
+        "itemsPath": "data.results",
+        "titlePaths": [
+          "title"
+        ],
+        "publishedAtPath": "publishedTimeStr",
+        "publishedAtUtcOffset": "+08:00",
+        "externalIdPath": "manuscriptId",
+        "urlTemplate": "https:{url}",
         "_aihot": {
           "initialBackfillLimit": 8
         }
       },
       "tier": "T1",
-      "owner_entity_id": "openai",
+      "owner_entity_id": "csrc",
       "participation_mode": "editorial",
-      "interval_minutes": 120,
+      "interval_minutes": 60,
       "tags": [
-        "官方"
+        "官方",
+        "监管"
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-google-deepmind",
-      "name": "Google DeepMind",
-      "kind": "rss",
+      "id": "web-sse-news",
+      "name": "上海证券交易所·本所新闻",
+      "kind": "web_list",
       "config": {
-        "feedUrl": "https://deepmind.google/blog/rss.xml",
+        "url": "https://www.sse.com.cn/aboutus/mediacenter/hotandd/",
+        "parseMode": "html",
+        "itemSelector": "#sse_list_1 dl > dd",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtSelector": "span",
+        "allowUrlPrefixes": [
+          "https://www.sse.com.cn/aboutus/mediacenter/hotandd/"
+        ],
         "_aihot": {
           "initialBackfillLimit": 8
         }
       },
       "tier": "T1",
-      "owner_entity_id": "google",
+      "owner_entity_id": "sse",
       "participation_mode": "editorial",
-      "interval_minutes": 120,
+      "interval_minutes": 60,
       "tags": [
-        "官方"
+        "官方",
+        "交易所"
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-google-research",
-      "name": "Google Research",
-      "kind": "rss",
+      "id": "web-pbc-news",
+      "name": "中国人民银行·新闻发布",
+      "kind": "web_list",
       "config": {
-        "feedUrl": "https://research.google/blog/rss/",
+        "url": "https://www.pbc.gov.cn/goutongjiaoliu/113456/113469/index.html",
+        "parseMode": "html",
+        "itemSelector": "td[height=\"22\"]",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtSelector": "span.hui12",
+        "allowUrlPrefixes": [
+          "https://www.pbc.gov.cn/goutongjiaoliu/113456/113469/"
+        ],
         "_aihot": {
           "initialBackfillLimit": 8
         }
       },
       "tier": "T1",
-      "owner_entity_id": "google",
+      "owner_entity_id": "pbc",
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
         "官方",
-        "研究"
+        "央行"
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-hugging-face",
-      "name": "Hugging Face Blog",
-      "kind": "rss",
+      "id": "web-amac-news",
+      "name": "中国证券投资基金业协会·协会要闻",
+      "kind": "web_list",
       "config": {
-        "feedUrl": "https://huggingface.co/blog/feed.xml",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T1",
-      "owner_entity_id": "hugging-face",
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "官方",
-        "开源"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-microsoft-research",
-      "name": "Microsoft Research",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.microsoft.com/en-us/research/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T1",
-      "owner_entity_id": "microsoft",
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "官方",
-        "研究"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-nvidia-blog",
-      "name": "NVIDIA Blog",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://blogs.nvidia.com/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T1",
-      "owner_entity_id": "nvidia",
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "官方"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-aws-ml",
-      "name": "AWS Machine Learning Blog",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://aws.amazon.com/blogs/machine-learning/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T1",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "官方",
-        "教程"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-github-ai",
-      "name": "GitHub Blog · AI & ML",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://github.blog/ai-and-ml/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T1",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "官方"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-mistral",
-      "name": "Mistral AI",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://mistral.ai/news/rss",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T1",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "官方"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-bair",
-      "name": "Berkeley AI Research",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://bair.berkeley.edu/blog/feed.xml",
+        "url": "https://www.amac.org.cn/xwfb/xhyw/",
+        "parseMode": "html",
+        "itemSelector": "div.content-right .c-box > ul > li",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtSelector": "i",
+        "allowUrlPrefixes": [
+          "https://www.amac.org.cn/xwfb/xhyw/"
+        ],
         "_aihot": {
           "initialBackfillLimit": 8
         }
@@ -200,17 +111,159 @@
       "participation_mode": "editorial",
       "interval_minutes": 180,
       "tags": [
-        "研究"
+        "官方",
+        "自律组织",
+        "基金"
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-the-verge-ai",
-      "name": "The Verge · AI",
+      "id": "web-amac-notice",
+      "name": "中国证券投资基金业协会·通知公告",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.amac.org.cn/xwfb/tzgg/",
+        "parseMode": "html",
+        "itemSelector": "div.content-right .c-box > ul > li",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtSelector": "i",
+        "allowUrlPrefixes": [
+          "https://www.amac.org.cn/xwfb/tzgg/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "官方",
+        "自律组织",
+        "基金"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "web-mof-zhengcefabu",
+      "name": "财政部·政策发布",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.mof.gov.cn/zhengwuxinxi/zhengcefabu/",
+        "parseMode": "html",
+        "itemSelector": "ul.xwfb_listbox > li",
+        "linkSelector": "a",
+        "titleSelector": "a",
+        "publishedAtSelector": "span",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://www.mof.gov.cn/",
+          "https://gks.mof.gov.cn/",
+          "https://gss.mof.gov.cn/",
+          "https://jjs.mof.gov.cn/",
+          "https://jkw.mof.gov.cn/",
+          "https://jrs.mof.gov.cn/",
+          "https://kjs.mof.gov.cn/",
+          "https://sbs.mof.gov.cn/",
+          "https://szs.mof.gov.cn/",
+          "https://yss.mof.gov.cn/",
+          "https://zwgls.mof.gov.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 10
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "官方",
+        "财政",
+        "政策"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-stats-zxfb",
+      "name": "国家统计局·数据发布",
       "kind": "rss",
       "config": {
-        "feedUrl": "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml",
+        "feedUrl": "https://www.stats.gov.cn/sj/zxfb/rss.xml",
+        "publishedAtUtcOffset": "+08:00",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "官方",
+        "宏观",
+        "数据"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "json-nfra-news",
+      "name": "国家金融监督管理总局·监管动态",
+      "kind": "json_list",
+      "config": {
+        "url": "https://www.nfra.gov.cn/cbircweb/DocInfo/SelectDocByItemIdAndChild?itemId=915&pageSize=18&pageIndex=1",
+        "itemsPath": "data.rows",
+        "titlePaths": [
+          "docTitle",
+          "docSubtitle"
+        ],
+        "publishedAtPath": "publishDate",
+        "publishedAtUtcOffset": "+08:00",
+        "externalIdPath": "docId",
+        "urlTemplate": "https://www.nfra.gov.cn/cn/view/pages/ItemDetail.html?docId={docId}&itemId=915&generaltype=0",
+        "allowUrlPrefixes": [
+          "https://www.nfra.gov.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": "nfra",
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "官方",
+        "监管"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "json-yicai-finance",
+      "name": "第一财经·金融",
+      "kind": "json_list",
+      "config": {
+        "url": "https://www.yicai.com/api/ajax/getlistbycid?cid=48&page=1&pagesize=20",
+        "titlePaths": [
+          "NewsTitle"
+        ],
+        "summaryPaths": [
+          "NewsNotes"
+        ],
+        "authorPaths": [
+          "NewsAuthor"
+        ],
+        "publishedAtPath": "LastDate",
+        "publishedAtUtcOffset": "+08:00",
+        "urlTemplate": "https://www.yicai.com/news/{EntityNews}.html",
+        "urlTemplateFallback": "https://m.yicai.com/news/{EntityNews}.html",
         "_aihot": {
           "initialBackfillLimit": 8
         }
@@ -220,17 +273,90 @@
       "participation_mode": "editorial",
       "interval_minutes": 60,
       "tags": [
-        "媒体"
+        "媒体",
+        "财经"
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-techcrunch-ai",
-      "name": "TechCrunch · AI",
+      "id": "json-sina-finance",
+      "name": "新浪财经·要闻滚动",
+      "kind": "json_list",
+      "config": {
+        "url": "https://feed.mix.sina.com.cn/api/roll/get?pageid=153&lid=2516&num=30&page=1",
+        "itemsPath": "result.data",
+        "titlePaths": [
+          "title"
+        ],
+        "summaryPaths": [
+          "intro"
+        ],
+        "authorPaths": [
+          "media_name"
+        ],
+        "publishedAtPath": "ctime",
+        "publishedAtUnit": "epoch_s",
+        "externalIdPath": "docid",
+        "urlTemplate": "{raw:url}",
+        "_aihot": {
+          "initialBackfillLimit": 10
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "媒体",
+        "财经"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "json-wscn-lives",
+      "name": "华尔街见闻·快讯",
+      "kind": "json_list",
+      "config": {
+        "url": "https://api-one.wallstcn.com/apiv1/content/lives?channel=global-channel&client=pc&limit=30",
+        "itemsPath": "data.items",
+        "titlePaths": [
+          "title",
+          "content_text"
+        ],
+        "summaryPaths": [
+          "content_text"
+        ],
+        "authorPaths": [
+          "author.display_name"
+        ],
+        "publishedAtPath": "display_time",
+        "publishedAtUnit": "epoch_s",
+        "externalIdPath": "id",
+        "urlTemplate": "{raw:uri}",
+        "_aihot": {
+          "initialBackfillLimit": 10
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "媒体",
+        "财经",
+        "快讯"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-chinanews-finance",
+      "name": "中新网·财经",
       "kind": "rss",
       "config": {
-        "feedUrl": "https://techcrunch.com/category/artificial-intelligence/feed/",
+        "feedUrl": "https://www.chinanews.com.cn/rss/finance.xml",
         "_aihot": {
           "initialBackfillLimit": 8
         }
@@ -240,17 +366,18 @@
       "participation_mode": "editorial",
       "interval_minutes": 60,
       "tags": [
-        "媒体"
+        "媒体",
+        "财经"
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-ars-technica-ai",
-      "name": "Ars Technica · AI",
+      "id": "rss-cnbc-finance",
+      "name": "CNBC·Finance",
       "kind": "rss",
       "config": {
-        "feedUrl": "https://arstechnica.com/ai/feed/",
+        "feedUrl": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000664",
         "_aihot": {
           "initialBackfillLimit": 8
         }
@@ -258,19 +385,116 @@
       "tier": "T2",
       "owner_entity_id": null,
       "participation_mode": "editorial",
-      "interval_minutes": 60,
+      "interval_minutes": 90,
       "tags": [
-        "媒体"
+        "媒体",
+        "海外"
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-mit-tech-review-ai",
-      "name": "MIT Technology Review · AI",
+      "id": "json-eastmoney-industry-report",
+      "name": "东方财富·行业研报",
+      "kind": "json_list",
+      "config": {
+        "url": "https://reportapi.eastmoney.com/report/list?industryCode=*&pageSize=50&industry=*&beginTime=2000-01-01&endTime=2099-01-01&pageNo=1&qType=0&code=*&p=1&pageNumber=1",
+        "itemsPath": "data",
+        "titlePaths": [
+          "title"
+        ],
+        "authorPaths": [
+          "orgSName"
+        ],
+        "publishedAtPath": "publishDate",
+        "publishedAtUtcOffset": "+08:00",
+        "externalIdPath": "infoCode",
+        "urlTemplate": "https://data.eastmoney.com/report/zw_industry.jshtml?infocode={infoCode}",
+        "_aihot": {
+          "initialBackfillLimit": 10
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "研报",
+        "券商"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "json-eastmoney-strategy-report",
+      "name": "东方财富·策略研报",
+      "kind": "json_list",
+      "config": {
+        "url": "https://reportapi.eastmoney.com/report/list?industryCode=*&pageSize=50&industry=*&beginTime=2000-01-01&endTime=2099-01-01&pageNo=1&qType=1&code=*&p=1&pageNumber=1",
+        "itemsPath": "data",
+        "titlePaths": [
+          "title"
+        ],
+        "authorPaths": [
+          "orgSName"
+        ],
+        "publishedAtPath": "publishDate",
+        "publishedAtUtcOffset": "+08:00",
+        "externalIdPath": "infoCode",
+        "urlTemplate": "https://data.eastmoney.com/report/zw_strategy.jshtml?infocode={infoCode}",
+        "_aihot": {
+          "initialBackfillLimit": 10
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "研报",
+        "券商"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "json-eastmoney-macro-report",
+      "name": "东方财富·宏观研报",
+      "kind": "json_list",
+      "config": {
+        "url": "https://reportapi.eastmoney.com/report/list?industryCode=*&pageSize=50&industry=*&beginTime=2000-01-01&endTime=2099-01-01&pageNo=1&qType=2&code=*&p=1&pageNumber=1",
+        "itemsPath": "data",
+        "titlePaths": [
+          "title"
+        ],
+        "authorPaths": [
+          "orgSName"
+        ],
+        "publishedAtPath": "publishDate",
+        "publishedAtUtcOffset": "+08:00",
+        "externalIdPath": "infoCode",
+        "urlTemplate": "https://data.eastmoney.com/report/zw_macresearch.jshtml?infocode={infoCode}",
+        "_aihot": {
+          "initialBackfillLimit": 10
+        }
+      },
+      "tier": "T1_5",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "研报",
+        "券商"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-xueqiu-topic",
+      "name": "雪球·今日话题",
       "kind": "rss",
       "config": {
-        "feedUrl": "https://www.technologyreview.com/topic/artificial-intelligence/feed",
+        "feedUrl": "https://xueqiu.com/hots/topic/rss",
         "_aihot": {
           "initialBackfillLimit": 8
         }
@@ -280,19 +504,35 @@
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
-        "媒体"
+        "社区",
+        "观点"
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-the-decoder",
-      "name": "The Decoder",
-      "kind": "rss",
+      "id": "json-cls-news",
+      "name": "财联社·要闻",
+      "kind": "json_list",
       "config": {
-        "feedUrl": "https://the-decoder.com/feed/",
+        "url": "https://www.cls.cn/",
+        "mode": "html_json_key",
+        "jsonKey": "depth_list",
+        "titlePaths": [
+          "title"
+        ],
+        "summaryPaths": [
+          "brief"
+        ],
+        "urlTemplate": "https://www.cls.cn/detail/{id}",
+        "publishedAtPath": "ctime",
+        "publishedAtUnit": "epoch_s",
+        "externalIdPath": "id",
+        "allowUrlPrefixes": [
+          "https://www.cls.cn/detail/"
+        ],
         "_aihot": {
-          "initialBackfillLimit": 8
+          "initialBackfillLimit": 10
         }
       },
       "tier": "T2",
@@ -300,68 +540,147 @@
       "participation_mode": "editorial",
       "interval_minutes": 60,
       "tags": [
-        "媒体"
+        "媒体",
+        "财经",
+        "快讯"
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-simon-willison",
-      "name": "Simon Willison",
-      "kind": "rss",
+      "id": "json-cs-yw",
+      "name": "中国证券报·要闻",
+      "kind": "json_list",
       "config": {
-        "feedUrl": "https://simonwillison.net/atom/everything/",
+        "url": "https://www.cs.com.cn/js/mi4rss/mi4_rss_SY_YW.js",
+        "mode": "html_window_var",
+        "windowVar": "SY_YW",
+        "titlePaths": [
+          "miLtitle"
+        ],
+        "urlTemplate": "{raw:articleWebUrl}",
+        "urlTemplateFallback": "{raw:externalLink}",
+        "publishedAtPath": "pubDate",
+        "publishedAtUnit": "epoch_ms",
+        "externalIdPath": "miId",
+        "authorPaths": [
+          "miOrigin"
+        ],
+        "sortByPublishedAt": true,
+        "denyUrlPrefixes": [
+          "https://jnzstatic.cs.com.cn/",
+          "https://mp.weixin.qq.com/"
+        ],
         "_aihot": {
-          "initialBackfillLimit": 8
+          "initialBackfillLimit": 10
         }
       },
       "tier": "T2",
       "owner_entity_id": null,
       "participation_mode": "editorial",
-      "interval_minutes": 120,
+      "interval_minutes": 60,
       "tags": [
-        "个人"
+        "媒体",
+        "财经",
+        "证券"
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-import-ai",
-      "name": "Import AI",
-      "kind": "rss",
+      "id": "json-cnstock-policy",
+      "name": "上海证券报·政策",
+      "kind": "json_list",
       "config": {
-        "feedUrl": "https://importai.substack.com/feed",
+        "url": "https://www.cnstock.com/list/10026",
+        "mode": "html_json_key",
+        "jsonKey": "list",
+        "titlePaths": [
+          "name"
+        ],
+        "urlTemplate": "https://www.cnstock.com/commonDetail/{contId}",
+        "externalIdPath": "contId",
+        "allowUrlPrefixes": [
+          "https://www.cnstock.com/commonDetail/"
+        ],
+        "detail": {
+          "maxFetches": 20,
+          "publishedAtRegex": "\"pubTime\":\"([^\"]+)\""
+        },
         "_aihot": {
-          "initialBackfillLimit": 8
+          "initialBackfillLimit": 10
         }
       },
       "tier": "T2",
       "owner_entity_id": null,
       "participation_mode": "editorial",
-      "interval_minutes": 180,
+      "interval_minutes": 60,
       "tags": [
-        "个人",
-        "周刊"
+        "媒体",
+        "财经",
+        "政策"
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-latent-space",
-      "name": "Latent Space",
-      "kind": "rss",
+      "id": "web-stcn-news",
+      "name": "证券时报·要闻",
+      "kind": "web_list",
       "config": {
-        "feedUrl": "https://www.latent.space/feed",
+        "url": "https://www.stcn.com/article/list/xw.html",
+        "parseMode": "html",
+        "itemSelector": "ul.list.infinite-list > li",
+        "linkSelector": ".tt a",
+        "titleSelector": ".tt a",
+        "allowUrlPrefixes": [
+          "https://www.stcn.com/article/detail/"
+        ],
+        "detail": {
+          "maxFetches": 20,
+          "publishedAtSelector": ".detail-info > span:nth-of-type(3)"
+        },
         "_aihot": {
-          "initialBackfillLimit": 8
+          "initialBackfillLimit": 10
         }
       },
       "tier": "T2",
       "owner_entity_id": null,
       "participation_mode": "editorial",
-      "interval_minutes": 180,
+      "interval_minutes": 60,
       "tags": [
-        "个人"
+        "媒体",
+        "财经",
+        "证券"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "web-jiemian-finance",
+      "name": "界面新闻·财经",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.jiemian.com/lists/800.html",
+        "parseMode": "html",
+        "itemSelector": "#load-list > li",
+        "linkSelector": ".card-list__content a",
+        "titleSelector": ".card-list__title",
+        "publishedAtSelector": ".news-footer__date",
+        "allowUrlPrefixes": [
+          "https://www.jiemian.com/article/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 10
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "媒体",
+        "财经"
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
