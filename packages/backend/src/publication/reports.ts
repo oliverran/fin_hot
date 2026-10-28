@@ -1,11 +1,11 @@
 // Reports through the public read layer: website DTOs and the v1 shapes. Only real reports are
 // listed; a missing date is a 404, never another day. Withdrawn citations are marked, not shown.
 import type { ReportCitation, ReportDetail, ReportIndexEntry, ReportNavigationEntry, ReportKind } from "@aihot/contracts/site";
-import { REPORTS, SITE, withSubject } from "@aihot/site";
+import { EDITION_TIMES, REPORTS, SITE, withSubject } from "@aihot/site";
 import { sql } from "../db.ts";
 import { cached, type Cached } from "../lib/cache.ts";
 import { proxiedImage, proxiedImageSet } from "../media/imgproxy.ts";
-import { isoWeekRange, monthRange } from "@aihot/contracts/time";
+import { addDays, beijingDate, beijingTime, isoWeekLabel, isoWeekRange, monthRange } from "@aihot/contracts/time";
 import { dailyUrl, itemUrl, periodUrl, siteUrl } from "./links.ts";
 import { publicSourceName } from "./rules.ts";
 import { listedCondition } from "./scope.ts";
@@ -30,6 +30,24 @@ interface Availability {
   sourceName: string | null;
   sourceIcon: string | null;
   publishedAt: Date | null;
+}
+
+function latestVisibleKey(kind: ReportKind, now = new Date()): string {
+  if (kind === "daily") {
+    const today = beijingDate(now);
+    return beijingTime(now) >= EDITION_TIMES.daily ? today : addDays(today, -1);
+  }
+  if (kind === "weekly") {
+    const today = beijingDate(now);
+    const dow = (new Date(`${today}T00:00:00Z`).getUTCDay() + 6) % 7;
+    const due = dow > 0 || beijingTime(now) >= EDITION_TIMES.weekly;
+    return isoWeekLabel(addDays(today, -dow - (due ? 7 : 14)));
+  }
+  const [y, m, d] = beijingDate(now).split("-").map(Number) as [number, number, number];
+  const due = d > 1 || beijingTime(now) >= EDITION_TIMES.monthly;
+  const back = due ? 1 : 2;
+  const month = (y * 12 + (m - 1) - back);
+  return `${Math.floor(month / 12)}-${String((month % 12) + 1).padStart(2, "0")}`;
 }
 
 async function availability(ids: string[]): Promise<Map<string, Availability>> {
@@ -70,6 +88,7 @@ async function unavailableIds(ids: string[]): Promise<Set<string>> {
  * 401 although the index keeps 400; a back-filled or deleted issue renumbers the ones after it.
  */
 export async function reportIndexRows(kind: ReportKind, limit: number) {
+  const visibleThrough = latestVisibleKey(kind);
   return sql<{ key: string; issue_number: number; content: Record<string, any>; generated_at: Date }[]>`
     SELECT key, generated_at, (row_number() OVER (ORDER BY key))::int AS issue_number, jsonb_build_object(
       'lead', content->'lead', 'headline', content->'headline', 'title', content->'title',
@@ -80,7 +99,7 @@ export async function reportIndexRows(kind: ReportKind, limit: number) {
          FROM jsonb_array_elements(jsonb_path_query_array(content,
            CASE WHEN kind = 'daily' THEN '$.sections[*].items[*]'::jsonpath ELSE '$.themes[*].storyRefs[*]'::jsonpath END
          )) WITH ORDINALITY AS cited(item, ord))))) AS content
-    FROM reports WHERE kind = ${kind} ORDER BY key DESC LIMIT ${limit}`;
+    FROM reports WHERE kind = ${kind} AND key <= ${visibleThrough} ORDER BY key DESC LIMIT ${limit}`;
 }
 
 /** The entries an issue cites in reading order: a daily's sections, a weekly's or monthly's themes. */
@@ -316,13 +335,15 @@ function readingMinutes(text: string): number {
 }
 
 async function neighbors(kind: ReportKind, key: string): Promise<{ prev: string | null; next: string | null }> {
+  const visibleThrough = latestVisibleKey(kind);
   const [row] = await sql<{ prev: string | null; next: string | null }[]>`
-    SELECT (SELECT key FROM reports WHERE kind = ${kind} AND key < ${key} ORDER BY key DESC LIMIT 1) AS prev,
-      (SELECT key FROM reports WHERE kind = ${kind} AND key > ${key} ORDER BY key ASC LIMIT 1) AS next`;
+    SELECT (SELECT key FROM reports WHERE kind = ${kind} AND key <= ${visibleThrough} AND key < ${key} ORDER BY key DESC LIMIT 1) AS prev,
+      (SELECT key FROM reports WHERE kind = ${kind} AND key <= ${visibleThrough} AND key > ${key} ORDER BY key ASC LIMIT 1) AS next`;
   return { prev: row?.prev ?? null, next: row?.next ?? null };
 }
 
 export async function loadReport(kind: ReportKind, key: string): Promise<ReportDetail | null> {
+  if (key > latestVisibleKey(kind)) return null;
   // Its number counts every issue of the kind up to it, as the index numbers them (reportIndexRows).
   const [r] = await sql<(Pick<ReportRow, "content" | "generated_at"> & { issue_number: number })[]>`
     SELECT r.content, r.generated_at, (SELECT count(*)::int FROM reports earlier WHERE earlier.kind = r.kind AND earlier.key <= r.key) AS issue_number
@@ -457,8 +478,11 @@ export interface DailyNote {
 
 /** The v1 daily (its fields never change) and the notes the Agent answer adds to it. */
 export async function dailyWithNotes(date: string | "latest") {
+  const visibleThrough = latestVisibleKey("daily");
+  if (date !== "latest" && date > visibleThrough) return null;
   const [r] = date === "latest"
-    ? await sql<ReportRow[]>`SELECT kind, key, window_start, window_end, content, generated_at FROM reports WHERE kind = 'daily' ORDER BY key DESC LIMIT 1`
+    ? await sql<ReportRow[]>`SELECT kind, key, window_start, window_end, content, generated_at
+      FROM reports WHERE kind = 'daily' AND key <= ${visibleThrough} ORDER BY key DESC LIMIT 1`
     : await sql<ReportRow[]>`SELECT kind, key, window_start, window_end, content, generated_at FROM reports WHERE kind = 'daily' AND key = ${date}`;
   if (!r) return null;
   const c = r.content;
@@ -600,8 +624,11 @@ export async function v1Periods(kind: PeriodKind, limit: number) {
  * items it carries in order. Withdrawn items are left out; source names are as stored, like the daily's.
  */
 export async function v1Period(kind: PeriodKind, key: string | "latest") {
+  const visibleThrough = latestVisibleKey(kind);
+  if (key !== "latest" && key > visibleThrough) return null;
   const [r] = key === "latest"
-    ? await sql<ReportRow[]>`SELECT kind, key, window_start, window_end, content, generated_at FROM reports WHERE kind = ${kind} ORDER BY key DESC LIMIT 1`
+    ? await sql<ReportRow[]>`SELECT kind, key, window_start, window_end, content, generated_at
+      FROM reports WHERE kind = ${kind} AND key <= ${visibleThrough} ORDER BY key DESC LIMIT 1`
     : await sql<ReportRow[]>`SELECT kind, key, window_start, window_end, content, generated_at FROM reports WHERE kind = ${kind} AND key = ${key}`;
   if (!r) return null;
   const c = r.content;

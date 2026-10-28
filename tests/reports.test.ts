@@ -8,13 +8,13 @@ import { closeDb, sql } from "@aihot/backend/db";
 import { upsertMaterial } from "@aihot/backend/content/materials";
 import { stopBoss } from "@aihot/backend/jobs/queue";
 import { publishArticle } from "@aihot/backend/publication/publish";
-import { loadReport } from "@aihot/backend/publication/reports";
+import { listReports, loadReport, v1Daily } from "@aihot/backend/publication/reports";
 import { composeDaily, dueDaily, dueMonthly, dueWeekly } from "@aihot/backend/reports/compose";
 import { SITE } from "@aihot/site";
 
 const T = tag();
 const SOURCE = `test-reports-${T}`;
-const WEEK = "2098-W20";
+const WEEK = "2026-W20";
 after(async () => {
   await stopBoss();
   await closeDb();
@@ -38,6 +38,17 @@ test("a daily with nothing judged in its window is refused, not published as a q
   assert.equal(row, undefined);
 });
 
+test("public daily reads hide a future issue even if one was written by mistake", async () => {
+  const date = "2100-01-01";
+  await sql`DELETE FROM reports WHERE kind = 'daily' AND key = ${date}`;
+  await sql`INSERT INTO reports (kind, key, window_start, window_end, content, generated_at, origin)
+            VALUES ('daily', ${date}, now(), now(), ${sql.json({ date } as never)}, now(), 'imported')`;
+  assert.equal(await loadReport("daily", date), null);
+  assert.equal(await v1Daily(date), null);
+  assert.equal(await v1Daily("latest"), null);
+  assert.ok(!(await listReports("daily")).some((r) => r.key === date));
+});
+
 test("a weekly that froze no summaries shows the articles' public summaries", async () => {
   await sql`INSERT INTO sources (id, name, kind, tier, participation_mode, next_fetch_at) VALUES (${SOURCE}, 'Reports', 'rss', 'T1', 'editorial', '2100-01-01')`;
   // Found, published and released a minute ago: a rolling window that ends at the reader's clock holds it.
@@ -47,6 +58,7 @@ test("a weekly that froze no summaries shows the articles' public summaries", as
             VALUES (${articleId}, 1, 'rule', 'pass', 'industry', ${`标题-${T}`}, ${`公开摘要-${T}`}, 80, true)`;
   await publishArticle(articleId, { releasedAt: minuteAgo });
   const content = { kind: "weekly", title: `${SITE.name} 周报 · ${WEEK}`, overview: "o", themes: [{ heading: "h", summary: "s", storyRefs: [{ itemId: articleId, title: `标题-${T}`, sourceName: "Old aggregator", sourceId: "old-source", firstParty: false, sourceUrl: "https://example.com" }] }] };
+  await sql`DELETE FROM reports WHERE kind = 'weekly' AND key = ${WEEK}`;
   await sql`INSERT INTO reports (kind, key, window_start, window_end, content, generated_at, origin)
             VALUES ('weekly', ${WEEK}, now(), now(), ${sql.json(content as never)}, now(), 'imported')`;
   const report = await loadReport("weekly", WEEK);
