@@ -1,0 +1,19 @@
+{
+  "name": "@aihot/chronicle",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./module.ts",
+    "./module": "./module.ts",
+    "./catalog": "./catalog.ts",
+    "./server": "./server.ts",
+    "./web": "./web.tsx"
+  },
+  "dependencies": {
+    "@aihot/api": "*",
+    "@aihot/backend": "*",
+    "@aihot/contracts": "*",
+    "echarts": "6.0.0"
+  }
+}

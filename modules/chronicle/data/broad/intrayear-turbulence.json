@@ -1,0 +1,80 @@
+{
+  "meta": {
+    "id": "intrayear-turbulence",
+    "name": "年内最大回撤 vs 最终回报",
+    "type": "range-bar",
+    "description": "即使是牛市年份，也要忍受剧烈的年内洗盘"
+  },
+  "series": [
+    {
+      "year": "2010",
+      "final": -5.12,
+      "intrayear": -11.05
+    },
+    {
+      "year": "2011",
+      "final": 20.74,
+      "intrayear": -4.22
+    },
+    {
+      "year": "2012",
+      "final": 3.66,
+      "intrayear": -8.44
+    },
+    {
+      "year": "2013",
+      "final": 20,
+      "intrayear": -16.84
+    },
+    {
+      "year": "2014",
+      "final": 4.81,
+      "intrayear": -17.84
+    },
+    {
+      "year": "2015",
+      "final": 22.19,
+      "intrayear": -10.83
+    },
+    {
+      "year": "2016",
+      "final": -14.86,
+      "intrayear": -16.85
+    },
+    {
+      "year": "2017",
+      "final": 10.66,
+      "intrayear": -3.88
+    },
+    {
+      "year": "2018",
+      "final": -3.57,
+      "intrayear": -12.92
+    },
+    {
+      "year": "2019",
+      "final": 11.06,
+      "intrayear": -12.66
+    },
+    {
+      "year": "2020",
+      "final": 16.15,
+      "intrayear": -0.21
+    },
+    {
+      "year": "2021",
+      "final": -1.23,
+      "intrayear": -15.43
+    },
+    {
+      "year": "2022",
+      "final": -6.49,
+      "intrayear": -13.64
+    },
+    {
+      "year": "2023",
+      "final": -9.77,
+      "intrayear": -21.83
+    }
+  ]
+}

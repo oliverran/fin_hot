@@ -1,0 +1,38 @@
+{
+  "meta": {
+    "id": "sector-valuation",
+    "name": "行业估值对比",
+    "type": "bar",
+    "description": "各大行业当前 PE 所处历史分位数 (%)"
+  },
+  "series": [
+    {
+      "date": "白酒",
+      "value": 35
+    },
+    {
+      "date": "医药",
+      "value": 12
+    },
+    {
+      "date": "新能源",
+      "value": 5
+    },
+    {
+      "date": "半导体",
+      "value": 65
+    },
+    {
+      "date": "银行",
+      "value": 15
+    },
+    {
+      "date": "地产",
+      "value": 8
+    },
+    {
+      "date": "人工智能",
+      "value": 85
+    }
+  ]
+}

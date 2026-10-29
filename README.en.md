@@ -29,14 +29,15 @@ What FinHOT changed on top of the framework is the field itself, all of it insid
 - **Sources**: 22 demo financial sources, covering official channels such as the CSRC, the Shanghai Stock Exchange, the People's Bank of China, the Ministry of Finance, the National Bureau of Statistics and the NFRA, plus financial media and Eastmoney research reports (`industry/sources.json`)
 - **Prompts and thresholds**: 17 prompts rewritten for finance; thresholds set per source tier at T1 60 / T1.5 65 / T2 76 (`industry/prompts/`, `industry/selection.ts`)
 - **Models**: the default model comes from `LLM_*` in `.env`; `site/models.ts` configures Kimi as a fallback for it
+- **Chronicle tab**: A-share history as a column you can read on its own, filling in the background of “where this market and these sectors came from” while you read the news (`modules/chronicle/`)
 
-The framework itself (`apps/`, `packages/`) is unchanged, and AIHOT's name and logo are not used.
+The framework itself (`apps/`, `packages/`) is unchanged; the Chronicle, needed only by this site, is a module of its own under `modules/`. AIHOT's name and logo are not used.
 
 ## What this is
 
 Every day FinHOT collects material from a set of financial sources. A model first judges whether an item belongs to the field and carries real information; promising items are then scored twice, independently, on the same rubric, and get a Chinese headline and summary. Reports of the same story from different sources cluster into one **event**, and events are ranked by how many sources are talking about them. A daily briefing comes out every morning, a weekly report every Monday, a monthly report on the 1st.
 
-It only covers **news, policy and research**: regulatory notices, policy analysis, A-share and fund market developments, broker research arguments and frameworks, and what financial institutions are doing. **Professional market data is out of scope** (live quotes, candlesticks, order books); this is not a market terminal.
+It only covers **news, policy and research**: regulatory notices, policy analysis, A-share and fund market developments, broker research arguments and frameworks, and what financial institutions are doing. **Professional market data is out of scope** (live quotes, candlesticks, order books); this is not a market terminal. The index charts on the Chronicle tab use daily closes from a public market-data API, for retrospective study and background only — not live quotes.
 
 The interface, the site's own copy and everything the model writes are in Chinese; see [Make this site yours](#make-this-site-yours) below for where to change that.
 
@@ -57,6 +58,7 @@ An item comes in from a source, is checked for duplicates, and pre-screened. Ite
 | **Trending** | Heat per event: the more independent sources, the higher, and discussion counts too. Compared with six hours earlier, fast risers are marked rising and newcomers are marked new |
 | **Daily, weekly and monthly reports** | A daily briefing at 08:00, compiled from the day's top stories by rule; a weekly report every Monday at 10:00 and a monthly report on the 1st at 10:30, compiled from the dailies. Change the times in `EDITION_TIMES` in `site/site.ts` |
 | **Topics and search** | Topic pages for institutions and products, directions, and markets; search over headlines and summaries, and full-text relevance search |
+| **Chronicle** | An A-share history column to read alongside the news: broad-index trend, drawdown, annual returns, intra-year turbulence, volatility, seasonality and return distribution, plus how sectors rose and rotated; every chart carries a short explainer. The core broad-market indices come from a public API and refresh after each trading day's close; the rest are sample data |
 | **For agents** | RSS (selection, everything, full text, daily, weekly, monthly), a public API, MCP, Agent Markdown and `llms.txt`: the same content for people and for agents |
 | **Admin** | Source management and trial fetches, content diagnostics and manual score corrections, selection evaluation, a separate model for each step, budget breakers for paid services, run history and alerts |
 
@@ -90,6 +92,7 @@ Nearly everything to change is in the [`site/`](site/) and [`industry/`](industr
 | `industry/selection.ts` | Selection thresholds |
 | `site/models.ts` | Which model each step uses by default (optional: otherwise every step uses the one in `.env`) |
 | `site/brand/`, `site/pages/`, `site/public/`, `site/changelog.json` | Icons and logo, terms of use and privacy notice, files served from the site root, the changelog |
+| `modules/chronicle/` | The Chronicle tab: the chart list and copy (`catalog.ts`), where the market data comes from and how it refreshes (`backend/`). This site's own module, outside the framework |
 
 To run the site in English or another language, rewrite the prompts in [`industry/prompts/`](industry/prompts/) to write in that language and translate the interface text in `site/site.ts` and the components.
 

@@ -23,6 +23,10 @@ export const PRESETS: Record<string, ModelPreset> = {
   "deepseek-flash": {
     service: "deepseek", model: "deepseek-flash", baseUrlEnv: "DEEPSEEK_BASE_URL", apiKeyEnv: "DEEPSEEK_API_KEY",
     extra: { thinking: { type: "disabled" } }, jsonMode: true,
+    fallbackFor: {
+      prefilter: "kimi", score: "kimi", understand: "kimi", summarize: "kimi", wording: "kimi",
+      structure: "kimi", group: "kimi", groupReview: "kimi", digest: "kimi", report: "kimi", translate: "kimi",
+    },
   },
   "deepseek-flash-think": {
     service: "deepseek", model: "deepseek-flash", baseUrlEnv: "DEEPSEEK_BASE_URL", apiKeyEnv: "DEEPSEEK_API_KEY", reasoningTokens: 4000, jsonMode: true,
