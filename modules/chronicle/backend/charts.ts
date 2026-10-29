@@ -1,12 +1,13 @@
 // 编年史的实时图表：把 chronicle_quotes 里的指数日线现算成各张图需要的形状。
 // 读取时现算，不落库：日线一天只变一次，算一遍的量级也不值得再存一份。
 // 输出的形状跟着 web/options.ts 的 meta.type 走（那里决定 echarts 怎么画）。
+import { readProvider } from "./provider.ts";
 import { LIVE_SOURCE, pageOf, type LiveChart } from "../catalog.ts";
 import { loadBars, quotesFetchedAt, type QuoteBar } from "./quotes.ts";
 
 /** 一张图的 JSON，与随包的示例文件同构。 */
 export interface ChartJson {
-  meta: { id: string; name: string; type: string; description?: string; source?: string; updatedAt?: string | null };
+  meta: { id: string; name: string; type: string; description?: string; source?: string; updatedAt?: string | null; status?: string; firstDate?: string; lastDate?: string };
   series: unknown;
 }
 
@@ -116,7 +117,10 @@ function build(kind: LiveChart["kind"], bars: readonly QuoteBar[]): [string, unk
  * 由调用方退回随包的示例文件，页面不会因为第一次刷新还没跑而空着。
  */
 export async function liveChartJson(chart: LiveChart): Promise<ChartJson | null> {
-  const bars = await loadBars(chart.code);
+  const snapshot = await readProvider();
+  const code=chart.code.slice(2)+'.'+chart.code.slice(0,2).toUpperCase();
+  const provider=snapshot?.indices.find(x=>x.code===code);
+  const bars = provider?.bars.map(b=>({...b,open:b.close,high:b.close,low:b.close,volume:0})) ?? await loadBars(chart.code);
   if (bars.length === 0) return null;
   const page = pageOf(chart.group, chart.slug);
   const [type, series] = build(chart.kind, bars);
@@ -126,8 +130,11 @@ export async function liveChartJson(chart: LiveChart): Promise<ChartJson | null>
       name: page?.chartTitle ?? chart.indexName,
       type,
       description: page?.chartNote ?? "",
-      source: LIVE_SOURCE,
-      updatedAt: await quotesFetchedAt(),
+      source: provider ? snapshot!.source : LIVE_SOURCE,
+      updatedAt: provider ? snapshot!.updatedAt : await quotesFetchedAt(chart.code),
+      status: snapshot?.expectedDate ? (bars.at(-1)!.date < snapshot.expectedDate ? "stale" : "observed") : "calendar-missing",
+      firstDate: bars[0]!.date,
+      lastDate: bars.at(-1)!.date,
     },
     series,
   };

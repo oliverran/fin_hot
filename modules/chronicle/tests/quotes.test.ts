@@ -60,10 +60,7 @@ test("解析腾讯日线：只留成形的那几行", () => {
       sh000001: {
         qfqday: [
           ["2024-01-02", "2974.110", "2962.280", "2976.000", "2950.000", "250000000.000"],
-          ["2024-01-03", "2965.000", "2974.930", "2980.000", "2960.000", "260000000.000"],
-          ["bad-row"],
-          ["2024-01-04", "2974.930", "nope", "3000.000", "2900.000", "1.000"],
-        ],
+          ["2024-01-03", "2965.000", "2974.930", "2980.000", "2960.000", "260000000.000"],        ],
       },
     },
   }, "sh000001");
@@ -230,4 +227,32 @@ test("波动率、季节性与收益分布出各自的形状", async () => {
 test("库里还没有这只指数的行情时返回 null", async () => {
   await sql`DELETE FROM chronicle_quotes WHERE code = ${CODE}`;
   assert.equal(await liveChartJson(chart("hs300", "index")), null);
+});
+
+ test("异常行情整页拒绝，避免过滤导致提前结束翻页", () => {
+ for (const row of [["bad-row"], ["2024-02-30","1","1","1","1","0"], ["2024-01-01","","1","1","1","0"], ["2024-01-01","1","0","1","1","0"], ["2024-01-01","2","2","1","1","0"], ["2024-01-01","1","1","1","1","-1"]]) {
+ assert.throws(() => parseDayBars({data:{x:{day:[row]}}}, "x"), /Invalid quote/);
+ }
+ });
+ test("重复历史页立即报错", async () => {
+ const page = barsOf(datesDescending("2024-12-31",640));
+ let calls=0;
+ await assert.rejects(() => backfillBars("x",async()=>{calls++;return page;}), /did not advance/);
+ assert.equal(calls,2);
+ });
+ test("分批写入失败后全部回滚，重跑补齐完整历史", async () => {
+ const code = T + "rollback";
+ const bars = barsOf(datesDescending("2024-12-31", 650).reverse());
+ const bad = bars.map(b=>({...b})); bad[600]!.close = 1e20;
+ await assert.rejects(() => refreshCode(code,async()=>bad));
+ assert.equal((await loadBars(code)).length,0);
+ await refreshCode(code,async(_c,opts)=>bars.filter(b=>!opts.end || b.date<=opts.end).slice(-640));
+ assert.equal((await loadBars(code)).length,650);
+ });
+
+test("对比只取共同交易日并以共同起点归一", async () => {
+ const {compareBars}=await import('../backend/compare.ts');
+ const result=compareBars([{name:'a',bars:barsOf(['2024-01-01','2024-01-02','2024-01-03'],i=>[100,120,90][i]!)},{name:'b',bars:barsOf(['2024-01-02','2024-01-03'],i=>[50,60][i]!)}],'2024-01-01','2024-01-03');
+ assert.deepEqual(result.dates,['2024-01-02','2024-01-03']);assert.deepEqual(result.seriesData.a,[100,75]);assert.equal(result.summaries[0]!.drawdown,-25);
+ assert.equal(compareBars([{name:'a',bars:[]}],'2024-01-01','2024-01-03').summaries[0]!.change,null);
 });

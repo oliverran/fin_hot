@@ -30,13 +30,18 @@ export default function ChronicleHome() {
           {GROUPS.length} 个章节、{PAGES.length} 张图表，都可以点开对照历史。
         </p>
         <p className="well mt-5 rounded-card px-4 py-3 text-[12.5px] leading-[1.75] text-ink-3">
-          标「实时」的图表来自公开行情接口，每个交易日收盘后自动更新；其余为随机生成的示例数据。只作历史复盘与学习用途，不构成任何投资建议。
+          标「日线」的图表来自公开行情接口，每个交易日收盘后自动更新；缺失数据不展示曲线；随机示例仅在独立演示入口展示。只作历史复盘与学习用途，不构成任何投资建议。
           <Link viewTransition to={ROUTES.methodology} className="ml-1 text-accent hover:underline">
             数据口径与免责
           </Link>
         </p>
       </header>
 
+      <Link to="/chronicle/compare" className="mt-6 block text-accent">多指数对比与区间复盘 →</Link>
+      <Link to="/chronicle/sectors-live" className="mt-4 block text-accent">真实行业数据、估值与轮动 →</Link>
+      <Link to="/chronicle/market" className="mt-4 block text-accent">市场背景、ETF 与两融 →</Link>
+      <Link to="/chronicle/funds" className="mt-4 block text-accent">公募披露持仓与共识 →</Link>
+      <Link to="/chronicle/companies" className="mt-4 block text-accent">上市公司背景查询 →</Link>
       {HOME_SECTIONS.map((section) => {
         const group = groupOf(section.group);
         if (!group) return null;

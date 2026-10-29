@@ -17,7 +17,7 @@ export function ChartCard({ page }: { page: ChartPage }) {
         <span className="flex items-baseline gap-2">
           <span className="min-w-0 text-[15px] font-semibold leading-snug text-ink transition-colors group-hover:text-accent">{page.cardTitle}</span>
           {liveChart(page.group, page.slug) && (
-            <span className="shrink-0 rounded-full border border-line px-1.5 py-px text-[10.5px] leading-[1.5] text-accent">实时</span>
+            <span className="shrink-0 rounded-full border border-line px-1.5 py-px text-[10.5px] leading-[1.5] text-accent">日线</span>
           )}
         </span>
         <span className="mt-1 block text-[12.5px] leading-[1.65] text-ink-4 lg:line-clamp-3 lg:text-ink-3">{page.cardBlurb}</span>

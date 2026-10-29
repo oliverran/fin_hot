@@ -1,5 +1,13 @@
 # 部署
 
+## 本地监听与运行健康
+
+Docker 默认只绑定 `127.0.0.1:3000`。需要通过服务器 IP 访问时，在 `.env` 明确设置 `PORT=0.0.0.0:3000`；HTTPS profile 的 Caddy 仍通过容器网络访问 web。
+
+API 健康检查验证数据库连通性，web 检查经网页服务代理的 API，worker 验证本容器最近三分钟的心跳。用 `docker compose ps` 查看状态；unhealthy 不会自动触发 Docker 重启，应检查日志与任务积压，排除原因后重启对应服务。
+
+行情批次现在整体提交；异常日期、价格、成交量或不推进的历史页会报错，不写入该批次。已有部署若曾发生历史补齐中断，需要核对缺口并重新补齐；升级不会删除既有行情。
+
 ## 用 Docker（推荐）
 
 需要一台装了 Docker（带 Compose）的机器。云服务器建议至少 2 核、4 GB 内存，构建镜像时要用到。
@@ -280,3 +288,9 @@ cd apps/web && NODE_ENV=production node --env-file=../../.env server.ts   # 网�
 三个进程要一直运行，生产环境用 systemd 或 pm2 守护（守护配置里同样设 `NODE_ENV=production`）。停止 worker 时给它 515 秒（systemd 的 `TimeoutStopSec=515`、pm2 的 `kill_timeout: 515000` 和 `treekill: false`），覆盖队列的 470 秒排空和数据库清理；systemd 还需设 `KillMode=mixed`，只先通知主进程停止接任务，让正在备份的 `pg_dump`、`tar` 自然完成。被提前杀掉的调用结果不明，要等至少半小时自动放行后才会重试。
 
 开发时用带热更新的方式：`npm run dev:api`、`npm run dev:worker`、`npm run dev:web`。开发时想免登录进后台，在 `.env` 里设 `DEV_AUTH_ROLE=admin`（生产环境会拒绝启动）。
+
+### 编年史结构化数据
+
+配置 TUSHARE_BASE_URL、TUSHARE_TOKEN 后，TUSHARE_SYNC_ENABLED=true 开启工作日 19:30 的指数、估值、公司指标与市场背景同步，以及 09:20 的延迟数据补齐。TUSHARE_FUND_SYNC_ENABLED=true 单独开启每半小时 30 个基金份额代码的持仓同步。密钥只在后端使用，不开启新闻采集或模型调用。快照写入数据卷 chronicle/，更新前备份该目录；新快照行业目录采用申万 2021 一级分类，替换旧版两个中证行业样本。新鲜度按交易日历判断，详见 [Pro 数据说明](pro-data.md)。
+
+/chronicle/compare 提供共同交易日归一化对比和同期精选新闻（最多 100 条，日期为站内时间线日期）；/chronicle/sectors-live 展示实际来源覆盖及行业回报。新闻标记不作因果解释。抱团规则草案见 docs/chronicle-cluster-rules.md，尚未启用组合回测。

@@ -5,6 +5,11 @@ import { defineModule } from "@aihot/contracts/modules";
 export default defineModule({
   name: "chronicle",
   pages: [
+    { path: "chronicle/companies", file: "web/pages/companies.tsx" },
+    { path: "chronicle/market", file: "web/pages/market.tsx" },
+    { path: "chronicle/funds", file: "web/pages/funds.tsx" },
+    { path: "chronicle/sectors-live", file: "web/pages/sectors-live.tsx" },
+    { path: "chronicle/compare", file: "web/pages/compare.tsx" },
     { path: "chronicle", file: "web/pages/home.tsx" },
     { path: "chronicle/methodology", file: "web/pages/methodology.tsx" },
     { path: "chronicle/api", file: "web/pages/api-doc.tsx" },

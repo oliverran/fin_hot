@@ -32,20 +32,29 @@ function dayBefore(date: string): string {
   return at.toISOString().slice(0, 10);
 }
 
-/** 腾讯的响应 → 日线数组；不认得的形状与不成行的数据都丢掉。 */
+/** 腾讯的响应 → 日线数组；坏行整页报错，避免过滤后误判为历史末页。 */
 export function parseDayBars(payload: unknown, code: string): QuoteBar[] {
   const day = (payload as { data?: Record<string, { day?: unknown; qfqday?: unknown }> } | null)?.data?.[code];
   const rows = day?.qfqday ?? day?.day;
   if (!Array.isArray(rows)) return [];
   return rows.flatMap((row) => {
     // 每一行是 [日期, 开, 收, 高, 低, 成交量]。
-    if (!Array.isArray(row) || row.length < 6) return [];
+    if (!Array.isArray(row) || row.length < 6) throw new Error(`Invalid quote row for ${code}`);
     const [date, open, close, high, low, volume] = row as string[];
     const bar = {
       date: date!, open: Number(open), close: Number(close), high: Number(high), low: Number(low),
       volume: Number.isFinite(Number(volume)) ? Math.round(Number(volume)) : 0,
     };
-    return /^\d{4}-\d{2}-\d{2}$/.test(bar.date) && [bar.open, bar.close, bar.high, bar.low].every(Number.isFinite) ? [bar] : [];
+    const at = new Date(`${bar.date}T00:00:00Z`);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(bar.date) || !Number.isFinite(at.getTime())
+      || at.toISOString().slice(0, 10) !== bar.date
+      || ![open, close, high, low, volume].every((v) => (typeof v === "string" && v.trim() !== "") || typeof v === "number")
+      || ![bar.open, bar.close, bar.high, bar.low].every((v) => Number.isFinite(v) && v > 0)
+      || bar.low > Math.min(bar.open, bar.close) || bar.high < Math.max(bar.open, bar.close)
+      || !Number.isFinite(Number(volume)) || Number(volume) < 0) {
+      throw new Error(`Invalid quote bar for ${code} at ${String(date)}`);
+    }
+    return [bar];
   });
 }
 
@@ -72,6 +81,7 @@ export async function backfillBars(code: string, fetchBars = fetchDayBars): Prom
   for (;;) {
     const page = await fetchBars(code, { end, count: PAGE });
     if (page.length === 0) break;
+    if (end && page.some((bar) => bar.date > end!)) throw new Error(`Quote pagination did not advance for ${code}`);
     all.push(...page);
     if (page.length < PAGE) break;
     // 接口的行序不保证：取这一页里最早的那天，再往前一天当作下一页的区间右端。
@@ -79,7 +89,7 @@ export async function backfillBars(code: string, fetchBars = fetchDayBars): Prom
     end = dayBefore(oldest);
     if (end <= EARLIEST) break;
   }
-  return all.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
+  return [...new Map(all.map((bar) => [bar.date, bar])).values()].sort((a, b) => a.date.localeCompare(b.date));
 }
 
 /** 库里这只指数最后一个交易日；还没有数据时是 null。 */
@@ -92,21 +102,25 @@ async function lastDate(code: string): Promise<string | null> {
 /** 写库：同一 (指数, 交易日) 只留一份，重跑或接口事后修正都以最新一次为准。 */
 async function storeBars(code: string, bars: readonly QuoteBar[]): Promise<number> {
   if (bars.length === 0) return 0;
-  for (let i = 0; i < bars.length; i += 500) {
-    const rows = bars.slice(i, i + 500).map((bar) => ({
-      code, trade_date: bar.date, open: bar.open, close: bar.close, high: bar.high, low: bar.low, volume: bar.volume, source: SOURCE,
-    }));
-    await sql`INSERT INTO chronicle_quotes ${sql(rows)}
-      ON CONFLICT (code, trade_date) DO UPDATE SET open = EXCLUDED.open, close = EXCLUDED.close,
-        high = EXCLUDED.high, low = EXCLUDED.low, volume = EXCLUDED.volume, source = EXCLUDED.source, fetched_at = now()`;
-  }
+  await sql.begin(async (tx) => {
+    for (let i = 0; i < bars.length; i += 500) {
+      const rows = bars.slice(i, i + 500).map((bar) => ({
+        code, trade_date: bar.date, open: bar.open, close: bar.close, high: bar.high, low: bar.low, volume: bar.volume, source: SOURCE,
+      }));
+      await tx`INSERT INTO chronicle_quotes ${tx(rows)}
+        ON CONFLICT (code, trade_date) DO UPDATE SET open = EXCLUDED.open, close = EXCLUDED.close,
+          high = EXCLUDED.high, low = EXCLUDED.low, volume = EXCLUDED.volume, source = EXCLUDED.source, fetched_at = now()`;
+    }
+  });
   return bars.length;
 }
 
 /** 刷新一只指数：库里没有就从最早补起，有就从上次那天起再取一页（接口事后修正与新增的交易日都会一并写入）。 */
 export async function refreshCode(code: string, fetchBars = fetchDayBars): Promise<{ code: string; bars: number; last: string | null }> {
   const last = await lastDate(code);
-  const bars = last ? await fetchBars(code, { start: last, count: PAGE }) : await backfillBars(code, fetchBars);
+  let bars = last ? await fetchBars(code, { start: last, count: PAGE }) : await backfillBars(code, fetchBars);
+  // A full incremental page can omit older missing days after a long outage.
+  if (last && bars.length >= PAGE) bars = await backfillBars(code, fetchBars);
   return { code, bars: await storeBars(code, bars), last: await lastDate(code) };
 }
 
@@ -125,7 +139,7 @@ export async function loadBars(code: string): Promise<QuoteBar[]> {
 }
 
 /** 行情最后一次写入的时间（ISO）；库里还没有行情时是 null。 */
-export async function quotesFetchedAt(): Promise<string | null> {
-  const [row] = await sql<{ at: Date | null }[]>`SELECT max(fetched_at) AS at FROM chronicle_quotes`;
+export async function quotesFetchedAt(code?: string): Promise<string | null> {
+  const [row] = await sql<{ at: Date | null }[]>`SELECT max(fetched_at) AS at FROM chronicle_quotes ${code ? sql`WHERE code = ${code}` : sql``}`;
   return row?.at ? row.at.toISOString() : null;
 }

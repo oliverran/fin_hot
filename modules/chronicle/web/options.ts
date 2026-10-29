@@ -6,7 +6,7 @@ export type ChartOption = Record<string, unknown>;
 
 /** 一张图表的数据，形状由 meta.type 决定。 */
 export interface ChronicleData {
-  meta: { id: string; name: string; type: string; description?: string };
+  meta: { id: string; name: string; type: string; description?: string; events?: Array<{date:string;title:string}>; status?: string; source?: string; firstDate?: string; lastDate?: string; updatedAt?: string | null };
   series: unknown;
 }
 
@@ -201,6 +201,7 @@ function multiLineOption(data: ChronicleData, theme: ChartTheme) {
       name,
       type: "line",
       data: series.seriesData[name],
+      markLine: index === 0 ? { symbol: "none", label: {show:false}, data: (data.meta.events ?? []).map(e=>({name:e.title,xAxis:e.date})) } : undefined,
       showSymbol: false,
       lineStyle: { width: 1.5 },
       itemStyle: { color: colors[index % colors.length] },

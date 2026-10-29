@@ -81,7 +81,7 @@ export default function ChronicleChartPage() {
               {section.items.map((item) => (
                 <li key={item} className="flex gap-2.5 text-[14px] leading-[1.8] text-ink-2">
                   <span className="mt-[9px] size-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true" />
-                  <span className="min-w-0">{item}</span>
+                  <span className="min-w-0">{item.startsWith("数据来源：") ? "数据来源以图表实际响应为准。" : item.startsWith("时间范围：") ? "实际覆盖日期见图表状态；指数基日不代表本站数据起点。" : item}</span>
                 </li>
               ))}
             </ul>
@@ -90,7 +90,7 @@ export default function ChronicleChartPage() {
       ))}
 
       <p className="mt-10 border-t border-line pt-5 text-[12.5px] leading-[1.75] text-ink-4">
-        数据来源：{dataSourceOf(page.group, page.slug)}，只作历史复盘与学习用途，不构成任何投资建议。
+        实际数据来源与覆盖日期以图表状态为准；示例仅用于演示。只作历史复盘与学习用途，不构成任何投资建议。
         <Link viewTransition to={ROUTES.methodology} className="ml-1 text-accent hover:underline">
           数据口径与免责
         </Link>

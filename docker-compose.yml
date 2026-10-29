@@ -48,6 +48,12 @@ services:
   api:
     <<: *backend
     command: ["node", "apps/api/src/main.ts"]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/api/health', {signal: AbortSignal.timeout(4000)}).then(r => {if (!r.ok) process.exit(1)}).catch(() => process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      start_period: 30s
+      retries: 3
     environment:
       <<: *backend-env
       API_HOST: 0.0.0.0
@@ -59,6 +65,12 @@ services:
   worker:
     <<: *backend
     command: ["node", "apps/worker/src/main.ts"]
+    healthcheck:
+      test: ["CMD", "node", "scripts/worker-health.ts"]
+      interval: 30s
+      timeout: 15s
+      start_period: 90s
+      retries: 3
     # Let the worker drain backups and paid calls (STOP_TIMEOUT_MS, 470 s), then close its database.
     # Docker sends SIGTERM to the worker first; after this window it kills the remaining processes.
     stop_grace_period: 515s
@@ -69,6 +81,12 @@ services:
   web:
     <<: *app
     command: ["node", "apps/web/server.ts"]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health', {signal: AbortSignal.timeout(4000)}).then(r => {if (!r.ok) process.exit(1)}).catch(() => process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      start_period: 30s
+      retries: 3
     # SSR reads the API over HTTP; backend credentials and stored files stay in api/worker.
     environment:
       NODE_ENV: production
@@ -79,10 +97,10 @@ services:
       WEB_HOST: 0.0.0.0
       WEB_PORT: "3000"
     ports:
-      - "${PORT:-3000}:3000"
+      - "${PORT:-127.0.0.1:3000}:3000"
     depends_on:
       api:
-        condition: service_started
+        condition: service_healthy
 
   caddy:
     image: caddy:2-alpine
