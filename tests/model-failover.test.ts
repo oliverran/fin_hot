@@ -28,7 +28,7 @@ pointModels(primary.url, ["deepseek-flash", "glm-5.3-flash"]);
 pointModels(backup.url, ["qwen3.8-flash"]);
 const T = tag();
 const request = (name: string) => ({
-  model: "deepseek-flash", fallbackModel: "qwen3.8-flash", purpose: "summarize_article",
+  model: "deepseek-flash", fallbackModels: ["qwen3.8-flash"], purpose: "summarize_article",
   subject: `failover:${T}:${name}`, promptVersion: "failover-test", system: "Return the requested value.",
   user: `${T}:${name}`, schema: z.object({ value: z.string() }),
 });
@@ -189,5 +189,23 @@ test("an analysis left on the default model reaches its evaluated backup when th
       else process.env[key] = value;
     }
     await answering.close();
+  }
+});
+
+// The backups are a chain (site/models.ts): the third provider answers when both the primary and the
+// first backup are unavailable, and each one is called once.
+test("a second backup answers when the primary and the first backup are both unavailable", async () => {
+  const third = await stub(() => answer("third"));
+  pointModels(third.url, ["glm-5.3-flash"]);
+  primaryAnswer = () => new Reply(503, { error: "overloaded" });
+  backupAnswer = () => new Reply(429, { error: { code: "rate_limit_reached_error", message: "rate limit reached" } });
+  try {
+    const res = await chatJson({ ...request("chain"), fallbackModels: ["qwen3.8-flash", "glm-5.3-flash"] });
+    assert.equal(res.model, "glm-5.3-flash");
+    assert.equal(res.data.value, "third");
+    assert.equal(third.hits(), 1);
+  } finally {
+    pointModels(primary.url, ["glm-5.3-flash"]);
+    await third.close();
   }
 });

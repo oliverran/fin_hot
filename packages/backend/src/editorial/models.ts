@@ -52,8 +52,8 @@ export async function stepsOnService(service: string, models?: ReadonlySet<strin
     .filter(([key, c]) => {
       if (c.idle?.()) return false;
       const primary = current[key]!.model;
-      return [primary, fallbackModelFor(key, primary)].some(key => {
-        const model = key && MODELS[key];
+      return [primary, ...fallbackChainFor(key, primary)].some(name => {
+        const model = MODELS[name];
         return model && model.service === service && (!models || models.has(model.model));
       });
     })
@@ -109,8 +109,19 @@ export function fallbackModelFor(capability: string, primary: string): string | 
   return Object.values(MODELS).find(model => model.fallbackFor?.[capability] === primary && model.service !== MODELS[primary]!.service)?.key;
 }
 
-/** Preserve an explicit primary choice; only the site's evaluated pair may fail over. */
-export async function modelRoute(capability: CapabilityKey | (string & {})): Promise<{ model: string; fallbackModel?: string }> {
+/** The backups that take over a step, in order: the one naming the primary, then the one naming that one. */
+export function fallbackChainFor(capability: string, primary: string): string[] {
+  const chain: string[] = [];
+  for (let from = primary; ; ) {
+    const next = fallbackModelFor(capability, from);
+    if (!next || next === primary || chain.includes(next)) return chain;
+    chain.push(next);
+    from = next;
+  }
+}
+
+/** Preserve an explicit primary choice; only the site's evaluated chain may fail over. */
+export async function modelRoute(capability: CapabilityKey | (string & {})): Promise<{ model: string; fallbackModels: string[] }> {
   const model = await modelFor(capability);
-  return { model, fallbackModel: fallbackModelFor(capability, model) };
+  return { model, fallbackModels: fallbackChainFor(capability, model) };
 }

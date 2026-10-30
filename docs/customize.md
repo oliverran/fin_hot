@@ -136,7 +136,7 @@
 
 ## 8. 模型和部署
 
-- 模型：`.env` 里的 `LLM_BASE_URL`、`LLM_API_KEY`、`LLM_MODEL`，任何 OpenAI 兼容接口都行，所有步骤默认都用它。`site/models.ts` 列出具名的模型（各用自己的地址和密钥环境变量）和每一步默认用哪个；部署时还可以用环境变量（见 `.env.example`）或后台“模型与评测”页逐步改选。用推理模型（先想再答）时给它留出推理的额度：默认模型设 `LLM_REASONING_TOKENS`，具名模型在 `site/models.ts` 里写 `reasoningTokens`；不留的话推理会把每一步的输出额度用光，答案为空，每次调用都失败。 评分预设还可写 `scoreCall: { temperature, maxTokens, timeoutMs }`，分别控制温度、输出额度和超时毫秒；示例评分预设已明确配置这些值。备用模型的 `fallbackFor` 按能力名指定它接替的主模型，须先用自己的资料评测这组组合；示例站默认没有备用组合。
+- 模型：`.env` 里的 `LLM_BASE_URL`、`LLM_API_KEY`、`LLM_MODEL`，任何 OpenAI 兼容接口都行，所有步骤默认都用它。`site/models.ts` 列出具名的模型（各用自己的地址和密钥环境变量）和每一步默认用哪个；部署时还可以用环境变量（见 `.env.example`）或后台“模型与评测”页逐步改选。用推理模型（先想再答）时给它留出推理的额度：默认模型设 `LLM_REASONING_TOKENS`，具名模型在 `site/models.ts` 里写 `reasoningTokens`；不留的话推理会把每一步的输出额度用光，答案为空，每次调用都失败。 评分预设还可写 `scoreCall: { temperature, maxTokens, timeoutMs }`，分别控制温度、输出额度和超时毫秒；示例评分预设已明确配置这些值。备用模型的 `fallbackFor` 按能力名指定它接替的主模型；备用自己也可以写 `fallbackFor`，于是连成一条备用链，前一个不可用时轮到下一个（例如默认模型 → Kimi → DeepSeek）。每一环都要先用自己的资料评测这组组合；示例站默认没有备用组合。
 - 部署：见 [部署](deploy.md)。
 
 ## 改完以后检查

@@ -383,7 +383,7 @@ test("provider impact includes the same evaluated fallback as modelRoute", async
     for (const c of Object.values(CAPABILITIES)) process.env[c.env] = "test-primary";
     invalidateModelCache();
     const route = await modelRoute("summarize");
-    assert.equal(route.fallbackModel, "test-backup");
+    assert.deepEqual(route.fallbackModels, ["test-backup"]);
     const steps = await stepsOnService("zhipu", new Set(["glm-5.3-flash"]));
     assert.ok(steps.includes("标题摘要"), "the fallback can fail and stop articles even without a primary on this supplier");
     assert.ok(!steps.includes("精选评分"), "an unevaluated fallback is not invented for other steps");

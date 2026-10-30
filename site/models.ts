@@ -19,7 +19,7 @@ export const PRESETS: Record<string, ModelPreset> = {
     scoreCall: { temperature: 1, maxTokens: 65_536, timeoutMs: 180_000 },
   },
   // DeepSeek Flash reasons by default; structured tasks switch it off. deepseek-flash-think keeps it on,
-  // with room in the output for the reasoning.
+  // with room in the output for the reasoning. 这里的 fallbackFor 让它接在 Kimi 之后，成为默认模型的第二道备用。
   "deepseek-flash": {
     service: "deepseek", model: "deepseek-flash", baseUrlEnv: "DEEPSEEK_BASE_URL", apiKeyEnv: "DEEPSEEK_API_KEY",
     extra: { thinking: { type: "disabled" } }, jsonMode: true,
@@ -48,6 +48,7 @@ export const PRESETS: Record<string, ModelPreset> = {
     extra: { enable_thinking: false }, jsonMode: false, vision: true,
   },
   // Kimi（Moonshot）作为默认模型（MiniMax）的备用：它达到限流或报错时接管，见 docs/customize.md 第 8 节。
+  // 备用是一串：默认模型 → Kimi → deepseek-flash（后者在 kimi 下面声明接替 Kimi），前一个不可用时轮到下一个。
   // 走 OpenAI 兼容接口；先想再答，所以给推理留出额度，否则答案会为空。这个模型只接受 temperature=1，
   // 用 extra 覆盖各步骤自己的温度。
   kimi: {

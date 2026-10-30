@@ -50,8 +50,8 @@ export type ContentPart = { type: "text"; text: string } | { type: "image_url"; 
 
 export interface ChatJsonOptions<S extends z.ZodType> {
   model: string;
-  /** One independently operated, evaluated backup. Only availability failures switch providers. */
-  fallbackModel?: string;
+  /** Independently operated, evaluated backups, tried in this order. Only availability failures switch providers. */
+  fallbackModels?: string[];
   purpose: string;
   subject: string;
   promptVersion: string;
@@ -139,25 +139,34 @@ const TIMEOUT_MS = 120_000;
 const FAILOVER_TIMEOUT_MS = 30_000;
 
 /**
- * With a backup (fallbackModel: editorial/models.ts picks one at another provider), a primary whose
- * outcome is unknown, or that the provider turns away for now, is continued by the backup at once:
- * besides the one release in operations/recover.ts, the other place where an unknown outcome is
- * followed by a second paid request.
+ * With backups (fallbackModels: editorial/models.ts orders them), a provider whose outcome is unknown,
+ * or that the provider turns away for now, is continued by the next one at once: besides the one
+ * release in operations/recover.ts, the other place where an unknown outcome is followed by a second
+ * paid request.
  */
 export async function chatJson<S extends z.ZodType>(opts: ChatJsonOptions<S>): Promise<ChatJsonResult<z.infer<S>>> {
-  if (!opts.fallbackModel) return chatOnce(opts);
-  const backupOpts = { ...opts, model: opts.fallbackModel };
-  const fallbackFor = logicalKeyFor(requestFor(opts, MODELS[opts.model]!).request);
-  const saved = await receiptState(requestFor(backupOpts, MODELS[opts.fallbackModel]!).request);
-  // Finish an existing backup attempt before choosing a provider again, even after recovery/restart.
-  if (saved && saved !== "failed") return chatOnce(backupOpts, true, fallbackFor);
-  try {
-    return await chatOnce(opts, true);
-  } catch (error) {
-    const kind = failureKind(error);
-    if (kind !== "unknown" && kind !== "outage") throw error;
-    return chatOnce(backupOpts, true, fallbackFor);
+  const hops = [opts.model, ...(opts.fallbackModels ?? [])];
+  if (hops.length === 1) return chatOnce(opts);
+  const requestOf = (model: string) => requestFor({ ...opts, model }, MODELS[model]!).request;
+  // Finish an attempt already made at a backup before choosing a provider again, even after recovery or
+  // a restart: the first backup that already has an answer continues the request.
+  for (const [i, model] of hops.entries()) {
+    if (i === 0) continue;
+    const saved = await receiptState(requestOf(model));
+    if (saved && saved !== "failed") return chatOnce({ ...opts, model }, true, logicalKeyFor(requestOf(hops[i - 1]!)));
   }
+  let fallbackFor: string | undefined;
+  for (const [i, model] of hops.entries()) {
+    const hop = i === 0 ? opts : { ...opts, model };
+    try {
+      return await chatOnce(hop, true, fallbackFor);
+    } catch (error) {
+      const kind = failureKind(error);
+      if ((kind !== "unknown" && kind !== "outage") || i === hops.length - 1) throw error;
+      fallbackFor = logicalKeyFor(requestOf(model));
+    }
+  }
+  throw new Error("unreachable: chatJson tried every provider");
 }
 
 async function chatOnce<S extends z.ZodType>(opts: ChatJsonOptions<S>, circuit = false, fallbackFor?: string): Promise<ChatJsonResult<z.infer<S>>> {
