@@ -6,7 +6,7 @@ export type ChartOption = Record<string, unknown>;
 
 /** 一张图表的数据，形状由 meta.type 决定。 */
 export interface ChronicleData {
-  meta: { id: string; name: string; type: string; description?: string; events?: Array<{date:string;title:string}>; status?: string; source?: string; firstDate?: string; lastDate?: string; updatedAt?: string | null };
+  meta: { id: string; name: string; type: string; description?: string; events?: Array<{date:string;title:string}>; status?: string; source?: string; firstDate?: string; lastDate?: string; updatedAt?: string | null; preClose?: number };
   series: unknown;
 }
 
@@ -278,6 +278,47 @@ function stackedAreaOption(data: ChronicleData, theme: ChartTheme) {
   };
 }
 
+/** 实时行情（精选页那张卡）用得着的两类：分时与日K。 */
+function minuteOption(data: ChronicleData, theme: ChartTheme) {
+  const rows = data.series as Array<{ date: string; value: number }>;
+  const preClose = data.meta.preClose;
+  // 分时的线按当日涨跌染色；没有昨收时用中性色。
+  const color = preClose === undefined || rows.length === 0 ? theme.ink : rows.at(-1)!.value >= preClose ? theme.up : theme.down;
+  return {
+    ...frame(theme, { x: { data: rows.map((row) => row.date), axisLabel: { color: theme.text, fontFamily: MONO, formatter: (value: string) => value } } }),
+    series: [{
+      name: data.meta.name,
+      type: "line",
+      data: rows.map((row) => row.value),
+      showSymbol: false,
+      lineStyle: { width: 1.4, color },
+      itemStyle: { color },
+      areaStyle: { color, opacity: 0.1 },
+      markLine: preClose === undefined ? undefined : {
+        symbol: "none",
+        silent: true,
+        label: { show: false },
+        lineStyle: { color: theme.grid, type: "dashed", width: 1 },
+        data: [{ yAxis: preClose }],
+      },
+    }],
+  };
+}
+
+function candlestickOption(data: ChronicleData, theme: ChartTheme) {
+  const rows = data.series as Array<{ date: string; open: number; close: number; high: number; low: number }>;
+  return {
+    ...frame(theme, { x: { data: rows.map((row) => row.date), axisLabel: { color: theme.text, fontFamily: MONO, formatter: (value: string) => value.slice(5) } } }),
+    series: [{
+      name: data.meta.name,
+      type: "candlestick",
+      // ECharts 的蜡烛顺序是「开、收、低、高」。
+      data: rows.map((row) => [row.open, row.close, row.low, row.high]),
+      itemStyle: { color: theme.up, color0: theme.down, borderColor: theme.up, borderColor0: theme.down },
+    }],
+  };
+}
+
 /** 一张图的 ECharts 选项；不认得的 type 按折线图处理（与原项目一致）。 */
 export function chartOption(data: ChronicleData, theme: ChartTheme = LIGHT_THEME): ChartOption {
   const build = {
@@ -290,6 +331,8 @@ export function chartOption(data: ChronicleData, theme: ChartTheme = LIGHT_THEME
     "stacked-bar-dual": stackedBarDualOption,
     "range-bar": rangeBarOption,
     "stacked-area": stackedAreaOption,
+    minute: minuteOption,
+    candlestick: candlestickOption,
   }[data.meta.type] ?? lineOption;
   return build(data, theme);
 }

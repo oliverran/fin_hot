@@ -574,6 +574,15 @@ export const LIVE_CHARTS: readonly LiveChart[] = [
   { group: "broad", slug: "distribution", kind: "distribution", code: "sh000300", indexName: "沪深 300" },
 ];
 
+/** 精选页第一屏那张实时图跟的两只指数（腾讯写法，与 LIVE_CHARTS 里的代码一致）。 */
+export const LIVE_INDICES = ["sh000001", "sz399006"] as const;
+export type LiveIndex = (typeof LIVE_INDICES)[number];
+
+/** 一只指数的中文名；与编年史图表上的写法保持一致。 */
+export function indexName(code: string): string {
+  return LIVE_CHARTS.find((chart) => chart.code === code)?.indexName ?? code;
+}
+
 const BY_KEY = new Map(PAGES.map((page) => [`${page.group}/${page.slug}`, page]));
 const GROUP_BY_KEY = new Map(GROUPS.map((group) => [group.key, group]));
 const LIVE_BY_KEY = new Map(LIVE_CHARTS.map((chart) => [`${chart.group}/${chart.slug}`, chart]));

@@ -11,13 +11,14 @@ export const handle: Screen = { tab: "chronicle", name: "数据接口" };
 export function meta() {
   return pageMeta({
     title: "数据接口",
-    description: `编年史图表的公开 JSON 接口：三组、${PAGES.length} 张图，指数行情图每日收盘后更新，直接取用。`,
+    description: `编年史图表的公开 JSON 接口：三组、${PAGES.length} 张图，指数行情图每日收盘后更新，精选页的实时行情另有一个地址，都可直接取用。`,
     path: ROUTES.api,
   });
 }
 
 const ENDPOINTS: Array<[string, string]> = [
   ["GET /api/chronicle/_manifest.json", "行情最后写入的时间、三组地址与实时图表清单。"],
+  ["GET /api/chronicle/live?code=&kind=", "精选页那张实时图的数据；code 是 sh000001 或 sz399006，kind 是 minute（分时）或 day（日K）。"],
   ["GET /api/chronicle/{group}/{slug}.json", "一张图的全部数据；group 是 broad、sectors 或 clusters。"],
 ];
 
@@ -47,7 +48,7 @@ export default function ChronicleApiDoc() {
       </header>
 
       <section className="pt-9">
-        <h2 className="text-[17px] font-bold text-ink">两个地址</h2>
+        <h2 className="text-[17px] font-bold text-ink">三个地址</h2>
         <ul className="mt-3 divide-y divide-line-soft overflow-hidden rounded-card border border-line bg-surface">
           {ENDPOINTS.map(([path, does]) => (
             <li key={path} className="px-4 py-3">
@@ -57,7 +58,7 @@ export default function ChronicleApiDoc() {
           ))}
         </ul>
         <p className="mt-3 text-[12.5px] leading-[1.75] text-ink-4">
-          示例图是随包的静态文件，缓存一天；行情图由后端从库里现算，缓存一刻钟。两者都不触发任何模型调用，也不需要密钥。
+          示例图是随包的静态文件，缓存一天；行情图由后端从库里现算，缓存一刻钟；实时行情由后端从公开接口现抓，缓存 15 秒，开盘时段刷新。三者都不触发任何模型调用，也不需要密钥。
         </p>
       </section>
 
@@ -116,7 +117,7 @@ export default function ChronicleApiDoc() {
         <Link viewTransition to={ROUTES.methodology} className="transition-colors hover:text-accent">
           数据口径
         </Link>
-        <span>指数走势与派生图来自公开行情接口，其余为示例（随机生成），均不构成任何投资建议。</span>
+        <span>指数走势与派生图来自公开行情接口，精选页的实时行情同理（有延迟），其余为示例（随机生成），均不构成任何投资建议。</span>
       </footer>
     </div>
   );

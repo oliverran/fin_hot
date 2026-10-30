@@ -27,6 +27,27 @@ test("每种类型出它自己的图", () => {
   assert.equal(option("valuation", [{ date: "2024-01-02", value: 12, mean: 11, plus1: 14, minus1: 8 }]).series.length, 4);
 });
 
+test("实时行情：分时是带昨收线的面积线，日K是蜡烛", () => {
+  const minute = chartOption({ meta: { id: "t", name: "上证指数 分时", type: "minute", preClose: 3600 }, series: line }, LIGHT_THEME) as unknown as {
+    series: Array<{ type: string; areaStyle?: unknown; markLine?: { data?: Array<{ yAxis: number }> } }>;
+  };
+  assert.deepEqual(minute.series.map((s) => s.type), ["line"]);
+  assert.ok(minute.series[0]!.areaStyle, "分时要填色");
+  // 昨收画一条水平参考线；没有昨收就不画。
+  assert.deepEqual(minute.series[0]!.markLine?.data, [{ yAxis: 3600 }]);
+  assert.equal(option("minute", line).series[0]!.type, "line");
+  const noPreClose = chartOption({ meta: { id: "t", name: "分时", type: "minute" }, series: line }, LIGHT_THEME) as unknown as {
+    series: Array<{ markLine?: unknown }>;
+  };
+  assert.equal(noPreClose.series[0]!.markLine, undefined);
+
+  const bars = [{ date: "2024-01-02", open: 1, close: 2, high: 3, low: 0.5 }];
+  const day = option("candlestick", bars) as unknown as { series: Array<{ type: string; data: number[][] }> };
+  assert.deepEqual(day.series.map((s) => s.type), ["candlestick"]);
+  // ECharts 的蜡烛顺序是「开、收、低、高」。
+  assert.deepEqual(day.series[0]!.data, [[1, 2, 0.5, 3]]);
+});
+
 test("回撤图从 0 往下画", () => {
   const drawdown = option("drawdown", line);
   assert.equal(drawdown.yAxis?.max, 0);

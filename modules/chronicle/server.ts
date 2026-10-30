@@ -9,12 +9,13 @@ import { readMarket, refreshMarket } from "./backend/market.ts";
 import { readFundSummary, refreshFunds } from "./backend/funds.ts";
 import { readProvider, refreshProvider } from "./backend/provider.ts";
 import { compareBars } from "./backend/compare.ts";
+import { loadLive, type LiveKind } from "./backend/live.ts";
 import { loadBars } from "./backend/quotes.ts";
 import { chronicleNews } from "@aihot/backend/publication/chronicle";
 import type { FastifyInstance } from "fastify";
 import { readFile } from "node:fs/promises";
 import { defineServerModule } from "@aihot/backend/modules";
-import { LIVE_CHARTS, LIVE_SOURCE, GROUPS, liveChart, pageOf } from "./catalog.ts";
+import { LIVE_CHARTS, LIVE_INDICES, LIVE_SOURCE, GROUPS, liveChart, pageOf, type LiveIndex } from "./catalog.ts";
 import { liveChartJson } from "./backend/charts.ts";
 import { quotesFetchedAt, refreshQuotes } from "./backend/quotes.ts";
 // 主题 → 图表的对应表在 topic-map.ts，网页侧也读它（借类型）。
@@ -52,6 +53,16 @@ export default defineServerModule({
         return {name:c!.indexName,bars};
       }));
       return reply.header("Cache-Control","no-store").send({ ...compareBars(inputs,start,end), events:await chronicleNews(start,end), missing:inputs.filter(x=>!x.bars.length).map(x=>x.name) });
+    });
+    // 精选页那张实时图：分时或日K，服务端抓东财（失败回退腾讯）并缓存 15 秒。
+    app.get("/api/chronicle/live", async (req, reply) => {
+      const query = req.query as { code?: string; kind?: string };
+      const code = query.code ?? LIVE_INDICES[0];
+      const kind = query.kind ?? "minute";
+      if (!(LIVE_INDICES as readonly string[]).includes(code) || (kind !== "minute" && kind !== "day")) {
+        return reply.code(400).send({ error: "Invalid live query" });
+      }
+      return reply.header("Cache-Control", "no-store").send(await loadLive(code as LiveIndex, kind as LiveKind));
     });
     // 版本、行情最后的写入时间与三组地址；行情还没抓到时 lastUpdated 是 null。
     app.get("/api/chronicle/_manifest.json", async (req, reply) => {
