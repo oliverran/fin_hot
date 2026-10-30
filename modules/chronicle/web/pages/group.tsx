@@ -25,9 +25,9 @@ export default function ChronicleGroup() {
   if (!group) return null;
   return (
     <div className="pb-14">
-      <PhoneBar back={{ to: ROUTES.home, label: "编年史" }} title={group.label} />
+      <PhoneBar back={{ to: ROUTES.home, label: "A股编年史" }} title={group.label} />
       <Link viewTransition to={ROUTES.home} className="hidden py-2 text-[13px] text-ink-3 transition-colors hover:text-accent lg:inline-flex">
-        ← 编年史
+        ← A股编年史
       </Link>
       <header className="pt-4 lg:pt-0">
         <p className="num text-[12px] font-bold tracking-[0.18em] text-accent">

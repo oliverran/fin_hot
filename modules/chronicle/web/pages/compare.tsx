@@ -13,7 +13,7 @@ export default function ComparePage(){
  useEffect(()=>{const c=new AbortController();setData(null);setError('');
  fetch('/api/chronicle/compare?'+new URLSearchParams({codes:codes.join(','),start,end}),{signal:c.signal}).then(r=>{if(!r.ok)throw Error('请选择有效日期和至少一个指数');return r.json();}).then(setData).catch(e=>{if(!c.signal.aborted)setError(e.message);});return()=>c.abort();},[codes,start,end]);
  const pct=(v:number|null)=>v===null?'—':v.toFixed(2)+'%';
- return <main className="pb-14"><Link to="/chronicle" className="text-accent">← 编年史</Link><h1 className="mt-4 text-3xl font-bold">多指数对比与区间复盘</h1>
+ return <main className="pb-14"><Link to="/chronicle" className="text-accent">← A股编年史</Link><h1 className="mt-4 text-3xl font-bold">多指数对比与区间复盘</h1>
  <p className="mt-3 text-sm text-ink-3">按共同交易日对齐，起点归一为 100；价格指数，不含分红再投资。新闻标记表示同期报道，不表示因果关系。</p>
  <fieldset className="mt-5 flex flex-wrap gap-4"><legend>对比指数</legend>{choices.map(c=><label key={c.code}><input type="checkbox" checked={codes.includes(c.code)} onChange={e=>setCodes(e.target.checked?[...codes,c.code]:codes.filter(v=>v!==c.code))}/> {c.indexName}</label>)}</fieldset>
  <div className="my-5 flex flex-wrap gap-4"><label>开始日期 <input type="date" value={start} onChange={e=>setStart(e.target.value)}/></label><label>结束日期 <input type="date" value={end} onChange={e=>setEnd(e.target.value)}/></label></div>

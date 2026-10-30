@@ -1,0 +1,1 @@
+import{drawdownCut as o}from"./drawdown.js";import"./index.js";import"./kit.js";import"./clock.js";import"./format.js";const i=o("ndx-drawdown","/api/ndx/price","/api/ndx/drawdowns");export{i as default};

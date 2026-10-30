@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-editorial="ledger">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      document.documentElement.className += " js";
+    </script>
+    <style>
+      html.js #static-mirror {
+        display: none;
+      }
+    </style>
+    <!-- Machine-facing links carry the mount base, because a browser tool resolves them against the
+         FinHOT origin rather than this app's root. The app's own `/api/*` requests are rewritten at
+         boot instead (src/router.js). -->
+    <link rel="service-desc" type="application/json" href="/us-market/openapi.json" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="美股编年史" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="application-name" content="History of Market" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>美股编年史｜美股百年走势、估值与回撤 | History of Market</title>
+    <meta
+      name="description"
+      content="美股编年史（History of Market）是美股历史数据可视化网站：标普 500、纳斯达克、道琼斯及半导体、科技、金融、消费板块与七姐妹一百多年的走势、估值、回撤与成分数据，画成图表。"
+    />
+    <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0B101E" media="(prefers-color-scheme: dark)" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="alternate" type="application/json" title="AI agent site profile (profile.json)" href="/us-market/api/profile.json" />
+    <link rel="alternate" type="application/json" title="Machine-callable tool manifest (tools.json)" href="/us-market/api/tools.json" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- src/hom/main.js renders into #root on import (see its tail:
+         `createRoot(document.getElementById("root")).render(...)`). -->
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

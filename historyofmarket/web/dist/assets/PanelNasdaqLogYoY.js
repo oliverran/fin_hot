@@ -1,0 +1,1 @@
+import{M as o,l as i,a2 as r}from"./index.js";import{b as p}from"./BullBearPanel.js";import"./EChart.js";import"./regimeLibrary.js";function c({kicker:a,title:t,subtitle:s}){const{data:e}=o("/api/nasdaq/composite");return i.jsx(p,{id:"panel-nasdaq-logyoy",kicker:a,title:t,subtitle:s,data:e,seriesName:r.nasdaqComposite,spread:!0})}export{c as PanelNasdaqLogYoY};

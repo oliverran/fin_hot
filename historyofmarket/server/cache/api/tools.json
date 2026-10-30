@@ -1,0 +1,2478 @@
+{
+  "$schema_doc": "https://historyofmarket.com/api/profile.schema.json",
+  "spec_version": "1.0",
+  "generated_at": "2026-10-20T12:22:00.474616+00:00",
+  "site": "https://historyofmarket.com",
+  "summary": "Machine-callable tool list for History of Market. 116 tools fetch a static JSON dataset; 11 are chronicle panels (format='editorial') whose URL is an HTML editorial page rather than JSON — fetch and parse as HTML with embedded structured data. All tools are GET-only with no auth or rate limit; pair with /api/profile.json for the human-question → tool mapping.",
+  "transport": {
+    "method": "GET",
+    "auth": "none",
+    "rate_limit": "none (edge cached; please respect ETag).",
+    "cors": "Access-Control-Allow-Origin: *",
+    "content_type": "application/json",
+    "cache": "edge: max-age=300, stale-while-revalidate=3600.",
+    "license": "Reuse with attribution is welcome; copying the work is not. Data (/api/**.json): CC BY 4.0. Charts, share images, embeds and quotes: free to reuse when credited \"History of Market (historyofmarket.com)\" with a link. No derivative or look-alike sites, no use of the brand names, no citation without the source. Terms: https://historyofmarket.com/license/",
+    "terms": "https://historyofmarket.com/license/"
+  },
+  "common_input_schema": {
+    "type": "object",
+    "properties": {},
+    "additionalProperties": false,
+    "description": "All tools take no parameters. The dataset URL is fixed; the response is the entire panel payload."
+  },
+  "tools": [
+    {
+      "name": "sp500_sp500_logyoy",
+      "title": "S&P 500 log year-over-year (bull / bear boundary)",
+      "description": "How many bull-bear transitions has the S&P 500 had since 1928? 14 zero-line crossings since 1928.",
+      "category": "sp500",
+      "chapter": "Front Page · The Shape of Patience",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sp500/century.json",
+      "panel_url": "https://historyofmarket.com/#panel-sp500-logyoy",
+      "static_url": "https://historyofmarket.com/sp500/sp500-logyoy/",
+      "answers": [
+        "How many bull-bear transitions has the S&P 500 had since 1928?"
+      ]
+    },
+    {
+      "name": "overview_ubs_asset_ladder",
+      "title": "One dollar across 126 years, by asset class",
+      "description": "What would one dollar invested in 1900 be worth today in stocks, bonds and cash? US equities $124,854 · DM $28,402 · EM $4,404 · bonds $284 · bills $69 · prices $38.",
+      "category": "overview",
+      "chapter": "Front Page · A Frame That Starts in 1900",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/static/ubs-yearbook.json",
+      "panel_url": "https://historyofmarket.com/#panel-ubs-asset-ladder",
+      "static_url": "https://historyofmarket.com/overview/ubs-asset-ladder/",
+      "answers": [
+        "What would one dollar invested in 1900 be worth today in stocks, bonds and cash?"
+      ]
+    },
+    {
+      "name": "overview_ubs_us_share",
+      "title": "America's share of world equity, GDP and sovereign debt since 1900",
+      "description": "How much of the world's stock market is the United States? 15% → 62% of world equity, 24% → 36% of GDP, negligible → 43% of sovereign debt.",
+      "category": "overview",
+      "chapter": "Front Page · A Frame That Starts in 1900",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/static/ubs-yearbook.json",
+      "panel_url": "https://historyofmarket.com/#panel-ubs-us-share",
+      "static_url": "https://historyofmarket.com/overview/ubs-us-share/",
+      "answers": [
+        "How much of the world's stock market is the United States?"
+      ]
+    },
+    {
+      "name": "overview_ubs_factor_decades",
+      "title": "Equity factor premia by decade, 1900–2025",
+      "description": "Which equity factors actually work over the long run? Five factors × eleven decades of annualized premia. Momentum leads at 7.7%; income never leads.",
+      "category": "overview",
+      "chapter": "Front Page · What Works Over the Long Run",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/static/ubs-yearbook.json",
+      "panel_url": "https://historyofmarket.com/#panel-ubs-factor-decades",
+      "static_url": "https://historyofmarket.com/overview/ubs-factor-decades/",
+      "answers": [
+        "Which equity factors actually work over the long run?"
+      ]
+    },
+    {
+      "name": "overview_bes_concentration",
+      "title": "How few firms made the century, 1926–2025",
+      "description": "How many companies account for the entire net wealth creation of the U.S. stock market? Of 29,081 CRSP firms, 2 account for the first tenth of net wealth creation, 46 for half and 1,082 for all $90.96T; through 2016 the halfway count was 89.",
+      "category": "overview",
+      "chapter": "Front Page · The Lottery and the Machine",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/static/bessembinder-2026.json",
+      "panel_url": "https://historyofmarket.com/#panel-bes-concentration",
+      "static_url": "https://historyofmarket.com/overview/bes-concentration/",
+      "answers": [
+        "How many companies account for the entire net wealth creation of the U.S. stock market?"
+      ]
+    },
+    {
+      "name": "overview_bes_waterfall",
+      "title": "The wealth waterfall · 29,081 firms sorted worst to best",
+      "description": "What share of U.S. companies actually created shareholder wealth above Treasury bills? 17,197 firms destroyed $10.67T, the next 10,802 created exactly that back, and the remaining 1,082 (3.72%) account for the whole $90.96T.",
+      "category": "overview",
+      "chapter": "Front Page · The Lottery and the Machine",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/static/bessembinder-2026.json",
+      "panel_url": "https://historyofmarket.com/#panel-bes-waterfall",
+      "static_url": "https://historyofmarket.com/overview/bes-waterfall/",
+      "answers": [
+        "What share of U.S. companies actually created shareholder wealth above Treasury bills?"
+      ]
+    },
+    {
+      "name": "sp500_annual",
+      "title": "S&P 500 annual returns since 1928",
+      "description": "How has the S&P 500 performed each year since 1928? 98 complete years 1928–2025: 66 up / 30 down / 2 flat on price return (mean 8.1%); 72 up / 26 down on total return (mean 11.9%).",
+      "category": "sp500",
+      "chapter": "S&P 500 · I. The Shape of a Century",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sp500/annual-returns.json",
+      "panel_url": "https://historyofmarket.com/#panel-annual",
+      "static_url": "https://historyofmarket.com/sp500/annual/",
+      "answers": [
+        "How has the S&P 500 performed each year since 1928?"
+      ]
+    },
+    {
+      "name": "sp500_scatter",
+      "title": "S&P 500 constituents scatter — market cap × 1y return × index weight",
+      "description": "Which S&P 500 names contributed the most to last year's index return? Bubble plot of all 500 members on cap, 1-year return, and index weight.",
+      "category": "sp500",
+      "chapter": "S&P 500 · I. The Shape of a Century",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sp500/constituents.json",
+      "panel_url": "https://historyofmarket.com/#panel-scatter",
+      "static_url": "https://historyofmarket.com/sp500/scatter/",
+      "answers": [
+        "Which S&P 500 names contributed the most to last year's index return?"
+      ]
+    },
+    {
+      "name": "sp500_annual_dist",
+      "title": "S&P 500 annual return distribution",
+      "description": "How often does the S&P 500 actually return its average? Only 7 years of the last century landed within ±2% of the long-run mean.",
+      "category": "sp500",
+      "chapter": "S&P 500 · I. The Shape of a Century",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sp500/annual-returns.json",
+      "panel_url": "https://historyofmarket.com/#panel-annual-dist",
+      "static_url": "https://historyofmarket.com/sp500/annual-dist/",
+      "answers": [
+        "How often does the S&P 500 actually return its average?"
+      ]
+    },
+    {
+      "name": "sp500_annualized_matrix",
+      "title": "Buy-year / sell-year annualized return matrix",
+      "description": "If I had bought the S&P 500 in year X and sold in year Y, what's the annualized return? Hold-period heatmap of every entry/exit combination since 1928.",
+      "category": "sp500",
+      "chapter": "S&P 500 · I. The Shape of a Century",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sp500/annual-tr.json",
+      "panel_url": "https://historyofmarket.com/#panel-annualized-matrix",
+      "static_url": "https://historyofmarket.com/sp500/annualized-matrix/",
+      "answers": [
+        "If I had bought the S&P 500 in year X and sold in year Y, what's the annualized return?"
+      ]
+    },
+    {
+      "name": "sp500_rolling",
+      "title": "Five-year rolling annualized return",
+      "description": "How often has a five-year hold of the S&P 500 lost money? Fewer than 10% of rolling 5-year windows since 1928 finished negative.",
+      "category": "sp500",
+      "chapter": "S&P 500 · I. The Shape of a Century",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sp500/annual-tr.json",
+      "panel_url": "https://historyofmarket.com/#panel-rolling",
+      "static_url": "https://historyofmarket.com/sp500/rolling/",
+      "answers": [
+        "How often has a five-year hold of the S&P 500 lost money?"
+      ]
+    },
+    {
+      "name": "sp500_inflation_adjusted",
+      "title": "S&P 500 inflation-adjusted, in today's dollars",
+      "description": "What has the S&P 500 returned after inflation, and how long did it stay below its real highs? Month-end closes since 1928 deflated by CPI-U, with real price and total returns by year and the long spells below a real high.",
+      "category": "sp500",
+      "chapter": "S&P 500 · I. The Shape of a Century",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sp500/real.json",
+      "panel_url": "https://historyofmarket.com/#panel-inflation-adjusted",
+      "static_url": "https://historyofmarket.com/sp500/inflation-adjusted/",
+      "answers": [
+        "What has the S&P 500 returned after inflation, and how long did it stay below its real highs?"
+      ]
+    },
+    {
+      "name": "sp500_return_details",
+      "title": "Total return decomposition: price + dividend + buyback",
+      "description": "How much of S&P 500 total return now comes from buybacks vs dividends? Buyback contribution now exceeds dividend contribution.",
+      "category": "sp500",
+      "chapter": "S&P 500 · I. The Shape of a Century",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sp500/return-details.json",
+      "panel_url": "https://historyofmarket.com/#panel-return-details",
+      "static_url": "https://historyofmarket.com/sp500/return-details/",
+      "answers": [
+        "How much of S&P 500 total return now comes from buybacks vs dividends?"
+      ]
+    },
+    {
+      "name": "sp500_sp500_daily_distribution",
+      "title": "S&P 500 daily return distribution vs the normal curve",
+      "description": "How often does the S&P 500 move more than 3% in a single day? 6,600+ daily returns since 2000 vs the normal curve — the fat tails hold the story.",
+      "category": "sp500",
+      "chapter": "S&P 500 · II. The Arithmetic of a Few Days",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sp500/daily-distribution.json",
+      "panel_url": "https://historyofmarket.com/#panel-sp500-daily-distribution",
+      "static_url": "https://historyofmarket.com/sp500/sp500-daily-distribution/",
+      "answers": [
+        "How often does the S&P 500 move more than 3% in a single day?"
+      ]
+    },
+    {
+      "name": "sp500_sp500_daily_extremes",
+      "title": "What the best and worst days do to compounding",
+      "description": "What happens to returns if you miss the best days in the market? Trading days since 2000 in five groups by daily return, each with its own compound multiple — a multiplicative ledger.",
+      "category": "sp500",
+      "chapter": "S&P 500 · II. The Arithmetic of a Few Days",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sp500/daily-extremes.json",
+      "panel_url": "https://historyofmarket.com/#panel-sp500-daily-extremes",
+      "static_url": "https://historyofmarket.com/sp500/sp500-daily-extremes/",
+      "answers": [
+        "What happens to returns if you miss the best days in the market?"
+      ]
+    },
+    {
+      "name": "sp500_pe",
+      "title": "Shiller CAPE (PE10) since 1871",
+      "description": "What is the current Shiller CAPE percentile vs. history? 10-year inflation-adjusted PE; historical mean ≈ 17×.",
+      "category": "sp500",
+      "chapter": "S&P 500 · III. Anchors of Valuation",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sp500/pe.json",
+      "panel_url": "https://historyofmarket.com/#panel-pe",
+      "static_url": "https://historyofmarket.com/sp500/pe/",
+      "answers": [
+        "What is the current Shiller CAPE percentile vs. history?"
+      ],
+      "related_external": [
+        {
+          "url": "https://dollarliquidity.com",
+          "kind": "sister_publication",
+          "context": "valuation",
+          "label": "Rates and liquidity regime — sister publication"
+        }
+      ]
+    },
+    {
+      "name": "sp500_aiae",
+      "title": "AIAE — Aggregate Investor Allocation to Equities",
+      "description": "What's the best long-horizon predictor of S&P 500 returns? Equity / (equity + bonds + cash). Stronger 10-year return predictor than CAPE.",
+      "category": "sp500",
+      "chapter": "S&P 500 · III. Anchors of Valuation",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/aiae.json",
+      "panel_url": "https://historyofmarket.com/#panel-aiae",
+      "static_url": "https://historyofmarket.com/sp500/aiae/",
+      "answers": [
+        "What's the best long-horizon predictor of S&P 500 returns?"
+      ],
+      "related_external": [
+        {
+          "url": "https://dollarliquidity.com",
+          "kind": "sister_publication",
+          "context": "valuation",
+          "label": "10y yield + liquidity regime — sister publication"
+        }
+      ]
+    },
+    {
+      "name": "sp500_forward_pe",
+      "title": "S&P 500 trailing PE and forward PE",
+      "description": "How does the S&P 500 look on trailing earnings vs. forward consensus today? Two lines on one axis: trailing PE (cap-weighted Σ(w·P)/Σ(w·trailingEps), daily, seeded with a monthly archive for the early years) and forward PE (12-month blended-forward consensus, weekly back to 1990), plus a separately computed daily forward line.",
+      "category": "sp500",
+      "chapter": "S&P 500 · III. Anchors of Valuation",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sp500/forward-pe.json",
+      "panel_url": "https://historyofmarket.com/#panel-forward-pe",
+      "static_url": "https://historyofmarket.com/sp500/forward-pe/",
+      "answers": [
+        "How does the S&P 500 look on trailing earnings vs. forward consensus today?"
+      ],
+      "related_external": [
+        {
+          "url": "https://dollarliquidity.com",
+          "kind": "sister_publication",
+          "context": "valuation",
+          "label": "Forward earnings vs liquidity regime — sister publication"
+        }
+      ]
+    },
+    {
+      "name": "sp500_sp500_driver_decomp",
+      "title": "S&P 500 annual valuation × EPS driver decomposition",
+      "description": "In a given year, was the S&P 500's return driven by multiple expansion or by earnings growth? Every year since 1928 decomposed via (1+r_price) = (1+r_PE)·(1+r_EPS); each year classified pe / eps / both / opposite_pe / opposite_eps using a 1.5× dominant-driver threshold over a 2% noise floor. Trailing TTM basis (Shiller monthly PE × quarterly TTM EPS).",
+      "category": "sp500",
+      "chapter": "S&P 500 · III. Anchors of Valuation",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sp500/driver-decomp.json",
+      "panel_url": "https://historyofmarket.com/#panel-sp500-driver-decomp",
+      "static_url": "https://historyofmarket.com/sp500/sp500-driver-decomp/",
+      "answers": [
+        "In a given year, was the S&P 500's return driven by multiple expansion or by earnings growth?"
+      ]
+    },
+    {
+      "name": "sp500_eps",
+      "title": "S&P 500 trailing twelve-month EPS",
+      "description": "How have S&P 500 earnings grown over the long run? 1871 → present GAAP TTM earnings.",
+      "category": "sp500",
+      "chapter": "S&P 500 · III. Anchors of Valuation",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sp500/eps.json",
+      "panel_url": "https://historyofmarket.com/#panel-eps",
+      "static_url": "https://historyofmarket.com/sp500/eps/",
+      "answers": [
+        "How have S&P 500 earnings grown over the long run?"
+      ]
+    },
+    {
+      "name": "sp500_roe",
+      "title": "S&P 500 return on equity",
+      "description": "How profitable is the S&P 500 on book equity? Steady around 15% for the last two decades.",
+      "category": "sp500",
+      "chapter": "S&P 500 · III. Anchors of Valuation",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sp500/roe.json",
+      "panel_url": "https://historyofmarket.com/#panel-roe",
+      "static_url": "https://historyofmarket.com/sp500/roe/",
+      "answers": [
+        "How profitable is the S&P 500 on book equity?"
+      ]
+    },
+    {
+      "name": "sp500_drawdown",
+      "title": "S&P 500 historical drawdowns",
+      "description": "What were the worst S&P 500 drawdowns and how long did recovery take? Every major decline since 1929 with category, cause, and trading-day recovery count.",
+      "category": "sp500",
+      "chapter": "S&P 500 · IV. The Rhythm of Crisis",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sp500/drawdowns.json",
+      "panel_url": "https://historyofmarket.com/#panel-drawdown",
+      "static_url": "https://historyofmarket.com/sp500/drawdown/",
+      "answers": [
+        "What were the worst S&P 500 drawdowns and how long did recovery take?"
+      ],
+      "related_external": [
+        {
+          "url": "https://dollarliquidity.com",
+          "kind": "sister_publication",
+          "context": "drawdown",
+          "label": "Macro fingerprint for each bear market — sister publication"
+        }
+      ]
+    },
+    {
+      "name": "sp500_intrayear_dd",
+      "title": "Intrayear drawdown vs year-end return",
+      "description": "How big is the average intrayear drop, and does the S&P 500 still finish positive? Average intrayear drawdown ≈ -14%; year-end return is still positive on average.",
+      "category": "sp500",
+      "chapter": "S&P 500 · IV. The Rhythm of Crisis",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sp500/intrayear-dd.json",
+      "panel_url": "https://historyofmarket.com/#panel-intrayear-dd",
+      "static_url": "https://historyofmarket.com/sp500/intrayear-dd/",
+      "answers": [
+        "How big is the average intrayear drop, and does the S&P 500 still finish positive?"
+      ]
+    },
+    {
+      "name": "sp500_volatility",
+      "title": "S&P 500 realized volatility (20d / 60d)",
+      "description": "What is the long-term realized volatility of the S&P 500? Long-term median annualized realized vol ~15%.",
+      "category": "sp500",
+      "chapter": "S&P 500 · IV. The Rhythm of Crisis",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sp500/volatility.json",
+      "panel_url": "https://historyofmarket.com/#panel-volatility",
+      "static_url": "https://historyofmarket.com/sp500/volatility/",
+      "answers": [
+        "What is the long-term realized volatility of the S&P 500?"
+      ]
+    },
+    {
+      "name": "sp500_vix",
+      "title": "VIX vs S&P 500",
+      "description": "What VIX level historically marks crisis pricing? VIX above 30 has reliably accompanied every major crisis since 1990.",
+      "category": "sp500",
+      "chapter": "S&P 500 · IV. The Rhythm of Crisis",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sp500/vix.json",
+      "panel_url": "https://historyofmarket.com/#panel-vix",
+      "static_url": "https://historyofmarket.com/sp500/vix/",
+      "answers": [
+        "What VIX level historically marks crisis pricing?"
+      ]
+    },
+    {
+      "name": "sp500_sp500_breadth",
+      "title": "Bull-market breadth — % of members above 50/200-day MA",
+      "description": "How many S&P 500 stocks are participating in the current rally? Daily share of the 500 members above their own 50/200-day averages; broad march vs giant-led rally.",
+      "category": "sp500",
+      "chapter": "S&P 500 · IV. The Rhythm of Crisis",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sp500/breadth.json",
+      "panel_url": "https://historyofmarket.com/#panel-sp500-breadth",
+      "static_url": "https://historyofmarket.com/sp500/sp500-breadth/",
+      "answers": [
+        "How many S&P 500 stocks are participating in the current rally?"
+      ]
+    },
+    {
+      "name": "sp500_monthly",
+      "title": "S&P 500 monthly return heatmap with win probabilities",
+      "description": "Which months are historically friendliest for the S&P 500? November and April friendliest; September the hardest single month.",
+      "category": "sp500",
+      "chapter": "S&P 500 · IV. The Rhythm of Crisis",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sp500/monthly.json",
+      "panel_url": "https://historyofmarket.com/#panel-monthly",
+      "static_url": "https://historyofmarket.com/sp500/monthly/",
+      "answers": [
+        "Which months are historically friendliest for the S&P 500?"
+      ]
+    },
+    {
+      "name": "sp500_ubs_gold_dollar",
+      "title": "Gold across eleven US equity drawdowns since 1975",
+      "description": "Does gold go up when stocks crash? Up in 8 of 11 US equity drawdowns since 1975 — yet negative real in 13 of 28 high-inflation years.",
+      "category": "sp500",
+      "chapter": "S&P 500 · IV. The Rhythm of Crisis",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/static/ubs-yearbook.json",
+      "panel_url": "https://historyofmarket.com/#panel-ubs-gold-dollar",
+      "static_url": "https://historyofmarket.com/sp500/ubs-gold-dollar/",
+      "answers": [
+        "Does gold go up when stocks crash?"
+      ]
+    },
+    {
+      "name": "sp500_sector_shift",
+      "title": "What the market was made of in 1900 vs today",
+      "description": "Which industries dominated the stock market in 1900? 1900 vs today: 80% of the old market has shrunk away, 70% of today's did not exist.",
+      "category": "sp500",
+      "chapter": "S&P 500 · V. Anatomy of the Index",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/static/ubs-yearbook.json",
+      "panel_url": "https://historyofmarket.com/#panel-sector-shift",
+      "static_url": "https://historyofmarket.com/sp500/sector-shift/",
+      "answers": [
+        "Which industries dominated the stock market in 1900?"
+      ]
+    },
+    {
+      "name": "sp500_rules",
+      "title": "S&P 500 methodology",
+      "description": "What are the eligibility rules for inclusion in the S&P 500? Market cap ≥ $22.7B (2025-07-01), FALR ≥ 0.75, four-quarter positive GAAP earnings.",
+      "category": "sp500",
+      "chapter": "S&P 500 · V. Anatomy of the Index",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sp500/rules.json",
+      "panel_url": "https://historyofmarket.com/#panel-rules",
+      "static_url": "https://historyofmarket.com/sp500/rules/",
+      "answers": [
+        "What are the eligibility rules for inclusion in the S&P 500?"
+      ]
+    },
+    {
+      "name": "sp500_sectors",
+      "title": "S&P 500 GICS sector weights",
+      "description": "What is the GICS sector composition of the S&P 500 right now? Technology dominant; energy and materials at multi-decade lows in weight.",
+      "category": "sp500",
+      "chapter": "S&P 500 · V. Anatomy of the Index",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sp500/sectors.json",
+      "panel_url": "https://historyofmarket.com/#panel-sectors",
+      "static_url": "https://historyofmarket.com/sp500/sectors/",
+      "answers": [
+        "What is the GICS sector composition of the S&P 500 right now?"
+      ]
+    },
+    {
+      "name": "sp500_m7",
+      "title": "Magnificent 7 equal-weighted index",
+      "description": "How have the Magnificent 7 performed as a basket? AAPL, MSFT, NVDA, GOOGL, AMZN, META, TSLA equal-weighted, base 2022-01-03 = 100.",
+      "category": "sp500",
+      "chapter": "S&P 500 · V. Anatomy of the Index",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/m7/index.json",
+      "panel_url": "https://historyofmarket.com/#panel-m7",
+      "static_url": "https://historyofmarket.com/sp500/m7/",
+      "answers": [
+        "How have the Magnificent 7 performed as a basket?"
+      ]
+    },
+    {
+      "name": "sp500_changes",
+      "title": "S&P 500 constituent change log",
+      "description": "Which companies were recently added to or removed from the S&P 500? Chronological log of additions and removals.",
+      "category": "sp500",
+      "chapter": "S&P 500 · V. Anatomy of the Index",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sp500/changes.json",
+      "panel_url": "https://historyofmarket.com/#panel-changes",
+      "static_url": "https://historyofmarket.com/sp500/changes/",
+      "answers": [
+        "Which companies were recently added to or removed from the S&P 500?"
+      ]
+    },
+    {
+      "name": "nasdaq_nasdaq_composite",
+      "title": "Nasdaq Composite since 1971",
+      "description": "How has the Nasdaq Composite grown since its inception? 100 at inception on 1971-02-05; now above 16,000.",
+      "category": "nasdaq",
+      "chapter": "Nasdaq · I. Indexed at 100",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/nasdaq/composite.json",
+      "panel_url": "https://historyofmarket.com/#panel-nasdaq-composite",
+      "static_url": "https://historyofmarket.com/nasdaq/nasdaq-composite/",
+      "answers": [
+        "How has the Nasdaq Composite grown since its inception?"
+      ]
+    },
+    {
+      "name": "nasdaq_nasdaq_logyoy",
+      "title": "Nasdaq Composite log year-over-year",
+      "description": "How frequently does the Nasdaq cross between bull and bear regimes? Log-scale YoY makes regime transitions legible.",
+      "category": "nasdaq",
+      "chapter": "Nasdaq · I. Indexed at 100",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/nasdaq/composite.json",
+      "panel_url": "https://historyofmarket.com/#panel-nasdaq-logyoy",
+      "static_url": "https://historyofmarket.com/nasdaq/nasdaq-logyoy/",
+      "answers": [
+        "How frequently does the Nasdaq cross between bull and bear regimes?"
+      ]
+    },
+    {
+      "name": "nasdaq_nasdaq100_ytd",
+      "title": "Nasdaq 100 constituent return rankings (1W / 1M / YTD / 1Y)",
+      "description": "Which Nasdaq 100 names are leading or lagging over week, month, year-to-date, and trailing-year windows? Sortable return ranking of every constituent across four windows; the 1-year view shows unusually wide first-to-hundredth dispersion.",
+      "category": "nasdaq",
+      "chapter": "Nasdaq · I. Indexed at 100",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/nasdaq/100.json",
+      "panel_url": "https://historyofmarket.com/#panel-nasdaq100-ytd",
+      "static_url": "https://historyofmarket.com/nasdaq/nasdaq100-ytd/",
+      "answers": [
+        "Which Nasdaq 100 names are leading or lagging over week, month, year-to-date, and trailing-year windows?"
+      ]
+    },
+    {
+      "name": "nasdaq_ndx_scatter",
+      "title": "All 101 Nasdaq 100 constituents on one chart",
+      "description": "What companies are in the Nasdaq 100 and how have they performed? Market cap on a log axis × 1-year return × QQQ weight, on one scatter.",
+      "category": "nasdaq",
+      "chapter": "Nasdaq · I. Indexed at 100",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/nasdaq/100.json",
+      "panel_url": "https://historyofmarket.com/#panel-ndx-scatter",
+      "static_url": "https://historyofmarket.com/nasdaq/ndx-scatter/",
+      "answers": [
+        "What companies are in the Nasdaq 100 and how have they performed?"
+      ]
+    },
+    {
+      "name": "nasdaq_ndx_daily_distribution",
+      "title": "Nasdaq 100 daily return distribution vs the normal curve",
+      "description": "How volatile are Nasdaq 100 daily returns compared with the S&P 500? Nasdaq 100 daily returns vs the normal curve — fatter tails than the S&P 500.",
+      "category": "nasdaq",
+      "chapter": "Nasdaq · II. The Arithmetic of a Few Days",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/ndx/daily-distribution.json",
+      "panel_url": "https://historyofmarket.com/#panel-ndx-daily-distribution",
+      "static_url": "https://historyofmarket.com/nasdaq/ndx-daily-distribution/",
+      "answers": [
+        "How volatile are Nasdaq 100 daily returns compared with the S&P 500?"
+      ]
+    },
+    {
+      "name": "nasdaq_ndx_daily_extremes",
+      "title": "The handful of Nasdaq 100 days that set the cumulative multiple",
+      "description": "How much of the Nasdaq 100's return comes from a few dozen days? The best and worst few dozen days since 2000 decide the Nasdaq 100's cumulative multiple.",
+      "category": "nasdaq",
+      "chapter": "Nasdaq · II. The Arithmetic of a Few Days",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/ndx/daily-extremes.json",
+      "panel_url": "https://historyofmarket.com/#panel-ndx-daily-extremes",
+      "static_url": "https://historyofmarket.com/nasdaq/ndx-daily-extremes/",
+      "answers": [
+        "How much of the Nasdaq 100's return comes from a few dozen days?"
+      ]
+    },
+    {
+      "name": "nasdaq_ndx_forward_pe",
+      "title": "Nasdaq 100 forward PE",
+      "description": "How stretched is the Nasdaq 100 on forward earnings, and how does today compare to the dot-com peak? 12-month blended-forward consensus P/E, weekly back to April 2001. The series opens on its own high, 82× in May 2001, when NDX forward earnings had collapsed; a separately computed daily line runs alongside it.",
+      "category": "nasdaq",
+      "chapter": "Nasdaq · III. The Stretch of Valuation",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/ndx/forward-pe.json",
+      "panel_url": "https://historyofmarket.com/#panel-ndx-forward-pe",
+      "static_url": "https://historyofmarket.com/nasdaq/ndx-forward-pe/",
+      "answers": [
+        "How stretched is the Nasdaq 100 on forward earnings, and how does today compare to the dot-com peak?"
+      ]
+    },
+    {
+      "name": "nasdaq_ndx_driver_decomp",
+      "title": "Nasdaq 100 annual rerating × revision decomposition",
+      "description": "In a given year, was the Nasdaq 100's return driven by forward-PE multiple change or by forward-EPS revision? Every calendar year since 2002 decomposed into forward-PE rerating × implied forward-EPS revision, using the terminal forward PE series and price-implied EPS path. NDX is on a forward basis (vs SPX trailing) because per-name historical TTM EPS for 100 names is not cleanly recoverable from free sources.",
+      "category": "nasdaq",
+      "chapter": "Nasdaq · III. The Stretch of Valuation",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/ndx/driver-decomp.json",
+      "panel_url": "https://historyofmarket.com/#panel-ndx-driver-decomp",
+      "static_url": "https://historyofmarket.com/nasdaq/ndx-driver-decomp/",
+      "answers": [
+        "In a given year, was the Nasdaq 100's return driven by forward-PE multiple change or by forward-EPS revision?"
+      ]
+    },
+    {
+      "name": "nasdaq_nasdaq100_annual",
+      "title": "Nasdaq 100 (QQQ) annual returns by year, since 1986",
+      "description": "What's the annual return distribution of QQQ? Calendar-year price returns of the index QQQ tracks, since 1986; -42% in 2008.",
+      "category": "nasdaq",
+      "chapter": "Nasdaq · IV. The Shape of the Nasdaq 100",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/ndx/annual-tr.json",
+      "panel_url": "https://historyofmarket.com/#panel-nasdaq100-annual",
+      "static_url": "https://historyofmarket.com/nasdaq/nasdaq100-annual/",
+      "answers": [
+        "What's the annual return distribution of QQQ?"
+      ]
+    },
+    {
+      "name": "nasdaq_ndx_annual_dist",
+      "title": "Nasdaq 100 annual return distribution",
+      "description": "How wide is the spread of Nasdaq 100 annual returns? Higher mean and higher dispersion than the S&P 500.",
+      "category": "nasdaq",
+      "chapter": "Nasdaq · IV. The Shape of the Nasdaq 100",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/ndx/annual-returns.json",
+      "panel_url": "https://historyofmarket.com/#panel-ndx-annual-dist",
+      "static_url": "https://historyofmarket.com/nasdaq/ndx-annual-dist/",
+      "answers": [
+        "How wide is the spread of Nasdaq 100 annual returns?"
+      ]
+    },
+    {
+      "name": "nasdaq_ndx_matrix",
+      "title": "Nasdaq 100 buy-year / sell-year annualized matrix",
+      "description": "If I had bought QQQ in year X and held until year Y, what's the annualized return? Hold-period heatmap from 1985 onward.",
+      "category": "nasdaq",
+      "chapter": "Nasdaq · IV. The Shape of the Nasdaq 100",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/ndx/annual-tr.json",
+      "panel_url": "https://historyofmarket.com/#panel-ndx-matrix",
+      "static_url": "https://historyofmarket.com/nasdaq/ndx-matrix/",
+      "answers": [
+        "If I had bought QQQ in year X and held until year Y, what's the annualized return?"
+      ]
+    },
+    {
+      "name": "nasdaq_ndx_rolling",
+      "title": "Nasdaq 100 five-year rolling annualized return",
+      "description": "How often has a five-year hold of QQQ lost money? Wider tails than S&P 500 — both upside and downside.",
+      "category": "nasdaq",
+      "chapter": "Nasdaq · IV. The Shape of the Nasdaq 100",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/ndx/rolling5y.json",
+      "panel_url": "https://historyofmarket.com/#panel-ndx-rolling",
+      "static_url": "https://historyofmarket.com/nasdaq/ndx-rolling/",
+      "answers": [
+        "How often has a five-year hold of QQQ lost money?"
+      ]
+    },
+    {
+      "name": "nasdaq_ndx_return_details",
+      "title": "QQQ total return decomposition",
+      "description": "What share of QQQ's total return comes from price vs dividend vs buyback? Price-driven; dividend yield small; buybacks rising.",
+      "category": "nasdaq",
+      "chapter": "Nasdaq · IV. The Shape of the Nasdaq 100",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/qqq/return-details.json",
+      "panel_url": "https://historyofmarket.com/#panel-ndx-return-details",
+      "static_url": "https://historyofmarket.com/nasdaq/ndx-return-details/",
+      "answers": [
+        "What share of QQQ's total return comes from price vs dividend vs buyback?"
+      ]
+    },
+    {
+      "name": "nasdaq_ndx_drawdown",
+      "title": "Nasdaq 100 historical drawdowns",
+      "description": "How deep was the dot-com drawdown for the Nasdaq 100? 59 events tracked; 2000-2002 cumulative -83%.",
+      "category": "nasdaq",
+      "chapter": "Nasdaq · V. The Rhythm of Crisis in Tech",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/ndx/drawdowns.json",
+      "panel_url": "https://historyofmarket.com/#panel-ndx-drawdown",
+      "static_url": "https://historyofmarket.com/nasdaq/ndx-drawdown/",
+      "answers": [
+        "How deep was the dot-com drawdown for the Nasdaq 100?"
+      ]
+    },
+    {
+      "name": "nasdaq_ndx_intrayear_dd",
+      "title": "Nasdaq 100 intrayear drawdown vs year-end return",
+      "description": "How big does an intrayear Nasdaq drop usually get before the year ends positive? Intrayear drawdowns systematically larger than the S&P 500's.",
+      "category": "nasdaq",
+      "chapter": "Nasdaq · V. The Rhythm of Crisis in Tech",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/ndx/intrayear-dd.json",
+      "panel_url": "https://historyofmarket.com/#panel-ndx-intrayear-dd",
+      "static_url": "https://historyofmarket.com/nasdaq/ndx-intrayear-dd/",
+      "answers": [
+        "How big does an intrayear Nasdaq drop usually get before the year ends positive?"
+      ]
+    },
+    {
+      "name": "nasdaq_ndx_volatility",
+      "title": "Nasdaq 100 realized volatility",
+      "description": "How much more volatile is the Nasdaq 100 than the S&P 500? Median ~22% — systematically above S&P 500.",
+      "category": "nasdaq",
+      "chapter": "Nasdaq · V. The Rhythm of Crisis in Tech",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/ndx/volatility.json",
+      "panel_url": "https://historyofmarket.com/#panel-ndx-volatility",
+      "static_url": "https://historyofmarket.com/nasdaq/ndx-volatility/",
+      "answers": [
+        "How much more volatile is the Nasdaq 100 than the S&P 500?"
+      ]
+    },
+    {
+      "name": "nasdaq_ndx_vxn",
+      "title": "VXN — CBOE Nasdaq 100 Volatility Index",
+      "description": "What's the implied-volatility benchmark for the Nasdaq 100? VXN daily close 2001 → present.",
+      "category": "nasdaq",
+      "chapter": "Nasdaq · V. The Rhythm of Crisis in Tech",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/ndx/vxn.json",
+      "panel_url": "https://historyofmarket.com/#panel-ndx-vxn",
+      "static_url": "https://historyofmarket.com/nasdaq/ndx-vxn/",
+      "answers": [
+        "What's the implied-volatility benchmark for the Nasdaq 100?"
+      ]
+    },
+    {
+      "name": "nasdaq_ndx_breadth",
+      "title": "Nasdaq 100 breadth — % of members above 50/200-day MA",
+      "description": "How wide is the current tech rally across Nasdaq 100 members? Daily share of the 100 members above their own 50/200-day averages.",
+      "category": "nasdaq",
+      "chapter": "Nasdaq · V. The Rhythm of Crisis in Tech",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/ndx/breadth.json",
+      "panel_url": "https://historyofmarket.com/#panel-ndx-breadth",
+      "static_url": "https://historyofmarket.com/nasdaq/ndx-breadth/",
+      "answers": [
+        "How wide is the current tech rally across Nasdaq 100 members?"
+      ]
+    },
+    {
+      "name": "nasdaq_ndx_monthly",
+      "title": "Nasdaq 100 monthly return heatmap",
+      "description": "Which calendar months have been kindest to the Nasdaq 100? Seasonal pattern broadly similar to S&P 500 but with thicker tails.",
+      "category": "nasdaq",
+      "chapter": "Nasdaq · V. The Rhythm of Crisis in Tech",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/ndx/monthly.json",
+      "panel_url": "https://historyofmarket.com/#panel-ndx-monthly",
+      "static_url": "https://historyofmarket.com/nasdaq/ndx-monthly/",
+      "answers": [
+        "Which calendar months have been kindest to the Nasdaq 100?"
+      ]
+    },
+    {
+      "name": "nasdaq_nasdaq100_weights",
+      "title": "Nasdaq 100 top-25 holdings & cumulative weight",
+      "description": "How concentrated is the Nasdaq 100 at the top? Top 7 names account for roughly 50% of the index.",
+      "category": "nasdaq",
+      "chapter": "Nasdaq · VI. Anatomy of the Index",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/nasdaq/100.json",
+      "panel_url": "https://historyofmarket.com/#panel-nasdaq100-weights",
+      "static_url": "https://historyofmarket.com/nasdaq/nasdaq100-weights/",
+      "answers": [
+        "How concentrated is the Nasdaq 100 at the top?"
+      ]
+    },
+    {
+      "name": "nasdaq_nasdaq100_companies",
+      "title": "Nasdaq 100 constituents & weight distribution",
+      "description": "Which companies make up the Nasdaq 100 and how is the weight distributed? Full constituent list with sector and weight.",
+      "category": "nasdaq",
+      "chapter": "Nasdaq · VI. Anatomy of the Index",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/nasdaq/100.json",
+      "panel_url": "https://historyofmarket.com/#panel-nasdaq100-companies",
+      "static_url": "https://historyofmarket.com/nasdaq/nasdaq100-companies/",
+      "answers": [
+        "Which companies make up the Nasdaq 100 and how is the weight distributed?"
+      ]
+    },
+    {
+      "name": "nasdaq_ndx_changes",
+      "title": "Nasdaq 100 constituent adds and drops",
+      "description": "Which companies were added to or removed from the Nasdaq 100? The annual reconstitution plus ad-hoc replacements — the index's turnover log.",
+      "category": "nasdaq",
+      "chapter": "Nasdaq · VI. Anatomy of the Index",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/ndx/changes.json",
+      "panel_url": "https://historyofmarket.com/#panel-ndx-changes",
+      "static_url": "https://historyofmarket.com/nasdaq/ndx-changes/",
+      "answers": [
+        "Which companies were added to or removed from the Nasdaq 100?"
+      ]
+    },
+    {
+      "name": "semi_semi_price",
+      "title": "Philadelphia Semiconductor Index since 1994",
+      "description": "How has the PHLX Semiconductor Index (SOX) traded since its 1994 inception? Daily closes since May 1994 with drawdown ribbon. Contains 2000-2002 dotcom -83%, 2008 GFC -52%, 2018 / 2022 mid-cycle drawdowns, and the AI-era bull.",
+      "category": "semi",
+      "chapter": "Semiconductors · I. The Highest-Amplitude Curve",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/semi/price.json",
+      "panel_url": "https://historyofmarket.com/#panel-semi-price",
+      "static_url": "https://historyofmarket.com/semi/semi-price/",
+      "answers": [
+        "How has the PHLX Semiconductor Index (SOX) traded since its 1994 inception?"
+      ]
+    },
+    {
+      "name": "semi_semi_annual",
+      "title": "SOX annual return ledger",
+      "description": "What's the year-by-year return record of the Philadelphia Semiconductor Index? Mean return well above the S&P, but a near-halving year prints every few cycles.",
+      "category": "semi",
+      "chapter": "Semiconductors · I. The Highest-Amplitude Curve",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/semi/annual-returns.json",
+      "panel_url": "https://historyofmarket.com/#panel-semi-annual",
+      "static_url": "https://historyofmarket.com/semi/semi-annual/",
+      "answers": [
+        "What's the year-by-year return record of the Philadelphia Semiconductor Index?"
+      ]
+    },
+    {
+      "name": "semi_semi_annual_dist",
+      "title": "SOX annual return distribution",
+      "description": "How fat are the tails of semiconductor annual returns? Fat tails on both sides; right tail past +50% populated more than once.",
+      "category": "semi",
+      "chapter": "Semiconductors · I. The Highest-Amplitude Curve",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/semi/annual-tr.json",
+      "panel_url": "https://historyofmarket.com/#panel-semi-annual-dist",
+      "static_url": "https://historyofmarket.com/semi/semi-annual-dist/",
+      "answers": [
+        "How fat are the tails of semiconductor annual returns?"
+      ]
+    },
+    {
+      "name": "semi_semi_fwdpe",
+      "title": "Philadelphia Semiconductor Index (SOX) forward PE",
+      "description": "What is the forward PE ratio of semiconductor stocks? 12-month blended-forward consensus for SOX, weekly from January 2002; mean and percentile read across the clean 2011→present window, a roughly 9–30× corridor whose top was set in June 2024.",
+      "category": "semi",
+      "chapter": "Semiconductors · II. The Valuation Yardstick",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sectors/forward-pe.json",
+      "panel_url": "https://historyofmarket.com/#panel-semi-fwdpe",
+      "static_url": "https://historyofmarket.com/semi/semi-fwdpe/",
+      "answers": [
+        "What is the forward PE ratio of semiconductor stocks?"
+      ]
+    },
+    {
+      "name": "semi_semi_memory_valuation",
+      "title": "Memory & HBM TTM PE vs 1999 dotcom peak",
+      "description": "Is today's AI semiconductor valuation a Cisco-1999 repeat? MU and NVDA TTM PE on a log scale against the 1999 dotcom-peak forward PE bands (CSCO 140×, ORCL 150×, SUNW 120×, MSFT-1999 60×, INTC-1999 50×). Per-name snapshot cards show distance vs the CSCO 140× anchor.",
+      "category": "semi",
+      "chapter": "Semiconductors · II. The Valuation Yardstick",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/semi/memory-valuation.json",
+      "panel_url": "https://historyofmarket.com/#panel-semi-memory-valuation",
+      "static_url": "https://historyofmarket.com/semi/semi-memory-valuation/",
+      "answers": [
+        "Is today's AI semiconductor valuation a Cisco-1999 repeat?"
+      ]
+    },
+    {
+      "name": "semi_semi_intrayear_dd",
+      "title": "SOX intrayear drawdown vs year-end return",
+      "description": "How big is the average intrayear drop in semiconductors, even in up years? Intrayear drawdown averages ~-20%, a notch deeper than the S&P even in up years.",
+      "category": "semi",
+      "chapter": "Semiconductors · III. The Heart of the Cycle",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/semi/intrayear-dd.json",
+      "panel_url": "https://historyofmarket.com/#panel-semi-intrayear-dd",
+      "static_url": "https://historyofmarket.com/semi/semi-intrayear-dd/",
+      "answers": [
+        "How big is the average intrayear drop in semiconductors, even in up years?"
+      ]
+    },
+    {
+      "name": "semi_semi_composition",
+      "title": "SOX 30 constituents by sub-industry",
+      "description": "What's actually inside the Philadelphia Semiconductor Index? Thirty names grouped by sub-industry: fabless logic, foundry, memory, equipment, analog, RF, IDM.",
+      "category": "semi",
+      "chapter": "Semiconductors · IV. Inside the Index",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/semi/composition.json",
+      "panel_url": "https://historyofmarket.com/#panel-semi-composition",
+      "static_url": "https://historyofmarket.com/semi/semi-composition/",
+      "answers": [
+        "What's actually inside the Philadelphia Semiconductor Index?"
+      ]
+    },
+    {
+      "name": "semi_semi_smh",
+      "title": "VanEck Semiconductor ETF (SMH) holdings",
+      "description": "What does SMH actually own and at what weight? Tracks the MVIS US 25 — the disclosed top holdings cover ~70% of the fund.",
+      "category": "semi",
+      "chapter": "Semiconductors · IV. Inside the Index",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/semi/smh.json",
+      "panel_url": "https://historyofmarket.com/#panel-semi-smh",
+      "static_url": "https://historyofmarket.com/semi/semi-smh/",
+      "answers": [
+        "What does SMH actually own and at what weight?"
+      ]
+    },
+    {
+      "name": "semi_semi_soxx",
+      "title": "SOXX — iShares Semiconductor ETF at the wrapper layer",
+      "description": "What is in the SOXX semiconductor ETF? iShares Semiconductor ETF: $29.6B AUM, 0.35% expense, 30 names, top-10 ~60% of weight. Where the package differs from SMH.",
+      "category": "semi",
+      "chapter": "Semiconductors · IV. Inside the Index",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/semi/soxx.json",
+      "panel_url": "https://historyofmarket.com/#panel-semi-soxx",
+      "static_url": "https://historyofmarket.com/semi/semi-soxx/",
+      "answers": [
+        "What is in the SOXX semiconductor ETF?"
+      ]
+    },
+    {
+      "name": "semi_semi_memory",
+      "title": "Memory cohort — DRAM / NAND / HBM split three ways",
+      "description": "Why is there only one US-listed pure memory play in SOX? MU is the lone US-listed pure-memory play; Samsung Electronics (005930.KS) and SK Hynix (000660.KS) sit on KOSPI. The AI HBM boom splits three ways.",
+      "category": "semi",
+      "chapter": "Semiconductors · IV. Inside the Index",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/semi/composition.json",
+      "panel_url": "https://historyofmarket.com/#panel-semi-memory",
+      "static_url": "https://historyofmarket.com/semi/semi-memory/",
+      "answers": [
+        "Why is there only one US-listed pure memory play in SOX?"
+      ]
+    },
+    {
+      "name": "semi_semi_soxx_compare",
+      "title": "SOXX vs SMH — holdings overlap and ten-year returns",
+      "description": "What is the difference between the SOXX and SMH ETFs? 22 names overlap; SMH adds 3 foreign names, SOXX adds 8 specialty US names. Ten-year total return: SMH ~24×, SOXX ~20×.",
+      "category": "semi",
+      "chapter": "Semiconductors · IV. Inside the Index",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/semi/etf-compare.json",
+      "panel_url": "https://historyofmarket.com/#panel-semi-soxx-compare",
+      "static_url": "https://historyofmarket.com/semi/semi-soxx-compare/",
+      "answers": [
+        "What is the difference between the SOXX and SMH ETFs?"
+      ]
+    },
+    {
+      "name": "semi_semi_ratios",
+      "title": "SOX / SPX, SOX / XLK, XLK / SPX rebased to 100 at YE-1999",
+      "description": "How does semis' relative strength against the broad market and the tech sector look across cycles? SOX/SPX writes leadership cadence; SOX/XLK is a thermometer for AI cycles; XLK/SPX gives tech's relative strength.",
+      "category": "semi",
+      "chapter": "Semiconductors · V. Cross-basis Ratios",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/semi/ratios.json",
+      "panel_url": "https://historyofmarket.com/#panel-semi-ratios",
+      "static_url": "https://historyofmarket.com/semi/semi-ratios/",
+      "answers": [
+        "How does semis' relative strength against the broad market and the tech sector look across cycles?"
+      ]
+    },
+    {
+      "name": "xlk_xlk_price",
+      "title": "XLK Information Technology ETF since 1998",
+      "description": "How has the Information Technology sector ETF (XLK) traded since its December 1998 launch? First year crossed the dotcom peak; curve contains -83% (dotcom), -50% (GFC), -34% (2022).",
+      "category": "xlk",
+      "chapter": "Information Technology · I. Listed Into the Peak",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/xlk/price.json",
+      "panel_url": "https://historyofmarket.com/#panel-xlk-price",
+      "static_url": "https://historyofmarket.com/xlk/xlk-price/",
+      "answers": [
+        "How has the Information Technology sector ETF (XLK) traded since its December 1998 launch?"
+      ]
+    },
+    {
+      "name": "xlk_xlk_annual",
+      "title": "XLK year-by-year ledger",
+      "description": "What's the annual return record of the XLK ETF? Twenty-seven complete years — 1999 right tail of +75%, 2008 left tail of -42%, 2023-24 doubled up.",
+      "category": "xlk",
+      "chapter": "Information Technology · I. Listed Into the Peak",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/xlk/annual-returns.json",
+      "panel_url": "https://historyofmarket.com/#panel-xlk-annual",
+      "static_url": "https://historyofmarket.com/xlk/xlk-annual/",
+      "answers": [
+        "What's the annual return record of the XLK ETF?"
+      ]
+    },
+    {
+      "name": "xlk_xlk_annual_dist",
+      "title": "XLK annual return distribution",
+      "description": "How do XLK's annual returns spread compared to semis? Mean similar to semis, variance a notch tighter — software damps the pure-hardware cycle.",
+      "category": "xlk",
+      "chapter": "Information Technology · I. Listed Into the Peak",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/xlk/annual-tr.json",
+      "panel_url": "https://historyofmarket.com/#panel-xlk-annual-dist",
+      "static_url": "https://historyofmarket.com/xlk/xlk-annual-dist/",
+      "answers": [
+        "How do XLK's annual returns spread compared to semis?"
+      ]
+    },
+    {
+      "name": "xlk_xlk_fwdpe",
+      "title": "Information Technology sector forward PE since 1998",
+      "description": "What is the forward PE ratio of the technology sector? 12-month blended-forward consensus for S5INFT, weekly from August 1998. Dotcom top 58.7× in March 2000, under 10× by November 2008.",
+      "category": "xlk",
+      "chapter": "Information Technology · II. Valuation & Concentration",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sectors/forward-pe.json",
+      "panel_url": "https://historyofmarket.com/#panel-xlk-fwdpe",
+      "static_url": "https://historyofmarket.com/xlk/xlk-fwdpe/",
+      "answers": [
+        "What is the forward PE ratio of the technology sector?"
+      ]
+    },
+    {
+      "name": "xlk_xlk_holdings",
+      "title": "XLK top holdings & cumulative weight",
+      "description": "How concentrated is XLK at the top? AAPL + MSFT + NVDA already combine for more than half the fund — the most concentrated sector ETF in US equities.",
+      "category": "xlk",
+      "chapter": "Information Technology · II. Valuation & Concentration",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/xlk/holdings.json",
+      "panel_url": "https://historyofmarket.com/#panel-xlk-holdings",
+      "static_url": "https://historyofmarket.com/xlk/xlk-holdings/",
+      "answers": [
+        "How concentrated is XLK at the top?"
+      ]
+    },
+    {
+      "name": "xlk_xlk_intrayear_dd",
+      "title": "XLK intrayear drawdown vs year-end return",
+      "description": "How deep do XLK's intrayear drops typically run? Average ~-16%, between the S&P and the semis — but 2000, 2008, 2022 each posted past -30%.",
+      "category": "xlk",
+      "chapter": "Information Technology · III. Intrayear Amplitude",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/xlk/intrayear-dd.json",
+      "panel_url": "https://historyofmarket.com/#panel-xlk-intrayear-dd",
+      "static_url": "https://historyofmarket.com/xlk/xlk-intrayear-dd/",
+      "answers": [
+        "How deep do XLK's intrayear drops typically run?"
+      ]
+    },
+    {
+      "name": "xlk_xlk_reclass",
+      "title": "2018-09-24 GICS communication-services reshuffle",
+      "description": "Which companies were moved out of Information Technology in 2018? S&P and MSCI moved GOOGL, META, NFLX and other internet platforms out of Information Technology — XLK's long curve crosses that date but the composition shifted meaningfully.",
+      "category": "xlk",
+      "chapter": "Information Technology · IV. The Seam of 2018",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/xlk/reclass-2018.json",
+      "panel_url": "https://historyofmarket.com/#panel-xlk-reclass",
+      "static_url": "https://historyofmarket.com/xlk/xlk-reclass/",
+      "answers": [
+        "Which companies were moved out of Information Technology in 2018?"
+      ]
+    },
+    {
+      "name": "fin_fin_price",
+      "title": "XLF Financials ETF since 1998",
+      "description": "How has the Financials sector ETF (XLF) traded since its December 1998 launch? -84% cumulative through 2008, the deepest scar in any US sector ETF.",
+      "category": "fin",
+      "chapter": "Financials · I. A Modern History Around 2008",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/fin/price.json",
+      "panel_url": "https://historyofmarket.com/#panel-fin-price",
+      "static_url": "https://historyofmarket.com/fin/fin-price/",
+      "answers": [
+        "How has the Financials sector ETF (XLF) traded since its December 1998 launch?"
+      ]
+    },
+    {
+      "name": "fin_fin_annual",
+      "title": "XLF year-by-year ledger",
+      "description": "What's the annual return record of the XLF ETF? Twenty-seven complete years — 2008 alone took -55%; 2009's +17% rebound did not come close to recovery.",
+      "category": "fin",
+      "chapter": "Financials · I. A Modern History Around 2008",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/fin/annual-returns.json",
+      "panel_url": "https://historyofmarket.com/#panel-fin-annual",
+      "static_url": "https://historyofmarket.com/fin/fin-annual/",
+      "answers": [
+        "What's the annual return record of the XLF ETF?"
+      ]
+    },
+    {
+      "name": "fin_fin_annual_dist",
+      "title": "XLF annual return distribution",
+      "description": "What does the signature shape of a 'crisis sector' look like? Mean slightly below the S&P, with an extreme left tail.",
+      "category": "fin",
+      "chapter": "Financials · I. A Modern History Around 2008",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/fin/annual-tr.json",
+      "panel_url": "https://historyofmarket.com/#panel-fin-annual-dist",
+      "static_url": "https://historyofmarket.com/fin/fin-annual-dist/",
+      "answers": [
+        "What does the signature shape of a 'crisis sector' look like?"
+      ]
+    },
+    {
+      "name": "fin_fin_fwdpe",
+      "title": "Financials sector forward PE since 1996",
+      "description": "What is the forward PE ratio of the financial sector? 12-month forward consensus for S5FINL, 1996→present. Sector trades 11–18× most years; the 2008-12 38× spike is an accounting shock, not a valuation peak.",
+      "category": "fin",
+      "chapter": "Financials · II. The Valuation Yardstick",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sectors/forward-pe.json",
+      "panel_url": "https://historyofmarket.com/#panel-fin-fwdpe",
+      "static_url": "https://historyofmarket.com/fin/fin-fwdpe/",
+      "answers": [
+        "What is the forward PE ratio of the financial sector?"
+      ]
+    },
+    {
+      "name": "fin_fin_crisis",
+      "title": "2008 — five financial institutions vanished, five survived",
+      "description": "Which big US financial institutions disappeared in 2008, and which absorbed them? Bear Stearns, Lehman Brothers, Washington Mutual, Wachovia, AIG — gone; JPMorgan, Goldman Sachs, Morgan Stanley, Bank of America, Wells Fargo — absorbed the wreckage and expanded. The editorial heart of the Financials chronicle.",
+      "category": "fin",
+      "chapter": "Financials · III. 2008, The Plague Year",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/fin/crisis-2008.json",
+      "panel_url": "https://historyofmarket.com/#panel-fin-crisis",
+      "static_url": "https://historyofmarket.com/fin/fin-crisis/",
+      "answers": [
+        "Which big US financial institutions disappeared in 2008, and which absorbed them?"
+      ]
+    },
+    {
+      "name": "fin_fin_intrayear_dd",
+      "title": "XLF intrayear drawdown vs year-end return",
+      "description": "How does the Financial sector's intrayear amplitude compare to the broad market? Average intrayear drawdown close to the S&P's, but every decade or so writes the full down-leg in a single year — 2008, 2020, 2023.",
+      "category": "fin",
+      "chapter": "Financials · IV. Intrayear Amplitude",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/fin/intrayear-dd.json",
+      "panel_url": "https://historyofmarket.com/#panel-fin-intrayear-dd",
+      "static_url": "https://historyofmarket.com/fin/fin-intrayear-dd/",
+      "answers": [
+        "How does the Financial sector's intrayear amplitude compare to the broad market?"
+      ]
+    },
+    {
+      "name": "fin_fin_rates",
+      "title": "Yield curve × XLF — the causal chain",
+      "description": "How does the 2y-10y yield-curve spread move XLF's trailing 12-month return? 2y-10y FRED spread since 1976 alongside XLF's trailing 12-month return. The curve moves first; the sector follows.",
+      "category": "fin",
+      "chapter": "Financials · V. Curve, Classification, Composition",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/fin/rates.json",
+      "panel_url": "https://historyofmarket.com/#panel-fin-rates",
+      "static_url": "https://historyofmarket.com/fin/fin-rates/",
+      "answers": [
+        "How does the 2y-10y yield-curve spread move XLF's trailing 12-month return?"
+      ],
+      "related_external": [
+        {
+          "url": "https://dollarliquidity.com",
+          "kind": "sister_publication",
+          "context": "rates",
+          "label": "Full rates and liquidity map — sister publication"
+        }
+      ]
+    },
+    {
+      "name": "fin_fin_reclass",
+      "title": "2023-03-17 GICS payments-into-financials reshuffle",
+      "description": "Which companies were moved into Financials by GICS in 2023? Visa, Mastercard, PayPal, FIS, Fiserv moved from Information Technology to Financial Services overnight.",
+      "category": "fin",
+      "chapter": "Financials · V. Curve, Classification, Composition",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/fin/reclass-2023.json",
+      "panel_url": "https://historyofmarket.com/#panel-fin-reclass",
+      "static_url": "https://historyofmarket.com/fin/fin-reclass/",
+      "answers": [
+        "Which companies were moved into Financials by GICS in 2023?"
+      ]
+    },
+    {
+      "name": "fin_fin_holdings",
+      "title": "XLF top holdings & cumulative weight",
+      "description": "What does the XLF ETF actually own today? BRK.B + JPM together ~23%; V + MA ~13%. Half banks, a quarter payments, a sliver of insurers.",
+      "category": "fin",
+      "chapter": "Financials · V. Curve, Classification, Composition",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/fin/holdings.json",
+      "panel_url": "https://historyofmarket.com/#panel-fin-holdings",
+      "static_url": "https://historyofmarket.com/fin/fin-holdings/",
+      "answers": [
+        "What does the XLF ETF actually own today?"
+      ]
+    },
+    {
+      "name": "consumer_consumer_definitions",
+      "title": "Consumer Discretionary vs Consumer Staples — the GICS boundary",
+      "description": "What is the difference between the Consumer Discretionary and Consumer Staples sectors? Each sector's GICS industry groups plus the borderline companies the definition has to rule on.",
+      "category": "consumer",
+      "chapter": "Consumer · I. Two Consumer Curves",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/consumer/definitions.json",
+      "panel_url": "https://historyofmarket.com/#panel-consumer-definitions",
+      "static_url": "https://historyofmarket.com/consumer/consumer-definitions/",
+      "answers": [
+        "What is the difference between the Consumer Discretionary and Consumer Staples sectors?"
+      ]
+    },
+    {
+      "name": "consumer_xly_price",
+      "title": "XLY Consumer Discretionary ETF since 1998",
+      "description": "How has the Consumer Discretionary sector ETF (XLY) traded since its December 1998 launch? Daily closes from the 1998-12-22 listing on a log axis, with the drawdown band beneath.",
+      "category": "consumer",
+      "chapter": "Consumer · I. Two Consumer Curves",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/consumer/xly-price.json",
+      "panel_url": "https://historyofmarket.com/#panel-xly-price",
+      "static_url": "https://historyofmarket.com/consumer/xly-price/",
+      "answers": [
+        "How has the Consumer Discretionary sector ETF (XLY) traded since its December 1998 launch?"
+      ]
+    },
+    {
+      "name": "consumer_xlp_price",
+      "title": "XLP Consumer Staples ETF since 1998",
+      "description": "How has the Consumer Staples sector ETF (XLP) traded since its December 1998 launch? Listed the same day as XLY, so the two arcs are directly comparable without rebasing.",
+      "category": "consumer",
+      "chapter": "Consumer · I. Two Consumer Curves",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/consumer/xlp-price.json",
+      "panel_url": "https://historyofmarket.com/#panel-xlp-price",
+      "static_url": "https://historyofmarket.com/consumer/xlp-price/",
+      "answers": [
+        "How has the Consumer Staples sector ETF (XLP) traded since its December 1998 launch?"
+      ]
+    },
+    {
+      "name": "consumer_consumer_ratio",
+      "title": "XLY ÷ XLP — the risk-appetite ratio",
+      "description": "What does the ratio of Consumer Discretionary to Consumer Staples say about risk appetite? Dividing one sector by the other cancels the market and leaves only whether households are paying for wants or needs.",
+      "category": "consumer",
+      "chapter": "Consumer · I. Two Consumer Curves",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/consumer/ratio.json",
+      "panel_url": "https://historyofmarket.com/#panel-consumer-ratio",
+      "static_url": "https://historyofmarket.com/consumer/consumer-ratio/",
+      "answers": [
+        "What does the ratio of Consumer Discretionary to Consumer Staples say about risk appetite?"
+      ]
+    },
+    {
+      "name": "consumer_xly_annual",
+      "title": "XLY annual returns, year by year",
+      "description": "What has the Consumer Discretionary ETF returned in each calendar year? Every full calendar year settled against the S&P 500's return for the same year.",
+      "category": "consumer",
+      "chapter": "Consumer · II. The Yearly Ledger",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/consumer/xly-annual-returns.json",
+      "panel_url": "https://historyofmarket.com/#panel-xly-annual",
+      "static_url": "https://historyofmarket.com/consumer/xly-annual/",
+      "answers": [
+        "What has the Consumer Discretionary ETF returned in each calendar year?"
+      ]
+    },
+    {
+      "name": "consumer_xlp_annual",
+      "title": "XLP annual returns, year by year",
+      "description": "What has the Consumer Staples ETF returned in each calendar year? The defensive half of consumption, year by year against the index.",
+      "category": "consumer",
+      "chapter": "Consumer · II. The Yearly Ledger",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/consumer/xlp-annual-returns.json",
+      "panel_url": "https://historyofmarket.com/#panel-xlp-annual",
+      "static_url": "https://historyofmarket.com/consumer/xlp-annual/",
+      "answers": [
+        "What has the Consumer Staples ETF returned in each calendar year?"
+      ]
+    },
+    {
+      "name": "consumer_xly_annual_dist",
+      "title": "XLY annual total returns, binned",
+      "description": "How are Consumer Discretionary's annual returns distributed? Annual total returns sorted into return buckets — the cyclical sector's histogram is the wider one.",
+      "category": "consumer",
+      "chapter": "Consumer · II. The Yearly Ledger",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/consumer/xly-annual-tr.json",
+      "panel_url": "https://historyofmarket.com/#panel-xly-annual-dist",
+      "static_url": "https://historyofmarket.com/consumer/xly-annual-dist/",
+      "answers": [
+        "How are Consumer Discretionary's annual returns distributed?"
+      ]
+    },
+    {
+      "name": "consumer_xlp_annual_dist",
+      "title": "XLP annual total returns, binned",
+      "description": "How are Consumer Staples' annual returns distributed? The same bins drawn for staples; printed beside XLY's, the narrower shape is the argument.",
+      "category": "consumer",
+      "chapter": "Consumer · II. The Yearly Ledger",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/consumer/xlp-annual-tr.json",
+      "panel_url": "https://historyofmarket.com/#panel-xlp-annual-dist",
+      "static_url": "https://historyofmarket.com/consumer/xlp-annual-dist/",
+      "answers": [
+        "How are Consumer Staples' annual returns distributed?"
+      ]
+    },
+    {
+      "name": "consumer_consumer_companies",
+      "title": "Twelve consumer compounders since 1998",
+      "description": "How have the largest US consumer companies compounded since 1998? Twelve names indexed to 100 on 1998-12-22 with dividends reinvested, plus CAGR, max drawdown, ETF weight and listing year. Selected from today's holdings, so it is a survivors' list by construction.",
+      "category": "consumer",
+      "chapter": "Consumer · III. Pricing Power and Extinction",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/consumer/companies.json",
+      "panel_url": "https://historyofmarket.com/#panel-consumer-companies",
+      "static_url": "https://historyofmarket.com/consumer/consumer-companies/",
+      "answers": [
+        "How have the largest US consumer companies compounded since 1998?"
+      ]
+    },
+    {
+      "name": "consumer_consumer_extinction",
+      "title": "Retail's extinction event — bankruptcies and survivors",
+      "description": "Which US retailers went bankrupt after sitting in the S&P 500, and which survived? Five retailers that filed for bankruptcy beside five peers that survived and expanded, each sourced to a court filing or company disclosure.",
+      "category": "consumer",
+      "chapter": "Consumer · III. Pricing Power and Extinction",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/consumer/extinction.json",
+      "panel_url": "https://historyofmarket.com/#panel-consumer-extinction",
+      "static_url": "https://historyofmarket.com/consumer/consumer-extinction/",
+      "answers": [
+        "Which US retailers went bankrupt after sitting in the S&P 500, and which survived?"
+      ]
+    },
+    {
+      "name": "consumer_xly_intrayear_dd",
+      "title": "XLY intrayear drawdown vs year-end return",
+      "description": "How deep does Consumer Discretionary fall inside a year before it closes? Each year's deepest drawdown set beside its final close, with the S&P 500 for reference.",
+      "category": "consumer",
+      "chapter": "Consumer · IV. Intrayear Amplitude",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/consumer/xly-intrayear-dd.json",
+      "panel_url": "https://historyofmarket.com/#panel-xly-intrayear-dd",
+      "static_url": "https://historyofmarket.com/consumer/xly-intrayear-dd/",
+      "answers": [
+        "How deep does Consumer Discretionary fall inside a year before it closes?"
+      ]
+    },
+    {
+      "name": "consumer_xlp_intrayear_dd",
+      "title": "XLP intrayear drawdown vs year-end return",
+      "description": "How deep does Consumer Staples fall inside a year before it closes? The same construction for staples — shallower in most years, and no shallower than the index in the systemic ones.",
+      "category": "consumer",
+      "chapter": "Consumer · IV. Intrayear Amplitude",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/consumer/xlp-intrayear-dd.json",
+      "panel_url": "https://historyofmarket.com/#panel-xlp-intrayear-dd",
+      "static_url": "https://historyofmarket.com/consumer/xlp-intrayear-dd/",
+      "answers": [
+        "How deep does Consumer Staples fall inside a year before it closes?"
+      ]
+    },
+    {
+      "name": "consumer_consumer_reclass",
+      "title": "2023-03-17 GICS move of Target, Dollar General and Dollar Tree",
+      "description": "Which retailers did GICS move from Consumer Discretionary into Consumer Staples in 2023? The same 2023-03-17 decision that carried payments into Financials moved three big-box retailers into Staples.",
+      "category": "consumer",
+      "chapter": "Consumer · V. Boundaries and Holdings",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/consumer/reclass-2023.json",
+      "panel_url": "https://historyofmarket.com/#panel-consumer-reclass",
+      "static_url": "https://historyofmarket.com/consumer/consumer-reclass/",
+      "answers": [
+        "Which retailers did GICS move from Consumer Discretionary into Consumer Staples in 2023?"
+      ]
+    },
+    {
+      "name": "consumer_consumer_holdings",
+      "title": "XLY and XLP top holdings side by side",
+      "description": "What do the XLY and XLP ETFs actually own today? Both funds' largest positions on one page: a two-stock fund with a long tail beside one that spreads weight across retail, beverages and household brands.",
+      "category": "consumer",
+      "chapter": "Consumer · V. Boundaries and Holdings",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/consumer/xly-holdings.json",
+      "panel_url": "https://historyofmarket.com/#panel-consumer-holdings",
+      "static_url": "https://historyofmarket.com/consumer/consumer-holdings/",
+      "answers": [
+        "What do the XLY and XLP ETFs actually own today?"
+      ]
+    },
+    {
+      "name": "consumer_xly_fwdpe",
+      "title": "Consumer Discretionary forward PE since 1990",
+      "description": "What forward P/E does Consumer Discretionary trade at, and how should the level be read? Weekly consensus forward P/E for S5COND from 1990; recession-year earnings collapses lift this ratio instead of lowering it.",
+      "category": "consumer",
+      "chapter": "Consumer · VI. Two Valuation Lines",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sectors/forward-pe.json",
+      "panel_url": "https://historyofmarket.com/#panel-xly-fwdpe",
+      "static_url": "https://historyofmarket.com/consumer/xly-fwdpe/",
+      "answers": [
+        "What forward P/E does Consumer Discretionary trade at, and how should the level be read?"
+      ]
+    },
+    {
+      "name": "consumer_xlp_fwdpe",
+      "title": "Consumer Staples forward PE since 1990",
+      "description": "What forward P/E does Consumer Staples trade at? Weekly consensus forward P/E for S5CONS from 1990; staples earnings barely move through a cycle, so the multiple mostly records what investors pay for safety.",
+      "category": "consumer",
+      "chapter": "Consumer · VI. Two Valuation Lines",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/sectors/forward-pe.json",
+      "panel_url": "https://historyofmarket.com/#panel-xlp-fwdpe",
+      "static_url": "https://historyofmarket.com/consumer/xlp-fwdpe/",
+      "answers": [
+        "What forward P/E does Consumer Staples trade at?"
+      ]
+    },
+    {
+      "name": "mag7_mag7_index",
+      "title": "Magnificent 7 equal-weight composite since 2022-01-03",
+      "description": "What would buying and rebalancing all seven Magnificent 7 names have returned since January 2022? AAPL, MSFT, NVDA, GOOGL, AMZN, META, TSLA equal-weighted, base 2022-01-03 = 100.",
+      "category": "mag7",
+      "chapter": "Magnificent 7 · I. Seven Tickers, One Name",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/m7/index.json",
+      "panel_url": "https://historyofmarket.com/#panel-mag7-index",
+      "static_url": "https://historyofmarket.com/mag7/mag7-index/",
+      "answers": [
+        "What would buying and rebalancing all seven Magnificent 7 names have returned since January 2022?"
+      ]
+    },
+    {
+      "name": "mag7_mag7_ai_capex",
+      "title": "Magnificent 7 AI capex and cash allocation",
+      "description": "How much are the Magnificent 7 spending on AI capital expenditure? All seven Mag-7 names side-by-side: latest-quarter cap-ex magnitudes, latest-fiscal-year OCF allocation, and FCF / OCF conversion from pre-AI to today — the bifurcation inside one basket.",
+      "category": "mag7",
+      "chapter": "Magnificent 7 · II. The AI Capex Era",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/mag7/ai-capex.json",
+      "panel_url": "https://historyofmarket.com/#panel-mag7-ai-capex",
+      "static_url": "https://historyofmarket.com/mag7/mag7-ai-capex/",
+      "answers": [
+        "How much are the Magnificent 7 spending on AI capital expenditure?"
+      ]
+    },
+    {
+      "name": "mag7_mag7_concentration",
+      "title": "Magnificent 7 share of S&P 500 float-adjusted market cap",
+      "description": "How much of the S&P 500 do the Magnificent 7 represent over time? 13% in 2018 → 33%+ at year-end 2024. The highest top-seven concentration since the Nifty Fifty era. Quarterly series cross-checked against Bloomberg, Goldman Sachs ISG, and Apollo 'Daily Spark'.",
+      "category": "mag7",
+      "chapter": "Magnificent 7 · II. The AI Capex Era",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/mag7/concentration.json",
+      "panel_url": "https://historyofmarket.com/#panel-mag7-concentration",
+      "static_url": "https://historyofmarket.com/mag7/mag7-concentration/",
+      "answers": [
+        "How much of the S&P 500 do the Magnificent 7 represent over time?"
+      ]
+    },
+    {
+      "name": "mag7_mag7_drawdown",
+      "title": "Per-member peak-to-date drawdown",
+      "description": "Which Magnificent 7 names have carried the deepest individual drawdowns since 2018? Small-multiples grid: MSFT held steadiest, TSLA carried the widest swings, META fell -77% in 2022 then doubled in 14 months.",
+      "category": "mag7",
+      "chapter": "Magnificent 7 · III. Per-Member Amplitude",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/m7/index.json",
+      "panel_url": "https://historyofmarket.com/#panel-mag7-drawdown",
+      "static_url": "https://historyofmarket.com/mag7/mag7-drawdown/",
+      "answers": [
+        "Which Magnificent 7 names have carried the deepest individual drawdowns since 2018?"
+      ]
+    },
+    {
+      "name": "mag7_mag7_correlation",
+      "title": "60-day rolling pairwise correlation + 5-year average",
+      "description": "Are the Magnificent 7 still seven distinct names or have they collapsed into a single trade? The matrix today plus the 5-year trajectory of the average pairwise correlation.",
+      "category": "mag7",
+      "chapter": "Magnificent 7 · IV. Seven Names or One Trade",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/m7/index.json",
+      "panel_url": "https://historyofmarket.com/#panel-mag7-correlation",
+      "static_url": "https://historyofmarket.com/mag7/mag7-correlation/",
+      "answers": [
+        "Are the Magnificent 7 still seven distinct names or have they collapsed into a single trade?"
+      ]
+    },
+    {
+      "name": "mag7_mag7_ai_valuation",
+      "title": "AI leaders' TTM PE vs the 1999 dotcom peak",
+      "description": "How do NVDA, MSFT, META, and GOOGL valuations today compare to Cisco / Oracle / Sun at the 1999 dotcom peak? Log-scale TTM PE history against the 1999 forward PE bands (CSCO 140×, ORCL 150×, SUNW 120×, MSFT-1999 60×, INTC-1999 50×). Per-name snapshot cards show distance vs the CSCO 140× anchor.",
+      "category": "mag7",
+      "chapter": "Magnificent 7 · IV. Seven Names or One Trade",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/mag7/ai-valuation.json",
+      "panel_url": "https://historyofmarket.com/#panel-mag7-ai-valuation",
+      "static_url": "https://historyofmarket.com/mag7/mag7-ai-valuation/",
+      "answers": [
+        "How do NVDA, MSFT, META, and GOOGL valuations today compare to Cisco / Oracle / Sun at the 1999 dotcom peak?"
+      ]
+    },
+    {
+      "name": "mag7_mag7_predecessors",
+      "title": "Mag 7 lineage — Nifty Fifty → FANG → Magnificent 7",
+      "description": "How does the Magnificent 7 compare to previous generations of 'unbeatable' US stock baskets? Nifty Fifty (1972) → Four Horsemen (1999) → FANG (2013) → FAANG (2017) → Magnificent 7 (2023). Each generation's peak moment and at least one ≥ -40% drawdown.",
+      "category": "mag7",
+      "chapter": "Magnificent 7 · V. The Ancestors of M7",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/mag7/predecessors.json",
+      "panel_url": "https://historyofmarket.com/#panel-mag7-predecessors",
+      "static_url": "https://historyofmarket.com/mag7/mag7-predecessors/",
+      "answers": [
+        "How does the Magnificent 7 compare to previous generations of 'unbeatable' US stock baskets?"
+      ]
+    },
+    {
+      "name": "dynasties_top10_roster",
+      "title": "Ten era portraits · the largest U.S. firms decade by decade",
+      "description": "Who were the ten largest U.S. companies in each decade from the 1920s to today? The Top 10 of every decade — 1920s through 2020s — laid out as a single editorial matrix; ten rosters side by side reveal the migration from rail and steel to platforms and AI capex.",
+      "category": "dynasties",
+      "chapter": "Top 10 · I. The Roster",
+      "format": "editorial",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/?tab=dynasties#panel-top10-roster",
+      "panel_url": "https://historyofmarket.com/#panel-top10-roster",
+      "static_url": "https://historyofmarket.com/?tab=dynasties#panel-top10-roster",
+      "answers": [
+        "Who were the ten largest U.S. companies in each decade from the 1920s to today?"
+      ]
+    },
+    {
+      "name": "dynasties_top10_lineage",
+      "title": "Firms that stayed on the Top 10 across three decades or more",
+      "description": "Which U.S. companies appeared on the Top 10 across three or more decades, and how did their rank trajectories evolve? Fourteen long-lived firms (AT&T 8 decades, Exxon 9, GE 7, IBM 5, etc.) drawn as bump-line trajectories with one-paragraph dossiers explaining what each one actually did.",
+      "category": "dynasties",
+      "chapter": "Top 10 · II. The Lineage",
+      "format": "editorial",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/?tab=dynasties#panel-top10-lineage",
+      "panel_url": "https://historyofmarket.com/#panel-top10-lineage",
+      "static_url": "https://historyofmarket.com/?tab=dynasties#panel-top10-lineage",
+      "answers": [
+        "Which U.S. companies appeared on the Top 10 across three or more decades, and how did their rank trajectories evolve?"
+      ]
+    },
+    {
+      "name": "dynasties_top10_crowns",
+      "title": "Who wore the #1 crown — and for how many decades",
+      "description": "Which companies have held S&P 500 #1 in any decade, and which long-runners never reached the top? AT&T held #1 for two decades, IBM for three, Microsoft / Exxon / Apple / Nvidia one each. Crownless lifers (Berkshire, Procter & Gamble) and one-decade meteors (Lucent, Polaroid) tallied separately.",
+      "category": "dynasties",
+      "chapter": "Top 10 · III. The Crowns",
+      "format": "editorial",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/?tab=dynasties#panel-top10-crowns",
+      "panel_url": "https://historyofmarket.com/#panel-top10-crowns",
+      "static_url": "https://historyofmarket.com/?tab=dynasties#panel-top10-crowns",
+      "answers": [
+        "Which companies have held S&P 500 #1 in any decade, and which long-runners never reached the top?"
+      ]
+    },
+    {
+      "name": "dynasties_top10_eclipse",
+      "title": "Industries that disappeared from the Top 10",
+      "description": "Which industries once dominated the Top 10 and have since vanished from the list? Rail (last in 1920s), tobacco (1920s), cameras (1980s), retail (2000s) all exited; tech, finance, healthcare, energy still on the list. Each sector's first / last / peak decade laid out as horizontal lanes.",
+      "category": "dynasties",
+      "chapter": "Top 10 · IV. The Eclipse",
+      "format": "editorial",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/?tab=dynasties#panel-top10-eclipse",
+      "panel_url": "https://historyofmarket.com/#panel-top10-eclipse",
+      "static_url": "https://historyofmarket.com/?tab=dynasties#panel-top10-eclipse",
+      "answers": [
+        "Which industries once dominated the Top 10 and have since vanished from the list?"
+      ]
+    },
+    {
+      "name": "dynasties_top10_concurrents",
+      "title": "Who sat next to whom across how many decades",
+      "description": "Across the century, which pairs of companies most often shared the Top 10 list at the same time? Pairwise co-occurrence matrix plus a top-ten leaderboard of longest-running pairs: GE × AT&T 7 decades, IBM × Exxon 5 — the century's repeat boardroom companions.",
+      "category": "dynasties",
+      "chapter": "Top 10 · V. The Concurrents",
+      "format": "editorial",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/?tab=dynasties#panel-top10-concurrents",
+      "panel_url": "https://historyofmarket.com/#panel-top10-concurrents",
+      "static_url": "https://historyofmarket.com/?tab=dynasties#panel-top10-concurrents",
+      "answers": [
+        "Across the century, which pairs of companies most often shared the Top 10 list at the same time?"
+      ]
+    },
+    {
+      "name": "dynasties_top10_aftermath",
+      "title": "What happened to the firms that left the Top 10",
+      "description": "After they fell off the Top 10, did the long-lived US firms get split, acquired, bankrupted, or simply linger? Six exit pathways: still on the crown · still listed but no longer Top 10 · broken up (AT&T 1984, GE 2024, DuPont 2019) · acquired (US Steel → Nippon, Lucent → Nokia) · bankrupt (Kodak 2012, Sears 2018) · lingering.",
+      "category": "dynasties",
+      "chapter": "Top 10 · VI. Aftermath",
+      "format": "editorial",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/?tab=dynasties#panel-top10-aftermath",
+      "panel_url": "https://historyofmarket.com/#panel-top10-aftermath",
+      "static_url": "https://historyofmarket.com/?tab=dynasties#panel-top10-aftermath",
+      "answers": [
+        "After they fell off the Top 10, did the long-lived US firms get split, acquired, bankrupted, or simply linger?"
+      ]
+    },
+    {
+      "name": "dynasties_top10_spx_share",
+      "title": "Peak share of the index — each firm's high-water mark",
+      "description": "What share of the S&P 500 (or total U.S. listed equity, pre-1957) did each Top 10 firm hold at its peak decade? AT&T 1929 ≈ 13%, IBM 1967 ≈ 7.4%, Cisco 2000 ≈ 4.2%, Apple 2024 ≈ 7.1%, Microsoft 2024 ≈ 7%, Nvidia 2024 ≈ 7.1%. Sources: CRSP, S&P historical weights, Knoll & Crain pre-war work.",
+      "category": "dynasties",
+      "chapter": "Top 10 · VII. Share at Peak",
+      "format": "editorial",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/?tab=dynasties#panel-top10-spx-share",
+      "panel_url": "https://historyofmarket.com/#panel-top10-spx-share",
+      "static_url": "https://historyofmarket.com/?tab=dynasties#panel-top10-spx-share",
+      "answers": [
+        "What share of the S&P 500 (or total U.S. listed equity, pre-1957) did each Top 10 firm hold at its peak decade?"
+      ]
+    },
+    {
+      "name": "dynasties_top10_pe_at_entry",
+      "title": "Peak trailing P/E — log axis with Cisco 1999 as ceiling",
+      "description": "What trailing P/E did each Top 10 firm reach at its peak, and how does Nvidia 2024 compare to Cisco at the 1999 dot-com top? Cisco March 2000 at 137× sets the human-record ceiling; Microsoft 1999 at 71×, Polaroid 1972 at 91×, Tesla 2021 at 1120×, Nvidia 2024 at 78× sixty multiples below Cisco. Log axis with the S&P 500 long-run 18× midline.",
+      "category": "dynasties",
+      "chapter": "Top 10 · VIII. PE at Peak",
+      "format": "editorial",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/?tab=dynasties#panel-top10-pe-at-entry",
+      "panel_url": "https://historyofmarket.com/#panel-top10-pe-at-entry",
+      "static_url": "https://historyofmarket.com/?tab=dynasties#panel-top10-pe-at-entry",
+      "answers": [
+        "What trailing P/E did each Top 10 firm reach at its peak, and how does Nvidia 2024 compare to Cisco at the 1999 dot-com top?"
+      ]
+    },
+    {
+      "name": "latest_cp_conc_top10",
+      "title": "Top 10 share of US equity market value, 1950 → today",
+      "description": "How much of the US stock market do the ten largest companies represent today, and how does that compare with history? 30% in 1963, 12% in 1993, 27% in 2023. From 2024 the series is recomputed daily from live S&P 500 weights, calibrated to the 2023 anchor.",
+      "category": "latest",
+      "chapter": "Other · I. Concentration",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/latest/concentration.json",
+      "panel_url": "https://historyofmarket.com/#panel-cp-conc-top10",
+      "static_url": "https://historyofmarket.com/latest/cp-conc-top10/",
+      "answers": [
+        "How much of the US stock market do the ten largest companies represent today, and how does that compare with history?"
+      ]
+    },
+    {
+      "name": "latest_cp_conc_top3",
+      "title": "The #1 stock vs the index — relative return since 1950",
+      "description": "Has owning the largest US stock historically beaten the index? From 1950–2023 the #1 stock lagged the index by 4.3% a year; since 2014 the year-end top-3 names have mostly beaten it. Recomputed yearly, refreshed daily.",
+      "category": "latest",
+      "chapter": "Other · I. Concentration",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/latest/concentration.json",
+      "panel_url": "https://historyofmarket.com/#panel-cp-conc-top3",
+      "static_url": "https://historyofmarket.com/latest/cp-conc-top3/",
+      "answers": [
+        "Has owning the largest US stock historically beaten the index?"
+      ]
+    },
+    {
+      "name": "latest_cp_conc_size",
+      "title": "Large caps vs small caps since 2000 (Russell 1000 vs 2000)",
+      "description": "How have large caps performed against small caps since 2000? IWB vs IWM total return, $100 each in May 2000. The paper ties rising concentration to large-cap leadership; over this span the lead has changed hands more than once.",
+      "category": "latest",
+      "chapter": "Other · I. Concentration",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/latest/concentration.json",
+      "panel_url": "https://historyofmarket.com/#panel-cp-conc-size",
+      "static_url": "https://historyofmarket.com/latest/cp-conc-size/",
+      "answers": [
+        "How have large caps performed against small caps since 2000?"
+      ]
+    },
+    {
+      "name": "latest_cp_dd_base_rates",
+      "title": "Drawdown base rates by depth (current S&P 500 members, 1985→)",
+      "description": "How deep do individual stock drawdowns get, and what share of stocks ever recover to their prior peak? Median max drawdown -74% for current S&P 500 members since 1985; about 20% have never regained the prior peak (the original full sample incl. delistings: -85% and 54%).",
+      "category": "latest",
+      "chapter": "Other · II. Drawdowns & Recoveries",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/latest/dd-study.json",
+      "panel_url": "https://historyofmarket.com/#panel-cp-dd-base-rates",
+      "static_url": "https://historyofmarket.com/latest/cp-dd-base-rates/",
+      "answers": [
+        "How deep do individual stock drawdowns get, and what share of stocks ever recover to their prior peak?"
+      ]
+    },
+    {
+      "name": "latest_cp_dd_forward_returns",
+      "title": "Forward returns after the trough, by drawdown depth",
+      "description": "What returns follow after a stock bottoms from a deep drawdown? Median annualized returns 1/3/5/10 years off the low, by depth bin — deeper falls bounce harder but recover to par less often.",
+      "category": "latest",
+      "chapter": "Other · II. Drawdowns & Recoveries",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/latest/dd-study.json",
+      "panel_url": "https://historyofmarket.com/#panel-cp-dd-forward-returns",
+      "static_url": "https://historyofmarket.com/latest/cp-dd-forward-returns/",
+      "answers": [
+        "What returns follow after a stock bottoms from a deep drawdown?"
+      ]
+    },
+    {
+      "name": "latest_cp_dd_timing",
+      "title": "When stocks peak and when they bottom",
+      "description": "Do individual stocks bottom at the same time as the market? Max-drawdown peak months scatter across decades; trough months cluster tightly in 2000–02, 2008–09, 2020 and 2022.",
+      "category": "latest",
+      "chapter": "Other · II. Drawdowns & Recoveries",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/latest/dd-study.json",
+      "panel_url": "https://historyofmarket.com/#panel-cp-dd-timing",
+      "static_url": "https://historyofmarket.com/latest/cp-dd-timing/",
+      "answers": [
+        "Do individual stocks bottom at the same time as the market?"
+      ]
+    },
+    {
+      "name": "latest_cp_dd_paths",
+      "title": "Sixty months off the bottom — recovery paths after a ~75% drawdown",
+      "description": "What does the recovery path look like after a stock loses 75% of its value? Individual paths are noisy; the median path climbs steadily — the case for treating deep-drawdown stocks as a portfolio rather than single lottery tickets.",
+      "category": "latest",
+      "chapter": "Other · II. Drawdowns & Recoveries",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/latest/dd-study.json",
+      "panel_url": "https://historyofmarket.com/#panel-cp-dd-paths",
+      "static_url": "https://historyofmarket.com/latest/cp-dd-paths/",
+      "answers": [
+        "What does the recovery path look like after a stock loses 75% of its value?"
+      ]
+    },
+    {
+      "name": "latest_cp_dd_cases",
+      "title": "NVDA vs INTC — two lives after the dot-com bust",
+      "description": "How long can it take a stock to get back to its prior peak after a deep drawdown? Both chipmakers peaked around the dot-com bust and took very different paths back; peak, trough and return to the peak are marked for each, with the time from trough to recovery.",
+      "category": "latest",
+      "chapter": "Other · II. Drawdowns & Recoveries",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/latest/dd-cases.json",
+      "panel_url": "https://historyofmarket.com/#panel-cp-dd-cases",
+      "static_url": "https://historyofmarket.com/latest/cp-dd-cases/",
+      "answers": [
+        "How long can it take a stock to get back to its prior peak after a deep drawdown?"
+      ]
+    },
+    {
+      "name": "latest_cp_iss_overview",
+      "title": "US equity issuance vs retirement, 2000–2023",
+      "description": "Does the US stock market raise money from investors or return it, in aggregate? $9.7T issued vs $14.0T retired over 2000–2023 — a net $4.3T returned to shareholders. SBC-to-sales rose from 0.2% to 1.3%.",
+      "category": "latest",
+      "chapter": "Other · III. Issuance & Retirement",
+      "format": "editorial",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/latest/cp-iss-overview/",
+      "panel_url": "https://historyofmarket.com/#panel-cp-iss-overview",
+      "static_url": "https://historyofmarket.com/latest/cp-iss-overview/",
+      "answers": [
+        "Does the US stock market raise money from investors or return it, in aggregate?"
+      ]
+    },
+    {
+      "name": "latest_cp_iss_deciles",
+      "title": "Stock-based compensation and dilution by company size",
+      "description": "How much are shareholders of small companies diluted by stock-based compensation? Smallest revenue decile: SBC 3.5% of sales and 8.5% three-year dilution; the largest deciles are net negative (buybacks shrink the share count).",
+      "category": "latest",
+      "chapter": "Other · III. Issuance & Retirement",
+      "format": "editorial",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/latest/cp-iss-deciles/",
+      "panel_url": "https://historyofmarket.com/#panel-cp-iss-deciles",
+      "static_url": "https://historyofmarket.com/latest/cp-iss-deciles/",
+      "answers": [
+        "How much are shareholders of small companies diluted by stock-based compensation?"
+      ]
+    },
+    {
+      "name": "latest_cp_iss_quadrant",
+      "title": "SBC × buybacks — the four-quadrant return gap",
+      "description": "Do companies with low stock-based compensation and high buybacks outperform? Low SBC + high buyback: 13.7%/yr in 2021–2023; high SBC + low buyback: -0.1%. Longer 2007–2018 evidence points the same way.",
+      "category": "latest",
+      "chapter": "Other · III. Issuance & Retirement",
+      "format": "editorial",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/latest/cp-iss-quadrant/",
+      "panel_url": "https://historyofmarket.com/#panel-cp-iss-quadrant",
+      "static_url": "https://historyofmarket.com/latest/cp-iss-quadrant/",
+      "answers": [
+        "Do companies with low stock-based compensation and high buybacks outperform?"
+      ]
+    },
+    {
+      "name": "latest_bes_skewness",
+      "title": "The mean is a fortune, the median is a loss",
+      "description": "What return did the typical U.S. stock actually deliver over its own lifetime? 29,754 stocks: mean buy-and-hold +30,621%, median -6.87%. 48.22% finished above zero, 41.17% beat T-bills, 27.60% beat the value-weighted market.",
+      "category": "latest",
+      "chapter": "Other · IV. A Hundred Years of Lottery Tickets",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/static/bessembinder-2026.json",
+      "panel_url": "https://historyofmarket.com/#panel-bes-skewness",
+      "static_url": "https://historyofmarket.com/latest/bes-skewness/",
+      "answers": [
+        "What return did the typical U.S. stock actually deliver over its own lifetime?"
+      ]
+    },
+    {
+      "name": "latest_bes_decades",
+      "title": "Ten decades of the median stock, 1926–2025",
+      "description": "Has the typical stock gotten worse at beating the market over the past century? Median ten-year return averages 63.6% across the first six decades and 5.8% across the last four; the share beating the market pools at 35.62%.",
+      "category": "latest",
+      "chapter": "Other · IV. A Hundred Years of Lottery Tickets",
+      "format": "json",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "url": "https://historyofmarket.com/api/static/bessembinder-2026.json",
+      "panel_url": "https://historyofmarket.com/#panel-bes-decades",
+      "static_url": "https://historyofmarket.com/latest/bes-decades/",
+      "answers": [
+        "Has the typical stock gotten worse at beating the market over the past century?"
+      ]
+    }
+  ]
+}

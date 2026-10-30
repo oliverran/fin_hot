@@ -3,6 +3,8 @@
 !.env.example
 node_modules/
 dist/
+# 例外：historyofmarket（美股编年史子应用）的前端产物随仓库提交，由 chronicle 模块在 /us-market/ 下发出
+!historyofmarket/web/dist/
 .cache/
 .DS_Store
 .data/

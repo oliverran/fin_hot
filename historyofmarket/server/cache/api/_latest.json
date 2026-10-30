@@ -1,0 +1,228 @@
+{
+  "_license": "Reuse with attribution is welcome; copying the work is not. Data (/api/**.json): CC BY 4.0. Charts, share images, embeds and quotes: free to reuse when credited \"History of Market (historyofmarket.com)\" with a link. No derivative or look-alike sites, no use of the brand names, no citation without the source. Terms: https://historyofmarket.com/license/",
+  "_attribution": "History of Market (historyofmarket.com)",
+  "_canonical": "https://historyofmarket.com/api/_latest.json",
+  "_terms": "https://historyofmarket.com/license/",
+  "generated_at": "2026-10-29T09:23:30.971123+00:00",
+  "items": {
+    "flagship": {
+      "value": 7743.98,
+      "unit": "pt",
+      "date": "2026-10-28"
+    },
+    "pe": {
+      "value": 40.36,
+      "unit": "x",
+      "date": "2026-10-23"
+    },
+    "forward-pe": {
+      "value": 18.7,
+      "unit": "x",
+      "date": "2026-10-28",
+      "basis": "daily"
+    },
+    "ndx-forward-pe": {
+      "value": 20.8,
+      "unit": "x",
+      "date": "2026-10-28",
+      "basis": "daily"
+    },
+    "semi-fwdpe": {
+      "value": 17.6,
+      "unit": "x",
+      "date": "2026-10-28",
+      "basis": "daily"
+    },
+    "xlk-fwdpe": {
+      "value": 19.77,
+      "unit": "x",
+      "date": "2026-10-28",
+      "basis": "daily"
+    },
+    "fin-fwdpe": {
+      "value": 15.14,
+      "unit": "x",
+      "date": "2026-05-12",
+      "basis": "weekly"
+    },
+    "xly-fwdpe": {
+      "value": 22.02,
+      "unit": "x",
+      "date": "2026-09-04",
+      "basis": "weekly"
+    },
+    "xlp-fwdpe": {
+      "value": 21.33,
+      "unit": "x",
+      "date": "2026-09-04",
+      "basis": "weekly"
+    },
+    "drawdown": {
+      "value": -0.96,
+      "unit": "%",
+      "date": "2026-10-28"
+    },
+    "vix": {
+      "value": 16.91,
+      "unit": "pt",
+      "date": "2026-10-28"
+    },
+    "nasdaq-composite": {
+      "value": 25955.34,
+      "unit": "pt",
+      "date": "2026-10-23"
+    },
+    "aiae": {
+      "value": 51.3559,
+      "unit": "%",
+      "date": "2026-04-01"
+    },
+    "annual": {
+      "value": 13.13,
+      "unit": "%",
+      "date": "2026-10-28",
+      "signed": true
+    },
+    "ndx-drawdown": {
+      "value": -4.52,
+      "unit": "%",
+      "date": "2026-10-28"
+    },
+    "ndx-vxn": {
+      "value": 23.78,
+      "unit": "pt",
+      "date": "2026-10-28"
+    },
+    "nasdaq100-annual": {
+      "value": 18.07,
+      "unit": "%",
+      "date": "2026-10-28",
+      "signed": true
+    },
+    "semi-price": {
+      "value": 11684.0,
+      "unit": "pt",
+      "date": "2026-10-28"
+    },
+    "semi-price-drawdown": {
+      "value": -20.16,
+      "unit": "%",
+      "date": "2026-10-28",
+      "panel": "semi-price"
+    },
+    "semi-ratios": {
+      "value": 314.7855,
+      "unit": "pt",
+      "date": "2026-10-28"
+    },
+    "semi-annual": {
+      "value": 64.96,
+      "unit": "%",
+      "date": "2026-10-28",
+      "signed": true
+    },
+    "xlk-price": {
+      "value": 191.0,
+      "unit": "$",
+      "date": "2026-10-28"
+    },
+    "xlk-price-drawdown": {
+      "value": -5.45,
+      "unit": "%",
+      "date": "2026-10-28",
+      "panel": "xlk-price"
+    },
+    "xlk-annual": {
+      "value": 33.15,
+      "unit": "%",
+      "date": "2026-10-28",
+      "signed": true
+    },
+    "xlk-holdings": {
+      "value": 64.48,
+      "unit": "%",
+      "date": "2026-10-29"
+    },
+    "fin-price": {
+      "value": 56.13,
+      "unit": "$",
+      "date": "2026-10-28"
+    },
+    "fin-price-drawdown": {
+      "value": -3.8,
+      "unit": "%",
+      "date": "2026-10-28",
+      "panel": "fin-price"
+    },
+    "fin-annual": {
+      "value": 3.73,
+      "unit": "%",
+      "date": "2026-10-28",
+      "signed": true
+    },
+    "fin-rates": {
+      "value": 0.29,
+      "unit": "%",
+      "date": "2026-10-27",
+      "signed": true
+    },
+    "xly-price": {
+      "value": 115.33,
+      "unit": "$",
+      "date": "2026-10-28"
+    },
+    "xlp-price": {
+      "value": 86.84,
+      "unit": "$",
+      "date": "2026-10-28"
+    },
+    "consumer-ratio": {
+      "value": 1.3281,
+      "unit": "r",
+      "date": "2026-10-28"
+    },
+    "xly-price-drawdown": {
+      "value": -6.8,
+      "unit": "%",
+      "date": "2026-10-28",
+      "panel": "xly-price"
+    },
+    "xlp-price-drawdown": {
+      "value": -3.5,
+      "unit": "%",
+      "date": "2026-10-28",
+      "panel": "xlp-price"
+    },
+    "mag7-concentration": {
+      "value": 34.6,
+      "unit": "%",
+      "date": "2026-10-29"
+    },
+    "mag7-correlation": {
+      "value": 0.2211,
+      "unit": "r",
+      "date": "2026-10-28"
+    },
+    "mag7-index": {
+      "value": 247.99,
+      "unit": "pt",
+      "date": "2026-10-28"
+    },
+    "mag7-index-drawdown": {
+      "value": -6.5634,
+      "unit": "%",
+      "date": "2026-10-28",
+      "panel": "mag7-index"
+    },
+    "mag7-ai-capex": {
+      "value": 73.31,
+      "unit": "bn",
+      "date": "2026-09-30"
+    },
+    "cp-conc-top10": {
+      "value": 39.4,
+      "unit": "%",
+      "date": "2026-10-29"
+    }
+  }
+}

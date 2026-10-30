@@ -1,0 +1,263 @@
+{"_license": "Reuse with attribution is welcome; copying the work is not. Data (/api/**.json): CC BY 4.0. Charts, share images, embeds and quotes: free to reuse when credited \"History of Market (historyofmarket.com)\" with a link. No derivative or look-alike sites, no use of the brand names, no citation without the source. Terms: https://historyofmarket.com/license/", "_attribution": "History of Market (historyofmarket.com)", "_canonical": "https://historyofmarket.com/api/ndx/changes.json", "_terms": "https://historyofmarket.com/license/", "updated": "2026-10-05",
+  "source": {
+    "name": "Nasdaq press releases (primary) · Wikipedia 'List of Nasdaq-100 companies' (historical mirror)",
+    "url": "https://en.wikipedia.org/wiki/Nasdaq-100#Component_changes",
+    "note": "纳指 100 年度重组（Annual reconstitution）每年 12 月生效；其余为成分公司因股价权重不足、并购、上市地变更等触发的特别再平衡（Special rebalance）。条目按生效日排序；年度重组按字母顺序成对呈现，少数年份因 share class 拆分或前期 spinoff 导致进出数量不对称（以 — 占位）。"
+  },
+  "changes": [
+    {
+      "effectiveDate": "2026-10-09",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "MRNA",
+        "name": "Moderna",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "WBD",
+        "name": "Warner Bros. Discovery",
+        "sector": "Communication Services"
+      },
+      "reason": "Warner Bros. Discovery 正被 Paramount Skydance 收购；Moderna 于 10 月 9 日开盘前接替其席位（10 月 1 日公告）。",
+      "reasonEn": "Warner Bros. Discovery, which Paramount Skydance is acquiring, leaves the index; Moderna replaces it before the open on October 9 (announced October 1).",
+      "sourceUrl": "https://ir.nasdaq.com/news-releases/news-release-details/moderna-inc-join-nasdaq-100-indexr-beginning-october-9-2026"
+    },
+    {
+      "effectiveDate": "2026-09-14",
+      "type": "上市地变更",
+      "typeEn": "Listing transfer",
+      "addition": {
+        "ticker": "—",
+        "name": "(no replacement)",
+        "sector": ""
+      },
+      "removal": {
+        "ticker": "KHC",
+        "name": "Kraft Heinz",
+        "sector": "Consumer Staples"
+      },
+      "reason": "Kraft Heinz 由 Nasdaq 转至 NYSE（9 月 11 日为 Nasdaq 最后交易日），自纳指 100 剔除；成分数仍不少于 100，新方法论下不替补。",
+      "reasonEn": "Kraft Heinz transferred its listing from Nasdaq to the NYSE (last Nasdaq trading day September 11) and left the index. With at least 100 constituents remaining, the revised methodology adds no replacement.",
+      "sourceUrl": "https://news.kraftheinzcompany.com/press-releases-details/2026/Kraft-Heinz-to-Transfer-Stock-Exchange-Listing-to-NYSE/default.aspx"
+    },
+    {
+      "effectiveDate": "2026-08-05",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "—",
+        "name": "(no replacement)",
+        "sector": ""
+      },
+      "removal": {
+        "ticker": "EA",
+        "name": "Electronic Arts",
+        "sector": "Communication Services"
+      },
+      "reason": "电子艺界被沙特公共投资基金（PIF）、Silver Lake 与 Affinity Partners 组成的财团私有化收购，8 月 4 日停牌退市，自纳指 100 剔除；新方法论下不即时替补，待下一次季度审核补足。",
+      "reasonEn": "Electronic Arts was taken private by a consortium of Saudi Arabia's PIF, Silver Lake and Affinity Partners; its shares stopped trading on August 4 and it left the index. Under the revised methodology no replacement is added until the next quarterly review.",
+      "sourceUrl": "https://www.marketscreener.com/news/electronic-arts-inc-nasdaqgm-ea-dropped-from-nasdaq-100-index-ce7f50ddd889f622"
+    },
+    {
+      "effectiveDate": "2026-07-07",
+      "type": "快速纳入",
+      "typeEn": "Fast entry",
+      "addition": {
+        "ticker": "SPCX",
+        "name": "SpaceX",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "—",
+        "name": "(no removal)",
+        "sector": ""
+      },
+      "reason": "SpaceX 于 6 月 12 日 IPO，按 2026 年新增的「快速纳入」规则（排名前 40、满 15 个交易日）于 7 月 7 日开盘前加入，无剔除。",
+      "reasonEn": "SpaceX listed on June 12 and was added before the open on July 7 under the 2026 fast-entry rule (top-40 rank, 15 trading days). No company was removed.",
+      "sourceUrl": "https://www.globenewswire.com/news-release/2026/06/27/3318513/6948/en/Space-Exploration-Technologies-Corporation-to-Join-the-Nasdaq-100-Index-Beginning-July-7-2026.html"
+    },
+    {
+      "effectiveDate": "2026-06-29",
+      "type": "分拆上市",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "HONA",
+        "name": "Honeywell Aerospace",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "—",
+        "name": "(no removal)",
+        "sector": ""
+      },
+      "reason": "Honeywell Aerospace 自 Honeywell 分拆并在 Nasdaq 上市，按规则自动纳入，无剔除。",
+      "reasonEn": "Honeywell Aerospace spun off from Honeywell, listed on Nasdaq and was automatically added; no company was removed.",
+      "sourceUrl": "https://www.nasdaqtrader.com/TraderNews.aspx?id=ECA2026-399"
+    },
+    {
+      "effectiveDate": "2026-06-22",
+      "type": "季度审核",
+      "typeEn": "Quarterly review",
+      "addition": {
+        "ticker": "ALAB",
+        "name": "Astera Labs",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "CHTR",
+        "name": "Charter Communications",
+        "sector": "Communication Services"
+      },
+      "reason": "2026 年 6 月季度审核（新方法论下首次季度审核：按总股本市值排名，替换排名跌出前 125 的成分股）。",
+      "reasonEn": "June 2026 quarterly review — the first under the revised methodology (ranking by total-share market cap; companies ranked outside the top 125 replaced).",
+      "sourceUrl": "https://www.nasdaq.com/press-release/nasdaq-100-indexr-june-2026-quarterly-changes-2026-06-12"
+    },
+    {
+      "effectiveDate": "2026-06-22",
+      "type": "季度审核",
+      "typeEn": "Quarterly review",
+      "addition": {
+        "ticker": "CRWV",
+        "name": "CoreWeave",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "CTSH",
+        "name": "Cognizant Technology Solutions",
+        "sector": "Information Technology"
+      },
+      "reason": "2026 年 6 月季度审核（新方法论下首次季度审核：按总股本市值排名，替换排名跌出前 125 的成分股）。",
+      "reasonEn": "June 2026 quarterly review — the first under the revised methodology (ranking by total-share market cap; companies ranked outside the top 125 replaced).",
+      "sourceUrl": "https://www.nasdaq.com/press-release/nasdaq-100-indexr-june-2026-quarterly-changes-2026-06-12"
+    },
+    {
+      "effectiveDate": "2026-06-22",
+      "type": "季度审核",
+      "typeEn": "Quarterly review",
+      "addition": {
+        "ticker": "NBIS",
+        "name": "Nebius Group",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "INSM",
+        "name": "Insmed",
+        "sector": "Health Care"
+      },
+      "reason": "2026 年 6 月季度审核（新方法论下首次季度审核：按总股本市值排名，替换排名跌出前 125 的成分股）。",
+      "reasonEn": "June 2026 quarterly review — the first under the revised methodology (ranking by total-share market cap; companies ranked outside the top 125 replaced).",
+      "sourceUrl": "https://www.nasdaq.com/press-release/nasdaq-100-indexr-june-2026-quarterly-changes-2026-06-12"
+    },
+    {
+      "effectiveDate": "2026-06-22",
+      "type": "季度审核",
+      "typeEn": "Quarterly review",
+      "addition": {
+        "ticker": "RKLB",
+        "name": "Rocket Lab",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "VRSK",
+        "name": "Verisk Analytics",
+        "sector": "Industrials"
+      },
+      "reason": "2026 年 6 月季度审核（新方法论下首次季度审核：按总股本市值排名，替换排名跌出前 125 的成分股）。",
+      "reasonEn": "June 2026 quarterly review — the first under the revised methodology (ranking by total-share market cap; companies ranked outside the top 125 replaced).",
+      "sourceUrl": "https://www.nasdaq.com/press-release/nasdaq-100-indexr-june-2026-quarterly-changes-2026-06-12"
+    },
+    {
+      "effectiveDate": "2026-06-22",
+      "type": "季度审核",
+      "typeEn": "Quarterly review",
+      "addition": {
+        "ticker": "TER",
+        "name": "Teradyne",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "ZS",
+        "name": "Zscaler",
+        "sector": "Information Technology"
+      },
+      "reason": "2026 年 6 月季度审核（新方法论下首次季度审核：按总股本市值排名，替换排名跌出前 125 的成分股）。",
+      "reasonEn": "June 2026 quarterly review — the first under the revised methodology (ranking by total-share market cap; companies ranked outside the top 125 replaced).",
+      "sourceUrl": "https://www.nasdaq.com/press-release/nasdaq-100-indexr-june-2026-quarterly-changes-2026-06-12"
+    },
+    { "effectiveDate": "2026-05-18", "type": "权重不足", "typeEn": "Weight requirement", "addition": { "ticker": "LITE", "name": "Lumentum", "sector": "Information Technology" }, "removal": { "ticker": "CSGP", "name": "CoStar Group", "sector": "Real Estate" }, "reason": "CoStar Group 月度权重不达标，Lumentum 顶替。", "reasonEn": "CoStar Group did not meet the minimum monthly weight requirements; Lumentum added." },
+    { "effectiveDate": "2026-04-20", "type": "权重不足", "typeEn": "Weight requirement", "addition": { "ticker": "SNDK", "name": "SanDisk", "sector": "Information Technology" }, "removal": { "ticker": "TEAM", "name": "Atlassian", "sector": "Information Technology" }, "reason": "Atlassian 月度权重不达标，SanDisk 顶替。", "reasonEn": "Atlassian did not meet the minimum monthly weight requirements; SanDisk added." },
+    { "effectiveDate": "2026-01-20", "type": "上市地变更", "typeEn": "Listing transfer", "addition": { "ticker": "WMT", "name": "Walmart", "sector": "Consumer Staples" }, "removal": { "ticker": "AZN", "name": "AstraZeneca", "sector": "Health Care" }, "reason": "Walmart 由 NYSE 转至 Nasdaq；AstraZeneca 反向迁出，由 Walmart 顶替。", "reasonEn": "Walmart transferred its listing from NYSE to Nasdaq; AstraZeneca moved to NYSE — Walmart replaced it.", "sourceUrl": "https://en.wikipedia.org/wiki/Nasdaq-100#Component_changes" },
+    { "effectiveDate": "2026-01-09", "type": "权重不足", "typeEn": "Weight requirement", "addition": { "ticker": "—", "name": "(no replacement)", "sector": "" }, "removal": { "ticker": "VSNT", "name": "Versant", "sector": "Communication Services" }, "reason": "Versant 月度权重不达标，剔除后纳指 100 暂以 101 减至 100。", "reasonEn": "Versant removed for failing the minimum monthly weight requirement; index trimmed back to 100 after the earlier Versant spin-off bumped it to 101." },
+    { "effectiveDate": "2026-01-05", "type": "分拆上市", "typeEn": "Spin-off", "addition": { "ticker": "VSNT", "name": "Versant", "sector": "Communication Services" }, "removal": { "ticker": "—", "name": "(no removal)", "sector": "" }, "reason": "Versant 自 Comcast 分拆上市，按规则自动纳入纳指 100。", "reasonEn": "Versant spun off from Comcast and was automatically added to the Nasdaq-100." },
+
+    { "effectiveDate": "2025-12-22", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "ALNY", "name": "Alnylam Pharmaceuticals", "sector": "Health Care" }, "removal": { "ticker": "BIIB", "name": "Biogen", "sector": "Health Care" }, "reason": "2025 年年度重组。", "reasonEn": "2025 annual reconstitution." },
+    { "effectiveDate": "2025-12-22", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "FER", "name": "Ferrovial SE", "sector": "Industrials" }, "removal": { "ticker": "CDW", "name": "CDW", "sector": "Information Technology" }, "reason": "2025 年年度重组。", "reasonEn": "2025 annual reconstitution." },
+    { "effectiveDate": "2025-12-22", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "INSM", "name": "Insmed", "sector": "Health Care" }, "removal": { "ticker": "GFS", "name": "GlobalFoundries", "sector": "Information Technology" }, "reason": "2025 年年度重组。", "reasonEn": "2025 annual reconstitution." },
+    { "effectiveDate": "2025-12-22", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "MPWR", "name": "Monolithic Power Systems", "sector": "Information Technology" }, "removal": { "ticker": "LULU", "name": "Lululemon", "sector": "Consumer Discretionary" }, "reason": "2025 年年度重组。", "reasonEn": "2025 annual reconstitution." },
+    { "effectiveDate": "2025-12-22", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "STX", "name": "Seagate Technology", "sector": "Information Technology" }, "removal": { "ticker": "ON", "name": "ON Semiconductor", "sector": "Information Technology" }, "reason": "2025 年年度重组。", "reasonEn": "2025 annual reconstitution." },
+    { "effectiveDate": "2025-12-22", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "WDC", "name": "Western Digital", "sector": "Information Technology" }, "removal": { "ticker": "TTD", "name": "The Trade Desk", "sector": "Communication Services" }, "reason": "2025 年年度重组。", "reasonEn": "2025 annual reconstitution." },
+
+    { "effectiveDate": "2025-11-06", "type": "权重不足", "typeEn": "Weight requirement", "addition": { "ticker": "—", "name": "(no replacement)", "sector": "" }, "removal": { "ticker": "SOLS", "name": "Solstice Advanced Materials", "sector": "Materials" }, "reason": "Solstice 月度权重不达标，剔除后纳指 100 由 101 减至 100。", "reasonEn": "Solstice did not meet the monthly weight requirement; index trimmed back to 100 after the earlier spin-off." },
+    { "effectiveDate": "2025-10-30", "type": "分拆上市", "typeEn": "Spin-off", "addition": { "ticker": "SOLS", "name": "Solstice Advanced Materials", "sector": "Materials" }, "removal": { "ticker": "—", "name": "(no removal)", "sector": "" }, "reason": "Solstice Advanced Materials 自 Honeywell 分拆上市，按规则自动纳入。", "reasonEn": "Solstice Advanced Materials spun off from Honeywell and was automatically added." },
+    { "effectiveDate": "2025-07-28", "type": "上市地变更", "typeEn": "Listing transfer", "addition": { "ticker": "TRI", "name": "Thomson Reuters", "sector": "Industrials" }, "removal": { "ticker": "ANSS", "name": "Ansys", "sector": "Information Technology" }, "reason": "Thomson Reuters 由 NYSE 转至 Nasdaq；Ansys 已被 Synopsys 收购退市。", "reasonEn": "Thomson Reuters transferred its listing from NYSE to Nasdaq; Ansys had been acquired by Synopsys." },
+    { "effectiveDate": "2025-05-19", "type": "权重不足", "typeEn": "Weight requirement", "addition": { "ticker": "SHOP", "name": "Shopify", "sector": "Information Technology" }, "removal": { "ticker": "MDB", "name": "MongoDB", "sector": "Information Technology" }, "reason": "MongoDB 月度权重不达标，Shopify 顶替。", "reasonEn": "MongoDB did not meet the minimum monthly weight requirement; Shopify added." },
+
+    { "effectiveDate": "2024-12-23", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "AXON", "name": "Axon Enterprise", "sector": "Industrials" }, "removal": { "ticker": "ILMN", "name": "Illumina", "sector": "Health Care" }, "reason": "2024 年年度重组。", "reasonEn": "2024 annual reconstitution." },
+    { "effectiveDate": "2024-12-23", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "MSTR", "name": "MicroStrategy", "sector": "Information Technology" }, "removal": { "ticker": "MRNA", "name": "Moderna", "sector": "Health Care" }, "reason": "2024 年年度重组。", "reasonEn": "2024 annual reconstitution." },
+    { "effectiveDate": "2024-12-23", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "PLTR", "name": "Palantir", "sector": "Information Technology" }, "removal": { "ticker": "SMCI", "name": "Super Micro Computer", "sector": "Information Technology" }, "reason": "2024 年年度重组。", "reasonEn": "2024 annual reconstitution." },
+
+    { "effectiveDate": "2024-11-18", "type": "权重不足", "typeEn": "Weight requirement", "addition": { "ticker": "APP", "name": "AppLovin", "sector": "Communication Services" }, "removal": { "ticker": "DLTR", "name": "Dollar Tree", "sector": "Consumer Staples" }, "reason": "Dollar Tree 月度权重不达标，AppLovin 顶替。", "reasonEn": "Dollar Tree did not meet the minimum monthly weight requirement; AppLovin added." },
+    { "effectiveDate": "2024-07-22", "type": "权重不足", "typeEn": "Weight requirement", "addition": { "ticker": "SMCI", "name": "Super Micro Computer", "sector": "Information Technology" }, "removal": { "ticker": "WBA", "name": "Walgreens Boots Alliance", "sector": "Consumer Staples" }, "reason": "Walgreens 月度权重不达标，Super Micro Computer 顶替。", "reasonEn": "Walgreens Boots Alliance did not meet the minimum monthly weight requirement; Super Micro Computer added." },
+    { "effectiveDate": "2024-06-24", "type": "权重不足", "typeEn": "Weight requirement", "addition": { "ticker": "ARM", "name": "Arm Holdings", "sector": "Information Technology" }, "removal": { "ticker": "SIRI", "name": "Sirius XM", "sector": "Communication Services" }, "reason": "Sirius XM 月度权重不达标，Arm 顶替。", "reasonEn": "Sirius XM did not meet the minimum monthly weight requirement; Arm added." },
+    { "effectiveDate": "2024-03-18", "type": "并购触发", "typeEn": "M&A trigger", "addition": { "ticker": "LIN", "name": "Linde", "sector": "Materials" }, "removal": { "ticker": "SPLK", "name": "Splunk", "sector": "Information Technology" }, "reason": "Cisco 完成对 Splunk 的收购，Linde 顶替。", "reasonEn": "Cisco completed its acquisition of Splunk; Linde added." },
+
+    { "effectiveDate": "2023-12-18", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "CCEP", "name": "Coca-Cola Europacific Partners", "sector": "Consumer Staples" }, "removal": { "ticker": "ALGN", "name": "Align Technology", "sector": "Health Care" }, "reason": "2023 年年度重组。", "reasonEn": "2023 annual reconstitution." },
+    { "effectiveDate": "2023-12-18", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "CDW", "name": "CDW", "sector": "Information Technology" }, "removal": { "ticker": "EBAY", "name": "eBay", "sector": "Consumer Discretionary" }, "reason": "2023 年年度重组。", "reasonEn": "2023 annual reconstitution." },
+    { "effectiveDate": "2023-12-18", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "DASH", "name": "DoorDash", "sector": "Consumer Discretionary" }, "removal": { "ticker": "ENPH", "name": "Enphase Energy", "sector": "Information Technology" }, "reason": "2023 年年度重组。", "reasonEn": "2023 annual reconstitution." },
+    { "effectiveDate": "2023-12-18", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "MDB", "name": "MongoDB", "sector": "Information Technology" }, "removal": { "ticker": "JD", "name": "JD.com", "sector": "Consumer Discretionary" }, "reason": "2023 年年度重组。", "reasonEn": "2023 annual reconstitution." },
+    { "effectiveDate": "2023-12-18", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "ROP", "name": "Roper Technologies", "sector": "Information Technology" }, "removal": { "ticker": "LCID", "name": "Lucid Group", "sector": "Consumer Discretionary" }, "reason": "2023 年年度重组。", "reasonEn": "2023 annual reconstitution." },
+    { "effectiveDate": "2023-12-18", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "SPLK", "name": "Splunk", "sector": "Information Technology" }, "removal": { "ticker": "ZM", "name": "Zoom Video", "sector": "Communication Services" }, "reason": "2023 年年度重组。", "reasonEn": "2023 annual reconstitution." },
+
+    { "effectiveDate": "2023-12-14", "type": "并购触发", "typeEn": "M&A trigger", "addition": { "ticker": "TTWO", "name": "Take-Two Interactive", "sector": "Communication Services" }, "removal": { "ticker": "SGEN", "name": "Seagen", "sector": "Health Care" }, "reason": "Pfizer 完成对 Seagen 的收购，Take-Two 顶替。", "reasonEn": "Pfizer completed its acquisition of Seagen; Take-Two added." },
+    { "effectiveDate": "2023-07-17", "type": "并购触发", "typeEn": "M&A trigger", "addition": { "ticker": "TTD", "name": "The Trade Desk", "sector": "Communication Services" }, "removal": { "ticker": "ATVI", "name": "Activision Blizzard", "sector": "Communication Services" }, "reason": "Microsoft 完成对 Activision Blizzard 的收购，The Trade Desk 顶替。", "reasonEn": "Microsoft completed its acquisition of Activision Blizzard; The Trade Desk added." },
+    { "effectiveDate": "2023-06-20", "type": "权重不足", "typeEn": "Weight requirement", "addition": { "ticker": "ON", "name": "ON Semiconductor", "sector": "Information Technology" }, "removal": { "ticker": "RIVN", "name": "Rivian Automotive", "sector": "Consumer Discretionary" }, "reason": "Rivian 月度权重不达标，ON 顶替。", "reasonEn": "Rivian did not meet the minimum monthly weight requirement; ON Semiconductor added." },
+    { "effectiveDate": "2023-06-07", "type": "上市地变更", "typeEn": "Listing transfer", "addition": { "ticker": "GEHC", "name": "GE HealthCare", "sector": "Health Care" }, "removal": { "ticker": "FI", "name": "Fiserv", "sector": "Financials" }, "reason": "Fiserv 由 Nasdaq 转至 NYSE，GE HealthCare 顶替。", "reasonEn": "Fiserv transferred its listing from Nasdaq to NYSE; GE HealthCare added." },
+
+    { "effectiveDate": "2022-12-19", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "BKR", "name": "Baker Hughes", "sector": "Energy" }, "removal": { "ticker": "BIDU", "name": "Baidu", "sector": "Communication Services" }, "reason": "2022 年年度重组。", "reasonEn": "2022 annual reconstitution." },
+    { "effectiveDate": "2022-12-19", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "CSGP", "name": "CoStar Group", "sector": "Real Estate" }, "removal": { "ticker": "DOCU", "name": "DocuSign", "sector": "Information Technology" }, "reason": "2022 年年度重组。", "reasonEn": "2022 annual reconstitution." },
+    { "effectiveDate": "2022-12-19", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "FANG", "name": "Diamondback Energy", "sector": "Energy" }, "removal": { "ticker": "MTCH", "name": "Match Group", "sector": "Communication Services" }, "reason": "2022 年年度重组。", "reasonEn": "2022 annual reconstitution." },
+    { "effectiveDate": "2022-12-19", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "GFS", "name": "GlobalFoundries", "sector": "Information Technology" }, "removal": { "ticker": "SPLK", "name": "Splunk", "sector": "Information Technology" }, "reason": "2022 年年度重组。", "reasonEn": "2022 annual reconstitution." },
+    { "effectiveDate": "2022-12-19", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "NTES", "name": "NetEase", "sector": "Communication Services" }, "removal": { "ticker": "SWKS", "name": "Skyworks Solutions", "sector": "Information Technology" }, "reason": "2022 年年度重组。", "reasonEn": "2022 annual reconstitution." },
+    { "effectiveDate": "2022-12-19", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "RIVN", "name": "Rivian Automotive", "sector": "Consumer Discretionary" }, "removal": { "ticker": "VRSN", "name": "VeriSign", "sector": "Information Technology" }, "reason": "2022 年年度重组。", "reasonEn": "2022 annual reconstitution." },
+    { "effectiveDate": "2022-12-19", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "WBD", "name": "Warner Bros. Discovery", "sector": "Communication Services" }, "removal": { "ticker": "—", "name": "(no pair)", "sector": "" }, "reason": "2022 年年度重组（净增 1 席，由于此前 share-class 调整）。", "reasonEn": "2022 annual reconstitution (net +1, balancing an earlier share-class adjustment)." },
+
+    { "effectiveDate": "2022-11-21", "type": "权重不足", "typeEn": "Weight requirement", "addition": { "ticker": "ENPH", "name": "Enphase Energy", "sector": "Information Technology" }, "removal": { "ticker": "OKTA", "name": "Okta", "sector": "Information Technology" }, "reason": "Okta 月度权重不达标，Enphase 顶替。", "reasonEn": "Okta did not meet the minimum monthly weight requirement; Enphase added." },
+
+    { "effectiveDate": "2021-12-20", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "ABNB", "name": "Airbnb", "sector": "Consumer Discretionary" }, "removal": { "ticker": "CDW", "name": "CDW", "sector": "Information Technology" }, "reason": "2021 年年度重组。", "reasonEn": "2021 annual reconstitution." },
+    { "effectiveDate": "2021-12-20", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "DDOG", "name": "Datadog", "sector": "Information Technology" }, "removal": { "ticker": "CERN", "name": "Cerner", "sector": "Health Care" }, "reason": "2021 年年度重组。", "reasonEn": "2021 annual reconstitution." },
+    { "effectiveDate": "2021-12-20", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "FTNT", "name": "Fortinet", "sector": "Information Technology" }, "removal": { "ticker": "CHKP", "name": "Check Point", "sector": "Information Technology" }, "reason": "2021 年年度重组。", "reasonEn": "2021 annual reconstitution." },
+    { "effectiveDate": "2021-12-20", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "LCID", "name": "Lucid Group", "sector": "Consumer Discretionary" }, "removal": { "ticker": "FOX", "name": "Fox Corp. (Class B)", "sector": "Communication Services" }, "reason": "2021 年年度重组。", "reasonEn": "2021 annual reconstitution." },
+    { "effectiveDate": "2021-12-20", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "PANW", "name": "Palo Alto Networks", "sector": "Information Technology" }, "removal": { "ticker": "FOXA", "name": "Fox Corp. (Class A)", "sector": "Communication Services" }, "reason": "2021 年年度重组。", "reasonEn": "2021 annual reconstitution." },
+    { "effectiveDate": "2021-12-20", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "ZS", "name": "Zscaler", "sector": "Information Technology" }, "removal": { "ticker": "INCY", "name": "Incyte", "sector": "Health Care" }, "reason": "2021 年年度重组。", "reasonEn": "2021 annual reconstitution." },
+    { "effectiveDate": "2021-12-20", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "—", "name": "(no pair)", "sector": "" }, "removal": { "ticker": "TCOM", "name": "Trip.com", "sector": "Consumer Discretionary" }, "reason": "2021 年年度重组（净减 1 席）。", "reasonEn": "2021 annual reconstitution (net −1 to balance earlier additions)." },
+
+    { "effectiveDate": "2021-08-26", "type": "并购触发", "typeEn": "M&A trigger", "addition": { "ticker": "CRWD", "name": "CrowdStrike", "sector": "Information Technology" }, "removal": { "ticker": "MXIM", "name": "Maxim Integrated", "sector": "Information Technology" }, "reason": "Analog Devices 完成对 Maxim 的收购，CrowdStrike 顶替。", "reasonEn": "Analog Devices completed its acquisition of Maxim; CrowdStrike added." },
+    { "effectiveDate": "2021-07-21", "type": "并购触发", "typeEn": "M&A trigger", "addition": { "ticker": "HON", "name": "Honeywell", "sector": "Industrials" }, "removal": { "ticker": "ALXN", "name": "Alexion Pharmaceuticals", "sector": "Health Care" }, "reason": "AstraZeneca 完成对 Alexion 的收购，Honeywell 顶替。", "reasonEn": "AstraZeneca completed its acquisition of Alexion; Honeywell added." },
+
+    { "effectiveDate": "2020-12-21", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "AEP", "name": "American Electric Power", "sector": "Utilities" }, "removal": { "ticker": "BMRN", "name": "BioMarin Pharmaceutical", "sector": "Health Care" }, "reason": "2020 年年度重组。", "reasonEn": "2020 annual reconstitution." },
+    { "effectiveDate": "2020-12-21", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "MRVL", "name": "Marvell Technology", "sector": "Information Technology" }, "removal": { "ticker": "CTXS", "name": "Citrix Systems", "sector": "Information Technology" }, "reason": "2020 年年度重组。", "reasonEn": "2020 annual reconstitution." },
+    { "effectiveDate": "2020-12-21", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "MTCH", "name": "Match Group", "sector": "Communication Services" }, "removal": { "ticker": "EXPE", "name": "Expedia Group", "sector": "Consumer Discretionary" }, "reason": "2020 年年度重组。", "reasonEn": "2020 annual reconstitution." },
+    { "effectiveDate": "2020-12-21", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "OKTA", "name": "Okta", "sector": "Information Technology" }, "removal": { "ticker": "LBTYA", "name": "Liberty Global (Class A)", "sector": "Communication Services" }, "reason": "2020 年年度重组。", "reasonEn": "2020 annual reconstitution." },
+    { "effectiveDate": "2020-12-21", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "PTON", "name": "Peloton", "sector": "Consumer Discretionary" }, "removal": { "ticker": "LBTYK", "name": "Liberty Global (Class C)", "sector": "Communication Services" }, "reason": "2020 年年度重组。", "reasonEn": "2020 annual reconstitution." },
+    { "effectiveDate": "2020-12-21", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "TEAM", "name": "Atlassian", "sector": "Information Technology" }, "removal": { "ticker": "TTWO", "name": "Take-Two Interactive", "sector": "Communication Services" }, "reason": "2020 年年度重组。", "reasonEn": "2020 annual reconstitution." },
+    { "effectiveDate": "2020-12-21", "type": "年度重组", "typeEn": "Annual reconstitution", "addition": { "ticker": "—", "name": "(no pair)", "sector": "" }, "removal": { "ticker": "ULTA", "name": "Ulta Beauty", "sector": "Consumer Discretionary" }, "reason": "2020 年年度重组（净减 1 席）。", "reasonEn": "2020 annual reconstitution (net −1 to balance earlier additions)." },
+
+    { "effectiveDate": "2020-10-19", "type": "权重不足", "typeEn": "Weight requirement", "addition": { "ticker": "KDP", "name": "Keurig Dr Pepper", "sector": "Consumer Staples" }, "removal": { "ticker": "WDC", "name": "Western Digital", "sector": "Information Technology" }, "reason": "Western Digital 月度权重不达标，Keurig Dr Pepper 顶替。", "reasonEn": "Western Digital did not meet the minimum monthly weight requirement; Keurig Dr Pepper added." },
+    { "effectiveDate": "2020-08-24", "type": "权重不足", "typeEn": "Weight requirement", "addition": { "ticker": "PDD", "name": "Pinduoduo", "sector": "Consumer Discretionary" }, "removal": { "ticker": "NTAP", "name": "NetApp", "sector": "Information Technology" }, "reason": "NetApp 月度权重不达标，Pinduoduo 顶替。", "reasonEn": "NetApp did not meet the minimum monthly weight requirement; Pinduoduo added." },
+    { "effectiveDate": "2020-07-20", "type": "权重不足", "typeEn": "Weight requirement", "addition": { "ticker": "MRNA", "name": "Moderna", "sector": "Health Care" }, "removal": { "ticker": "CSGP", "name": "CoStar Group", "sector": "Real Estate" }, "reason": "CoStar 月度权重不达标，Moderna 顶替。", "reasonEn": "CoStar did not meet the minimum monthly weight requirement; Moderna added." },
+    { "effectiveDate": "2020-06-22", "type": "权重不足", "typeEn": "Weight requirement", "addition": { "ticker": "DOCU", "name": "DocuSign", "sector": "Information Technology" }, "removal": { "ticker": "UAL", "name": "United Airlines", "sector": "Industrials" }, "reason": "United Airlines 月度权重不达标，DocuSign 顶替。", "reasonEn": "United Airlines did not meet the minimum monthly weight requirement; DocuSign added." },
+    { "effectiveDate": "2020-04-30", "type": "权重不足", "typeEn": "Weight requirement", "addition": { "ticker": "ZM", "name": "Zoom Video", "sector": "Communication Services" }, "removal": { "ticker": "WTW", "name": "Willis Towers Watson", "sector": "Financials" }, "reason": "WTW 月度权重不达标，Zoom 顶替。", "reasonEn": "WTW did not meet the minimum monthly weight requirement; Zoom added." },
+    { "effectiveDate": "2020-04-20", "type": "权重不足", "typeEn": "Weight requirement", "addition": { "ticker": "DXCM", "name": "DexCom", "sector": "Health Care" }, "removal": { "ticker": "AAL", "name": "American Airlines", "sector": "Industrials" }, "reason": "American Airlines 月度权重不达标，DexCom 顶替。", "reasonEn": "American Airlines did not meet the minimum monthly weight requirement; DexCom added." }
+  ]
+}

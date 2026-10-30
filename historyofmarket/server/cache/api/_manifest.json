@@ -1,0 +1,1076 @@
+{
+  "$schema_version": "1.1",
+  "generated_at": "2026-10-29T09:23:30.971123+00:00",
+  "datasets": [
+    {
+      "key": "aiae",
+      "url": "https://historyofmarket.com/api/aiae.json",
+      "path": "/api/aiae.json",
+      "bytes": 34900,
+      "sha256": "3b829c70d87348a58078d74464322b02bd08d94017af32e34721f4893a224f2a",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "consumer/companies",
+      "url": "https://historyofmarket.com/api/consumer/companies.json",
+      "path": "/api/consumer/companies.json",
+      "bytes": 736538,
+      "sha256": "707d0291de0d1b3aeb14ab01fdb47b8bf2f9f7fbc83e84de4d3662d103f115ce",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "consumer/definitions",
+      "url": "https://historyofmarket.com/api/consumer/definitions.json",
+      "path": "/api/consumer/definitions.json",
+      "bytes": 7074,
+      "sha256": "c861053009f9d9e380666397ad6477e8db5836625799fcb30c335b8fa4b3dc14",
+      "content_modified": "2026-09-29T11:33:13.332663+00:00",
+      "modified": "2026-09-29T11:33:13.332663+00:00"
+    },
+    {
+      "key": "consumer/extinction",
+      "url": "https://historyofmarket.com/api/consumer/extinction.json",
+      "path": "/api/consumer/extinction.json",
+      "bytes": 8325,
+      "sha256": "f03989b9d8d4c46a5acbac1ae776a584c7290b2ed024181663158e1a17aa7684",
+      "content_modified": "2026-09-29T11:33:13.332663+00:00",
+      "modified": "2026-09-29T11:33:13.332663+00:00"
+    },
+    {
+      "key": "consumer/ratio",
+      "url": "https://historyofmarket.com/api/consumer/ratio.json",
+      "path": "/api/consumer/ratio.json",
+      "bytes": 293623,
+      "sha256": "f7f5513464cdd8d6786c13e806b924e2f4bfb02d31c0775a52e93ce8cd231ee5",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "consumer/reclass-2023",
+      "url": "https://historyofmarket.com/api/consumer/reclass-2023.json",
+      "path": "/api/consumer/reclass-2023.json",
+      "bytes": 3169,
+      "sha256": "7a161c86b1cc7a9a9c01bc85b7386e3e6f761a7618650269f946c667ef85d96e",
+      "content_modified": "2026-09-29T11:33:13.332663+00:00",
+      "modified": "2026-09-29T11:33:13.332663+00:00"
+    },
+    {
+      "key": "consumer/xlp-annual-returns",
+      "url": "https://historyofmarket.com/api/consumer/xlp-annual-returns.json",
+      "path": "/api/consumer/xlp-annual-returns.json",
+      "bytes": 2766,
+      "sha256": "1a1ddd35f2c051724264356364f70d0e7ab699fd00e0ccb47f6c51a6448c64f3",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "consumer/xlp-annual-tr",
+      "url": "https://historyofmarket.com/api/consumer/xlp-annual-tr.json",
+      "path": "/api/consumer/xlp-annual-tr.json",
+      "bytes": 3132,
+      "sha256": "ca375a1177261ef48cfe43378f53d736d8c1f6b2178279e993dbb6d33daa9e94",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "consumer/xlp-holdings",
+      "url": "https://historyofmarket.com/api/consumer/xlp-holdings.json",
+      "path": "/api/consumer/xlp-holdings.json",
+      "bytes": 3952,
+      "sha256": "1c6e1b04853d1e1a12661a679cd477b1469e18030e4ddc129b75f408283dd6f0",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "consumer/xlp-intrayear-dd",
+      "url": "https://historyofmarket.com/api/consumer/xlp-intrayear-dd.json",
+      "path": "/api/consumer/xlp-intrayear-dd.json",
+      "bytes": 5769,
+      "sha256": "5f275c76b2b554426e3e61da1fbdd722b4e5067ff3c7588ef7f061789be0f6aa",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "consumer/xlp-monthly",
+      "url": "https://historyofmarket.com/api/consumer/xlp-monthly.json",
+      "path": "/api/consumer/xlp-monthly.json",
+      "bytes": 6927,
+      "sha256": "5b2cb2c91db7dc409bbc02ff7faa16d9bbbc41c26885e34619a03165b9cb08b5",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "consumer/xlp-price",
+      "url": "https://historyofmarket.com/api/consumer/xlp-price.json",
+      "path": "/api/consumer/xlp-price.json",
+      "bytes": 424993,
+      "sha256": "d2030f689e547808141b851ab4ebec5057f6d69d5d3548becdb928ef96d65c7a",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "consumer/xlp-rolling5y",
+      "url": "https://historyofmarket.com/api/consumer/xlp-rolling5y.json",
+      "path": "/api/consumer/xlp-rolling5y.json",
+      "bytes": 30026,
+      "sha256": "a0e348b70c94c1ed6689b003bbfcfa3205f7c9ec2f361b8cec04e168f9e90c44",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "consumer/xlp-volatility",
+      "url": "https://historyofmarket.com/api/consumer/xlp-volatility.json",
+      "path": "/api/consumer/xlp-volatility.json",
+      "bytes": 516918,
+      "sha256": "48749b5e02e1559405505ce53e90dfd04286497832510d27e15549ab7fb017cf",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "consumer/xly-annual-returns",
+      "url": "https://historyofmarket.com/api/consumer/xly-annual-returns.json",
+      "path": "/api/consumer/xly-annual-returns.json",
+      "bytes": 2782,
+      "sha256": "806332f326a5832e6547bdf50f41ba41ba948321a04b7574f10ee6d85a5dadf4",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "consumer/xly-annual-tr",
+      "url": "https://historyofmarket.com/api/consumer/xly-annual-tr.json",
+      "path": "/api/consumer/xly-annual-tr.json",
+      "bytes": 3144,
+      "sha256": "fc745fbf763315176f9f82830f3330e35eb36e48e865b5ad3d7f65b0351b1b24",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "consumer/xly-holdings",
+      "url": "https://historyofmarket.com/api/consumer/xly-holdings.json",
+      "path": "/api/consumer/xly-holdings.json",
+      "bytes": 3978,
+      "sha256": "4ed45f48b4c5fb32b4807f67c02ad9da113656a6f3b090396f8f1c5e58bf5b34",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "consumer/xly-intrayear-dd",
+      "url": "https://historyofmarket.com/api/consumer/xly-intrayear-dd.json",
+      "path": "/api/consumer/xly-intrayear-dd.json",
+      "bytes": 5771,
+      "sha256": "45cf350fb43151686336a27ebf33d8764425e87bc37b0962416714e5d94ff117",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "consumer/xly-monthly",
+      "url": "https://historyofmarket.com/api/consumer/xly-monthly.json",
+      "path": "/api/consumer/xly-monthly.json",
+      "bytes": 6940,
+      "sha256": "7abed696077031b99498a7f73edd1919c72ca5ce66b4114cca4f5378044630b9",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "consumer/xly-price",
+      "url": "https://historyofmarket.com/api/consumer/xly-price.json",
+      "path": "/api/consumer/xly-price.json",
+      "bytes": 424576,
+      "sha256": "80a299a5f8e319523cc3eb94d688c0f41a0df730b6b94105d1f4b5150d6adc7b",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "consumer/xly-rolling5y",
+      "url": "https://historyofmarket.com/api/consumer/xly-rolling5y.json",
+      "path": "/api/consumer/xly-rolling5y.json",
+      "bytes": 30076,
+      "sha256": "0413f996fcc9c5bb200e10b78ced64ac90086a3a13a209c47f4a312f9688b81c",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "consumer/xly-volatility",
+      "url": "https://historyofmarket.com/api/consumer/xly-volatility.json",
+      "path": "/api/consumer/xly-volatility.json",
+      "bytes": 516604,
+      "sha256": "0677265bc7efd330e341d3d791aaf62f6c8d84431b6f73234e594f5bcd62afa5",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "dow/century",
+      "url": "https://historyofmarket.com/api/dow/century.json",
+      "path": "/api/dow/century.json",
+      "bytes": 57491,
+      "sha256": "f8c8e694ca8c32a0149286aee811cd98aaa1da5cd36a5df5cdf5777df77d2d4b",
+      "content_modified": "2026-10-24T08:42:04.936712+00:00",
+      "modified": "2026-10-24T08:42:04.936712+00:00"
+    },
+    {
+      "key": "fin/annual-returns",
+      "url": "https://historyofmarket.com/api/fin/annual-returns.json",
+      "path": "/api/fin/annual-returns.json",
+      "bytes": 2493,
+      "sha256": "fdb16e252f07dcf650764dae0889c9ef03ec725c88cb2b1dc68ebc488b193b1a",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "fin/annual-tr",
+      "url": "https://historyofmarket.com/api/fin/annual-tr.json",
+      "path": "/api/fin/annual-tr.json",
+      "bytes": 2857,
+      "sha256": "2b7df593735bd78af7a5b1d3b90bf60ae1ccdcd6b1ed0eea4a96125ea68c8885",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "fin/crisis-2008",
+      "url": "https://historyofmarket.com/api/fin/crisis-2008.json",
+      "path": "/api/fin/crisis-2008.json",
+      "bytes": 7033,
+      "sha256": "44567a0844a3d973f52361df05680c4f1ac2bec2ecc68b602c0d6421c37ded56",
+      "content_modified": "2026-09-29T11:33:13.332663+00:00",
+      "modified": "2026-09-29T11:33:13.332663+00:00"
+    },
+    {
+      "key": "fin/drawdowns",
+      "url": "https://historyofmarket.com/api/fin/drawdowns.json",
+      "path": "/api/fin/drawdowns.json",
+      "bytes": 7663,
+      "sha256": "7e081df9cd76d255ec9071bf9cd70b64d64f044833941901917a1589b0f13f7e",
+      "content_modified": "2026-10-01T09:54:55.402247+00:00",
+      "modified": "2026-10-01T09:54:55.402247+00:00"
+    },
+    {
+      "key": "fin/holdings",
+      "url": "https://historyofmarket.com/api/fin/holdings.json",
+      "path": "/api/fin/holdings.json",
+      "bytes": 3970,
+      "sha256": "89c1101f2b0b5e325197499119d30db78b55792e80a4026230d5140f32abe7ec",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "fin/intrayear-dd",
+      "url": "https://historyofmarket.com/api/fin/intrayear-dd.json",
+      "path": "/api/fin/intrayear-dd.json",
+      "bytes": 5689,
+      "sha256": "cfa3b6d81a67e449d57b03e800f2c2da7e5d89b5e4d3a68d373e22321efa6f3d",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "fin/monthly",
+      "url": "https://historyofmarket.com/api/fin/monthly.json",
+      "path": "/api/fin/monthly.json",
+      "bytes": 6595,
+      "sha256": "2a6509b8380bf228ef6ac83a099a5dea67e674ccc1fc09774c687c6021b397a7",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "fin/price",
+      "url": "https://historyofmarket.com/api/fin/price.json",
+      "path": "/api/fin/price.json",
+      "bytes": 424296,
+      "sha256": "9c7145692eb4d5de25f487196a94fc2a7bf3719726d35f714e9371767a8d2709",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "fin/rates",
+      "url": "https://historyofmarket.com/api/fin/rates.json",
+      "path": "/api/fin/rates.json",
+      "bytes": 764386,
+      "sha256": "35ebeda38cf13758d5d7452ff752b0b16321ca17ef646426944bc6f0e20eefb5",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "fin/reclass-2023",
+      "url": "https://historyofmarket.com/api/fin/reclass-2023.json",
+      "path": "/api/fin/reclass-2023.json",
+      "bytes": 2545,
+      "sha256": "39a471432a5e0c017d8acb0de6f68010024e612650bed73e2b48df372cafe33b",
+      "content_modified": "2026-09-29T11:33:13.332663+00:00",
+      "modified": "2026-09-29T11:33:13.332663+00:00"
+    },
+    {
+      "key": "fin/rolling5y",
+      "url": "https://historyofmarket.com/api/fin/rolling5y.json",
+      "path": "/api/fin/rolling5y.json",
+      "bytes": 29960,
+      "sha256": "e1c16a036926252f8c0dd11344ad2a2acbf36ec9bea947199c8a73c4327d747d",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "fin/volatility",
+      "url": "https://historyofmarket.com/api/fin/volatility.json",
+      "path": "/api/fin/volatility.json",
+      "bytes": 515524,
+      "sha256": "6e19e99c9a97facd6dd3751a3e04092af02048bc9021c4298a330e81f02afd29",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "latest/concentration",
+      "url": "https://historyofmarket.com/api/latest/concentration.json",
+      "path": "/api/latest/concentration.json",
+      "bytes": 10757,
+      "sha256": "91d363f8b06e0e4e93e27abb35f6664d6b851288e2ed1de9ebb60622283c3519",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "latest/dd-cases",
+      "url": "https://historyofmarket.com/api/latest/dd-cases.json",
+      "path": "/api/latest/dd-cases.json",
+      "bytes": 131676,
+      "sha256": "8982394fe50910b54fb99a742cb5d7dee52cf42442cb5d5ef5abe34361fb46fb",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "latest/dd-study",
+      "url": "https://historyofmarket.com/api/latest/dd-study.json",
+      "path": "/api/latest/dd-study.json",
+      "bytes": 47584,
+      "sha256": "a20445524b72de9beb7fb42b66f5f282136e3fe22cbeb92e204a2ac33573abed",
+      "content_modified": "2026-10-24T08:42:04.936712+00:00",
+      "modified": "2026-10-24T08:42:04.936712+00:00"
+    },
+    {
+      "key": "m7/index",
+      "url": "https://historyofmarket.com/api/m7/index.json",
+      "path": "/api/m7/index.json",
+      "bytes": 396465,
+      "sha256": "57beb0feae3cd65a55705771f6e9d2e6a0099492f5d9f483afe995f00eeea883",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "macro/cpi",
+      "url": "https://historyofmarket.com/api/macro/cpi.json",
+      "path": "/api/macro/cpi.json",
+      "bytes": 55190,
+      "sha256": "34daaadabcf23b9ce3abad1382093b41aae7f5f67999773ea773dd1b6a3339d0",
+      "content_modified": "2026-10-20T09:43:49.147781+00:00",
+      "modified": "2026-10-20T09:43:49.147781+00:00"
+    },
+    {
+      "key": "mag7/ai-capex",
+      "url": "https://historyofmarket.com/api/mag7/ai-capex.json",
+      "path": "/api/mag7/ai-capex.json",
+      "bytes": 9009,
+      "sha256": "dd1416148472f431b01285eab3e9ac3d0587df55a9d13f021ea4acabfc6cd3fe",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "mag7/ai-valuation",
+      "url": "https://historyofmarket.com/api/mag7/ai-valuation.json",
+      "path": "/api/mag7/ai-valuation.json",
+      "bytes": 54395,
+      "sha256": "2f386cde325dc46fd0c73ce82746ec3aabd6d7c488644372488814805fb2bc33",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "mag7/concentration",
+      "url": "https://historyofmarket.com/api/mag7/concentration.json",
+      "path": "/api/mag7/concentration.json",
+      "bytes": 3638,
+      "sha256": "2f42c83d5288a83ecc4464f1c7ef912f84e0233e1ed111b8eac0cc96972a7f3a",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "mag7/correlation",
+      "url": "https://historyofmarket.com/api/mag7/correlation.json",
+      "path": "/api/mag7/correlation.json",
+      "bytes": 59060,
+      "sha256": "438b1a397bda5a8314868d9ba10d9f9d6344af1f60fcfcb04c84f935990a2f8d",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "mag7/drawdown",
+      "url": "https://historyofmarket.com/api/mag7/drawdown.json",
+      "path": "/api/mag7/drawdown.json",
+      "bytes": 991033,
+      "sha256": "ecb459cdd41999445e0578c2eb29795bc802ddb6a3819e6e6de8d5180ba3264d",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "mag7/index",
+      "url": "https://historyofmarket.com/api/mag7/index.json",
+      "path": "/api/mag7/index.json",
+      "bytes": 396467,
+      "sha256": "7493893ea5d5bfc4dd5478c92c082094b10cac095e014404fff73e2861cbc2ea",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "mag7/predecessors",
+      "url": "https://historyofmarket.com/api/mag7/predecessors.json",
+      "path": "/api/mag7/predecessors.json",
+      "bytes": 7859,
+      "sha256": "1c4d0178534a087fb805e335f28301aa485efb379627cb68f7ce9ec194c45f3d",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "market-pulse",
+      "url": "https://historyofmarket.com/api/market-pulse.json",
+      "path": "/api/market-pulse.json",
+      "bytes": 1054,
+      "sha256": "56e99f7f3fc5224e7ebb16c09c052607ee2d2a31d797884ca9367f7f0db9eca2",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "nasdaq/100",
+      "url": "https://historyofmarket.com/api/nasdaq/100.json",
+      "path": "/api/nasdaq/100.json",
+      "bytes": 40033,
+      "sha256": "704c86cad137eba7122aff4a65eebe5413c4475578f0369396705f5782d101e1",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "nasdaq/composite",
+      "url": "https://historyofmarket.com/api/nasdaq/composite.json",
+      "path": "/api/nasdaq/composite.json",
+      "bytes": 582197,
+      "sha256": "f014df1df6164fd488ce5aeff9a168e1d8d060b7309292ef3516d1d236fc7677",
+      "content_modified": "2026-10-24T08:42:04.936712+00:00",
+      "modified": "2026-10-24T08:42:04.936712+00:00"
+    },
+    {
+      "key": "ndx/annual-returns",
+      "url": "https://historyofmarket.com/api/ndx/annual-returns.json",
+      "path": "/api/ndx/annual-returns.json",
+      "bytes": 3182,
+      "sha256": "ba3d120aa9b14b2b8ee1e8953f0e902918ac35ec28b74d9a6b8eac1596924899",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "ndx/annual-tr",
+      "url": "https://historyofmarket.com/api/ndx/annual-tr.json",
+      "path": "/api/ndx/annual-tr.json",
+      "bytes": 3332,
+      "sha256": "9835a1794548304dd4ee9eefdcb32a9538d5688cc704270b1c96011f50190eb1",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "ndx/breadth",
+      "url": "https://historyofmarket.com/api/ndx/breadth.json",
+      "path": "/api/ndx/breadth.json",
+      "bytes": 61940,
+      "sha256": "e8c45e0ebb68fa0e6bfdbe1b87bebc3a83191137fc5015161e5f3be906bf85a8",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "ndx/changes",
+      "url": "https://historyofmarket.com/api/ndx/changes.json",
+      "path": "/api/ndx/changes.json",
+      "bytes": 34183,
+      "sha256": "24adf4cd4b40a1af6c468e20962cae89e83df77352a495ccc769bf0a882352bd",
+      "content_modified": "2026-10-06T09:50:21.834606+00:00",
+      "modified": "2026-10-06T09:50:21.834606+00:00"
+    },
+    {
+      "key": "ndx/daily",
+      "url": "https://historyofmarket.com/api/ndx/daily.json",
+      "path": "/api/ndx/daily.json",
+      "bytes": 432734,
+      "sha256": "440840fe9daa3b42cda94b42d500adcbcb538097ade2d093b3d84cc96e9a8cda",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "ndx/daily-distribution",
+      "url": "https://historyofmarket.com/api/ndx/daily-distribution.json",
+      "path": "/api/ndx/daily-distribution.json",
+      "bytes": 8595,
+      "sha256": "77c7e5841112fc0da0203ccb1337442c307927df5e2be8b217f858245b713246",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "ndx/daily-extremes",
+      "url": "https://historyofmarket.com/api/ndx/daily-extremes.json",
+      "path": "/api/ndx/daily-extremes.json",
+      "bytes": 1155,
+      "sha256": "74e9ba97212344cd15747eeab3aabaa7de83a800cee46b9818748e227c4e9531",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "ndx/drawdowns",
+      "url": "https://historyofmarket.com/api/ndx/drawdowns.json",
+      "path": "/api/ndx/drawdowns.json",
+      "bytes": 17046,
+      "sha256": "e81040ee1910abc7550ff709cbaa2cc4dd152223e119f8ed6a90068c5dd93ebc",
+      "content_modified": "2026-10-24T08:42:04.936712+00:00",
+      "modified": "2026-10-24T08:42:04.936712+00:00"
+    },
+    {
+      "key": "ndx/driver-decomp",
+      "url": "https://historyofmarket.com/api/ndx/driver-decomp.json",
+      "path": "/api/ndx/driver-decomp.json",
+      "bytes": 4990,
+      "sha256": "04ce4ad3c373593f7eb0891726e8cb60ad2b2caa98aaa0557f7e03065342098a",
+      "content_modified": "2026-09-29T11:33:13.332663+00:00",
+      "modified": "2026-09-29T11:33:13.332663+00:00"
+    },
+    {
+      "key": "ndx/forward-pe",
+      "url": "https://historyofmarket.com/api/ndx/forward-pe.json",
+      "path": "/api/ndx/forward-pe.json",
+      "bytes": 60037,
+      "sha256": "d0eb4e247996d5b6491e7c11a793cd2683149ac2fd22ac7461f75447ecb86fb5",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "ndx/intrayear-dd",
+      "url": "https://historyofmarket.com/api/ndx/intrayear-dd.json",
+      "path": "/api/ndx/intrayear-dd.json",
+      "bytes": 7843,
+      "sha256": "cb7ccf99a549b5672576c40cef267c69183315356d794c6cce37cd8bde83d30b",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "ndx/monthly",
+      "url": "https://historyofmarket.com/api/ndx/monthly.json",
+      "path": "/api/ndx/monthly.json",
+      "bytes": 9291,
+      "sha256": "b4597de729c976e33874ebfce73b1a583e8cd14eb7abbfe08315d0bb7a843702",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "ndx/price",
+      "url": "https://historyofmarket.com/api/ndx/price.json",
+      "path": "/api/ndx/price.json",
+      "bytes": 645756,
+      "sha256": "f12517e0983597b227579b8f1d7dae3fd10db33c6f28b6dbfd39062a156a28c3",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "ndx/rolling5y",
+      "url": "https://historyofmarket.com/api/ndx/rolling5y.json",
+      "path": "/api/ndx/rolling5y.json",
+      "bytes": 48507,
+      "sha256": "55550de06da04d48c7b5c7bf4dd093655239e4102afd7c093f69af76572c4f47",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "ndx/volatility",
+      "url": "https://historyofmarket.com/api/ndx/volatility.json",
+      "path": "/api/ndx/volatility.json",
+      "bytes": 782147,
+      "sha256": "ae09249ff9a8322147b82db14986080b2ed92c65884c99a7fd621ce754a6f917",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "ndx/vxn",
+      "url": "https://historyofmarket.com/api/ndx/vxn.json",
+      "path": "/api/ndx/vxn.json",
+      "bytes": 259255,
+      "sha256": "a29d40bf5bb87d72d50a5ea5d1628972ce5775f6e91de7357ddb826b68f82b6f",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "qqq/return-details",
+      "url": "https://historyofmarket.com/api/qqq/return-details.json",
+      "path": "/api/qqq/return-details.json",
+      "bytes": 4093,
+      "sha256": "fc1b78fc3f789be9f94c64a01591a7553fc3a44a249788516db274b33bad8405",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "recessions",
+      "url": "https://historyofmarket.com/api/recessions.json",
+      "path": "/api/recessions.json",
+      "bytes": 59576,
+      "sha256": "74005ed33f422956a4640555a38c640d50e4994cf78c95411f6ddf333d178878",
+      "content_modified": "2026-10-03T09:45:07.990567+00:00",
+      "modified": "2026-10-03T09:45:07.990567+00:00"
+    },
+    {
+      "key": "sectors/forward-pe",
+      "url": "https://historyofmarket.com/api/sectors/forward-pe.json",
+      "path": "/api/sectors/forward-pe.json",
+      "bytes": 285883,
+      "sha256": "88a291387dd679120c11e907bc1794cb07f93c000591e0c9d26f7c33d41ecc95",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "semi/annual-returns",
+      "url": "https://historyofmarket.com/api/semi/annual-returns.json",
+      "path": "/api/semi/annual-returns.json",
+      "bytes": 2704,
+      "sha256": "46a52baeb94102a5d2466f9c5d5d00dc3dc208f4e755a61e69c75bd3ed2b42ed",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "semi/annual-tr",
+      "url": "https://historyofmarket.com/api/semi/annual-tr.json",
+      "path": "/api/semi/annual-tr.json",
+      "bytes": 2998,
+      "sha256": "71027c6dabea4c90ffafede4000eccf0ff52f3babff540a7d66751ec2609210c",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "semi/composition",
+      "url": "https://historyofmarket.com/api/semi/composition.json",
+      "path": "/api/semi/composition.json",
+      "bytes": 9411,
+      "sha256": "c726484fedf184d53ef4aaa1608c527f4c2d4a501bfbb26ae7fff4fe9cef9543",
+      "content_modified": "2026-10-21T08:21:15.027814+00:00",
+      "modified": "2026-10-21T08:21:15.027814+00:00"
+    },
+    {
+      "key": "semi/drawdowns",
+      "url": "https://historyofmarket.com/api/semi/drawdowns.json",
+      "path": "/api/semi/drawdowns.json",
+      "bytes": 15156,
+      "sha256": "d73759581fef52cc3d5d780cf1ff65bb6eb0d9d817631a99b1bfc30003d8aece",
+      "content_modified": "2026-09-29T11:33:13.332663+00:00",
+      "modified": "2026-09-29T11:33:13.332663+00:00"
+    },
+    {
+      "key": "semi/etf-compare",
+      "url": "https://historyofmarket.com/api/semi/etf-compare.json",
+      "path": "/api/semi/etf-compare.json",
+      "bytes": 15158,
+      "sha256": "7674224a3dd628ccdb9984ffe1faf92b82e377c33b691d7984af1d933fed5949",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "semi/intrayear-dd",
+      "url": "https://historyofmarket.com/api/semi/intrayear-dd.json",
+      "path": "/api/semi/intrayear-dd.json",
+      "bytes": 6373,
+      "sha256": "a5aed337e240799bb65288304d0eeebb2c8e69ddcaa1ca6cdf64ef0c77c17042",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "semi/memory-valuation",
+      "url": "https://historyofmarket.com/api/semi/memory-valuation.json",
+      "path": "/api/semi/memory-valuation.json",
+      "bytes": 31174,
+      "sha256": "9e76d0c831ad23c76c373f426e69a86ea5c091f7f9d1bcec67b3987e855314af",
+      "content_modified": "2026-10-24T08:42:04.936712+00:00",
+      "modified": "2026-10-24T08:42:04.936712+00:00"
+    },
+    {
+      "key": "semi/monthly",
+      "url": "https://historyofmarket.com/api/semi/monthly.json",
+      "path": "/api/semi/monthly.json",
+      "bytes": 7437,
+      "sha256": "3c36991ec90783238198b963f7c39b4cb3aef26ffaa3cf130ccf425dcc8368da",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "semi/price",
+      "url": "https://historyofmarket.com/api/semi/price.json",
+      "path": "/api/semi/price.json",
+      "bytes": 507163,
+      "sha256": "28fa35a8ee6fa71b8953819dcae077f50a69c82f2ce669afb5731e8793f8db4e",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "semi/ratios",
+      "url": "https://historyofmarket.com/api/semi/ratios.json",
+      "path": "/api/semi/ratios.json",
+      "bytes": 940668,
+      "sha256": "1e0fb50118b3a9dddffd9c92767d457a6856821bd9ebcbb016e1cd437639effa",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "semi/rolling5y",
+      "url": "https://historyofmarket.com/api/semi/rolling5y.json",
+      "path": "/api/semi/rolling5y.json",
+      "bytes": 36818,
+      "sha256": "f56f50b34129d9ac3f2286340f4fa9180272dd9025fc61b49fe7040fa36c5ce8",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "semi/smh",
+      "url": "https://historyofmarket.com/api/semi/smh.json",
+      "path": "/api/semi/smh.json",
+      "bytes": 8846,
+      "sha256": "6a7bacdeb6b38284a8ec42f8590bc93a35affe6761ad81588e61b8a172e1916c",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "semi/soxx",
+      "url": "https://historyofmarket.com/api/semi/soxx.json",
+      "path": "/api/semi/soxx.json",
+      "bytes": 4787,
+      "sha256": "040d95e6035b7165ea38f394def90938ad7e2063a9ed45783ee291e6a2e70558",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "semi/volatility",
+      "url": "https://historyofmarket.com/api/semi/volatility.json",
+      "path": "/api/semi/volatility.json",
+      "bytes": 613734,
+      "sha256": "1e0d2cf9f8a67b843a6ec1b3959dca6ceb2aee9c0ff4a99f7f45e05247549ab4",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "sp500/annual-returns",
+      "url": "https://historyofmarket.com/api/sp500/annual-returns.json",
+      "path": "/api/sp500/annual-returns.json",
+      "bytes": 6351,
+      "sha256": "171364ead58ddb0d6a1b910792212d970a2bcf617330a8a266515afd39e6bf50",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "sp500/annual-tr",
+      "url": "https://historyofmarket.com/api/sp500/annual-tr.json",
+      "path": "/api/sp500/annual-tr.json",
+      "bytes": 5534,
+      "sha256": "51c27ead9ee67d89f762d91a2cd8814968204c28b2439e5b61b86c7b26c7b9df",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "sp500/breadth",
+      "url": "https://historyofmarket.com/api/sp500/breadth.json",
+      "path": "/api/sp500/breadth.json",
+      "bytes": 61110,
+      "sha256": "382989643493f028158133c81e7f9dc646f307997f45922f893d9a95dc45280c",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "sp500/century",
+      "url": "https://historyofmarket.com/api/sp500/century.json",
+      "path": "/api/sp500/century.json",
+      "bytes": 49046,
+      "sha256": "85c0ea078c9b17f007d52bd892ad090d31ea9f0f498a1e5a7a618c2dd2ee1596",
+      "content_modified": "2026-10-24T08:42:04.936712+00:00",
+      "modified": "2026-10-24T08:42:04.936712+00:00"
+    },
+    {
+      "key": "sp500/changes",
+      "url": "https://historyofmarket.com/api/sp500/changes.json",
+      "path": "/api/sp500/changes.json",
+      "bytes": 161179,
+      "sha256": "28709d045f11052f1076d138bbb38d69a5969f992234bdb05d56bfffc5a2b530",
+      "content_modified": "2026-10-06T09:50:21.834606+00:00",
+      "modified": "2026-10-06T09:50:21.834606+00:00"
+    },
+    {
+      "key": "sp500/constituents",
+      "url": "https://historyofmarket.com/api/sp500/constituents.json",
+      "path": "/api/sp500/constituents.json",
+      "bytes": 107036,
+      "sha256": "a4ac261c65d3cc6823ee554e7eb0a224eb671ab18bf6a7e9523a4d394465656e",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "sp500/daily-distribution",
+      "url": "https://historyofmarket.com/api/sp500/daily-distribution.json",
+      "path": "/api/sp500/daily-distribution.json",
+      "bytes": 5823,
+      "sha256": "3aaa0bb0b76d863494f6592425feb582aed2d51856556fcc02ec7dcddb734e72",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "sp500/daily-extremes",
+      "url": "https://historyofmarket.com/api/sp500/daily-extremes.json",
+      "path": "/api/sp500/daily-extremes.json",
+      "bytes": 1156,
+      "sha256": "30451847c58c55279cd19a18593231ba1e80050f3b2afdf3a0430706a40505d0",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "sp500/drawdowns",
+      "url": "https://historyofmarket.com/api/sp500/drawdowns.json",
+      "path": "/api/sp500/drawdowns.json",
+      "bytes": 19059,
+      "sha256": "146715116bf98941fad26d2e5cb61e63fb1dada6069874e8818b09cd229d7bbf",
+      "content_modified": "2026-09-29T11:33:13.332663+00:00",
+      "modified": "2026-09-29T11:33:13.332663+00:00"
+    },
+    {
+      "key": "sp500/driver-decomp",
+      "url": "https://historyofmarket.com/api/sp500/driver-decomp.json",
+      "path": "/api/sp500/driver-decomp.json",
+      "bytes": 16163,
+      "sha256": "cb9d4a554541c00a497166f91d53315c4f1a2c88e02576780837d946bc8b840b",
+      "content_modified": "2026-09-29T11:33:13.332663+00:00",
+      "modified": "2026-09-29T11:33:13.332663+00:00"
+    },
+    {
+      "key": "sp500/eps",
+      "url": "https://historyofmarket.com/api/sp500/eps.json",
+      "path": "/api/sp500/eps.json",
+      "bytes": 6996,
+      "sha256": "02cfeeae2f41b531f0fe056e049c67378dd91b700f94d15bb4080ec7f33f3785",
+      "content_modified": "2026-09-29T11:33:13.332663+00:00",
+      "modified": "2026-09-29T11:33:13.332663+00:00"
+    },
+    {
+      "key": "sp500/forward-pe",
+      "url": "https://historyofmarket.com/api/sp500/forward-pe.json",
+      "path": "/api/sp500/forward-pe.json",
+      "bytes": 75402,
+      "sha256": "0eb0213f2be353861aa68dc927057a4aeed64c49fd2dd0e4765a16f0b3dd1fa5",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "sp500/intrayear-dd",
+      "url": "https://historyofmarket.com/api/sp500/intrayear-dd.json",
+      "path": "/api/sp500/intrayear-dd.json",
+      "bytes": 16800,
+      "sha256": "7a6c1e7849c93172150a60d00b9f085af6ac684fff5ab0c08a3afac54e3fe7ef",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "sp500/monthly",
+      "url": "https://historyofmarket.com/api/sp500/monthly.json",
+      "path": "/api/sp500/monthly.json",
+      "bytes": 6333,
+      "sha256": "d4b476c28b6d432efecc86d8831a0c4314d02ac02d24143cef2794c88275ac52",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "sp500/pe",
+      "url": "https://historyofmarket.com/api/sp500/pe.json",
+      "path": "/api/sp500/pe.json",
+      "bytes": 149714,
+      "sha256": "551c6eff75dfce3fece531cef7b16e894507ee12a5c7828824637a18da290a1f",
+      "content_modified": "2026-10-24T08:42:04.936712+00:00",
+      "modified": "2026-10-24T08:42:04.936712+00:00"
+    },
+    {
+      "key": "sp500/price",
+      "url": "https://historyofmarket.com/api/sp500/price.json",
+      "path": "/api/sp500/price.json",
+      "bytes": 1522642,
+      "sha256": "b41570f860d669211ceb7647360a87b0123247004463aad196a3851db3775115",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "sp500/real",
+      "url": "https://historyofmarket.com/api/sp500/real.json",
+      "path": "/api/sp500/real.json",
+      "bytes": 81718,
+      "sha256": "2a65b10c95ea7d96c8643c69110cf6c5f15a74fbb51f2c505a4c1a83430a2112",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "sp500/return-details",
+      "url": "https://historyofmarket.com/api/sp500/return-details.json",
+      "path": "/api/sp500/return-details.json",
+      "bytes": 4114,
+      "sha256": "c100af9796f938cece45c6ad44b677dc9a9dc231e970f97a35137af114a93633",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "sp500/roe",
+      "url": "https://historyofmarket.com/api/sp500/roe.json",
+      "path": "/api/sp500/roe.json",
+      "bytes": 3801,
+      "sha256": "c9e5e056dc6ca250949ab50d7cc52428570676edc8a91c1cc9fdf098e8016a5a",
+      "content_modified": "2026-09-29T11:33:13.332663+00:00",
+      "modified": "2026-09-29T11:33:13.332663+00:00"
+    },
+    {
+      "key": "sp500/rules",
+      "url": "https://historyofmarket.com/api/sp500/rules.json",
+      "path": "/api/sp500/rules.json",
+      "bytes": 9299,
+      "sha256": "f7fb1e4abc48283c51d8432af6e8f88d7b7ab0764a89c822ede0ad2c4d5e3528",
+      "content_modified": "2026-09-29T11:33:13.332663+00:00",
+      "modified": "2026-09-29T11:33:13.332663+00:00"
+    },
+    {
+      "key": "sp500/sectors",
+      "url": "https://historyofmarket.com/api/sp500/sectors.json",
+      "path": "/api/sp500/sectors.json",
+      "bytes": 4253,
+      "sha256": "85b93b17b4118564fb32469ce3cef6ce2d51f2ddabc2ef4e3008448b7677103b",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "sp500/vix",
+      "url": "https://historyofmarket.com/api/sp500/vix.json",
+      "path": "/api/sp500/vix.json",
+      "bytes": 371923,
+      "sha256": "29f6c1ab00fa68571adf816183c83a4e10cde68c127793a7c0b4d70b4968ab72",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "sp500/volatility",
+      "url": "https://historyofmarket.com/api/sp500/volatility.json",
+      "path": "/api/sp500/volatility.json",
+      "bytes": 1848044,
+      "sha256": "d2485bc4d6696cf68784468883a8e680b33fab45f2d7ceab08f0cffafa837ed7",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "xlk/annual-returns",
+      "url": "https://historyofmarket.com/api/xlk/annual-returns.json",
+      "path": "/api/xlk/annual-returns.json",
+      "bytes": 2490,
+      "sha256": "6c2fb1436abbff51bec5055fa54c24f31bc6a7bcb6c0ab506bfaf04cf42bcbb1",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "xlk/annual-tr",
+      "url": "https://historyofmarket.com/api/xlk/annual-tr.json",
+      "path": "/api/xlk/annual-tr.json",
+      "bytes": 2848,
+      "sha256": "e7fe14b4c5204aa9b56ea2e9ddf9207977dad84f74ee8620225545c9b360939f",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "xlk/drawdowns",
+      "url": "https://historyofmarket.com/api/xlk/drawdowns.json",
+      "path": "/api/xlk/drawdowns.json",
+      "bytes": 8110,
+      "sha256": "f13bc9e4f722b6b006bc92a41d07f521f2f5ae60e14cead39a5b45cf3e85aaee",
+      "content_modified": "2026-10-23T08:17:37.454554+00:00",
+      "modified": "2026-10-23T08:17:37.454554+00:00"
+    },
+    {
+      "key": "xlk/holdings",
+      "url": "https://historyofmarket.com/api/xlk/holdings.json",
+      "path": "/api/xlk/holdings.json",
+      "bytes": 4221,
+      "sha256": "28e298edd2c689278ffd6e8e94bed6ba1d2bc2959f04c4db70a07148604fac02",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "xlk/intrayear-dd",
+      "url": "https://historyofmarket.com/api/xlk/intrayear-dd.json",
+      "path": "/api/xlk/intrayear-dd.json",
+      "bytes": 5684,
+      "sha256": "deaf24da85096eee33d9c37c94baad14437f7c61ef331b410584c695e16c13d8",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "xlk/monthly",
+      "url": "https://historyofmarket.com/api/xlk/monthly.json",
+      "path": "/api/xlk/monthly.json",
+      "bytes": 6575,
+      "sha256": "37bba350696911b9a656f0bb7652b12edd436d8028feb173d5502dec838df89b",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "xlk/price",
+      "url": "https://historyofmarket.com/api/xlk/price.json",
+      "path": "/api/xlk/price.json",
+      "bytes": 423107,
+      "sha256": "e2f758f1162b07db3775753238122d3cd0747b6653076fd34aca50106e629078",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "xlk/reclass-2018",
+      "url": "https://historyofmarket.com/api/xlk/reclass-2018.json",
+      "path": "/api/xlk/reclass-2018.json",
+      "bytes": 3236,
+      "sha256": "d94cf35559d46eeb8b7dab00e2913bfda18fd500f7ce7e7b69c59c84dcfd3c65",
+      "content_modified": "2026-10-08T22:16:06.649179+00:00",
+      "modified": "2026-10-08T22:16:06.649179+00:00"
+    },
+    {
+      "key": "xlk/rolling5y",
+      "url": "https://historyofmarket.com/api/xlk/rolling5y.json",
+      "path": "/api/xlk/rolling5y.json",
+      "bytes": 29933,
+      "sha256": "f192689018075966c097892e3210a8edb5c368426e3ac6615f37dd6b2bf3384d",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "xlk/volatility",
+      "url": "https://historyofmarket.com/api/xlk/volatility.json",
+      "path": "/api/xlk/volatility.json",
+      "bytes": 514858,
+      "sha256": "fdb40f8695aab69e13d50d002dfc06e493b76b90641e35a6326b53cfa014b607",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    },
+    {
+      "key": "yield-curve",
+      "url": "https://historyofmarket.com/api/yield-curve.json",
+      "path": "/api/yield-curve.json",
+      "bytes": 873128,
+      "sha256": "aea0ae2a7dce9f56504095a2097c526b32e9b406f9b3364d872837f11318f42c",
+      "content_modified": "2026-10-29T09:23:30.971123+00:00",
+      "modified": "2026-10-29T09:23:30.971123+00:00"
+    }
+  ],
+  "missing": [],
+  "entry_points": {
+    "profile": "https://historyofmarket.com/api/profile.json",
+    "tools": "https://historyofmarket.com/api/tools.json",
+    "llms_txt": "https://historyofmarket.com/llms.txt",
+    "openapi": "https://historyofmarket.com/openapi.json",
+    "latest": "https://historyofmarket.com/api/_latest.json",
+    "feed_articles": "https://historyofmarket.com/feed.xml",
+    "feed_data": "https://historyofmarket.com/data-feed.xml",
+    "feed_json": "https://historyofmarket.com/feed.json"
+  },
+  "transport": {
+    "cache": "Cloudflare edge: max-age=300, stale-while-revalidate=3600. ETag revalidation supported.",
+    "cors": "Access-Control-Allow-Origin: *",
+    "license": "Reuse with attribution is welcome; copying the work is not. Data (/api/**.json): CC BY 4.0. Charts, share images, embeds and quotes: free to reuse when credited \"History of Market (historyofmarket.com)\" with a link. No derivative or look-alike sites, no use of the brand names, no citation without the source. Terms: https://historyofmarket.com/license/",
+    "terms": "https://historyofmarket.com/license/"
+  }
+}

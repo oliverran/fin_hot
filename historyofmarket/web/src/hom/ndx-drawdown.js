@@ -1,0 +1,1 @@
+import{drawdownCut as o}from"./drawdown.js";import"./vendor-react.js";import"./kit.js";import"./clock.js";import"./format.js";import"./app-shared.js";import"./vendor-table.js";const m=o("ndx-drawdown","/api/ndx/price","/api/ndx/drawdowns");export{m as default};

@@ -1,0 +1,1 @@
+import{M as i,l as o,a2 as r}from"./index.js";import{b as p}from"./BullBearPanel.js";import"./EChart.js";import"./regimeLibrary.js";function u({kicker:t,title:s,subtitle:a}){const{data:e}=i("/api/sp500/century");return o.jsx(p,{id:"panel-sp500-logyoy",kicker:t,title:s,subtitle:a,data:e,seriesName:r.sp500})}export{u as PanelSP500LogYoY};

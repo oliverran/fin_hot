@@ -1,0 +1,15 @@
+{
+  "name": "historyofmarket-clone-web",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Local clone of historyofmarket.com (美股编年史). Frontend shell that hosts the ported vendor bundle; data is served by the local BFF in ../server.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 4173"
+  },
+  "devDependencies": {
+    "vite": "^5.4.10"
+  }
+}

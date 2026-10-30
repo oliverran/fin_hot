@@ -1,0 +1,1 @@
+import{l as i,a2 as a}from"./index.js";import{W as s}from"./PanelAnnualDist.js";function o({kicker:t,title:n,subtitle:e}){return i.jsx(s,{kicker:t,title:n,subtitle:e,endpoint:"/api/ndx/annual-tr",sectionId:"panel-ndx-annual-dist",seriesName:a.ndx})}export{o as PanelAnnualDistNdx};

@@ -608,13 +608,15 @@ export function groupOf(key: string): GroupInfo | undefined {
   return GROUP_BY_KEY.get(key as GroupKey);
 }
 
-/** 这个模块的地址：目录页、详情页、方法与接口说明页。 */
+/** 这个模块的地址：目录页、详情页、方法与接口说明页，以及美股编年史。 */
 export const ROUTES = {
   home: "/chronicle",
   group: (key: GroupKey) => `/chronicle/${key}`,
   page: (group: GroupKey, slug: string) => `/chronicle/${group}/${slug}`,
   methodology: "/chronicle/methodology",
   api: "/chronicle/api",
+  /** 美股编年史页（iframe 内嵌子应用）；子应用自身的入口是 /us-market/zh-cn/。 */
+  usMarket: "/chronicle/us-market",
 } as const;
 
 /** 一张图的 JSON 数据地址（由 server.ts 提供）。 */

@@ -12,8 +12,10 @@ import { compareBars } from "./backend/compare.ts";
 import { loadLive, type LiveKind } from "./backend/live.ts";
 import { loadBars } from "./backend/quotes.ts";
 import { chronicleNews } from "@aihot/backend/publication/chronicle";
-import type { FastifyInstance } from "fastify";
-import { readFile } from "node:fs/promises";
+import { REPO_ROOT } from "@aihot/backend/config";
+import { sendFile } from "@aihot/api/routes/static";
+import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
+import { readFile, stat } from "node:fs/promises";
 import { defineServerModule } from "@aihot/backend/modules";
 import { LIVE_CHARTS, LIVE_INDICES, LIVE_SOURCE, GROUPS, liveChart, pageOf, type LiveIndex } from "./catalog.ts";
 import { liveChartJson } from "./backend/charts.ts";
@@ -26,10 +28,57 @@ const DATA = path.join(import.meta.dirname, "data");
 const CACHE = "public, max-age=86400, stale-while-revalidate=604800";
 const LIVE_CACHE = "public, max-age=900, stale-while-revalidate=86400";
 
+// 美股编年史：整个子应用（historyofmarket）的前端产物与数据集随仓库提交，挂在这个前缀下整站发出。
+// 文件名不带内容哈希，所以用短缓存 + ETag 重新验证，改版后最多一小时就开始换新。
+const US_WEB = path.join(REPO_ROOT, "historyofmarket/web/dist");
+const US_DATA = path.join(REPO_ROOT, "historyofmarket/server/cache");
+const US_CACHE = "public, max-age=3600, stale-while-revalidate=86400";
+/** 子应用里引擎的静态表不含这几类，缺了它们浏览器会按 MIME 拒收脚本与样式。 */
+const US_TYPES: Record<string, string> = {
+  ".js": "text/javascript; charset=utf-8",
+  ".css": "text/css; charset=utf-8",
+  ".html": "text/html; charset=utf-8",
+  ".woff2": "font/woff2",
+  ".map": "application/json; charset=utf-8",
+};
+
+/** 把请求路径接到一个目录下；越出目录（../）返回 null。 */
+function under(base: string, rel: string): string | null {
+  const target = path.resolve(base, rel.replace(/^\/+/, ""));
+  return target === base || target.startsWith(base + path.sep) ? target : null;
+}
+
+const isFile = (file: string) => stat(file).then((s) => s.isFile(), () => false);
+
+/** 发子应用的一个文件：越界或不存在都是 404（sendFile 自己按扩展名与 ETag 处理）。 */
+function sendUs(req: FastifyRequest, reply: FastifyReply, base: string, rel: string) {
+  const file = under(base, rel);
+  if (!file) return reply.code(404).type("text/plain; charset=utf-8").send("Not found");
+  return sendFile(req, reply, file, { type: US_TYPES[path.extname(file)], cacheControl: US_CACHE });
+}
+
 export default defineServerModule({
   name: "chronicle",
   admin: { runs: dataOverview },
   http(app: FastifyInstance) {
+    // 美股编年史子应用：/us-market/ 下整站发出（前端产物 + 数据集）。地址与网页侧一致，见 module.ts 的 apiPaths。
+    // 不带尾斜杠的根地址不是站内链接，当来访是手输，转去中文首页。
+    app.get("/us-market", (_req, reply) => reply.redirect("/us-market/zh-cn/", 302));
+    // 数据集：/us-market/api/<…> → historyofmarket/server/cache/api/<…>（117 个随包的 JSON）。
+    app.get("/us-market/api/*", (req, reply) => {
+      const rest = (req.params as { "*": string })["*"];
+      return sendUs(req, reply, US_DATA, path.join("api", rest));
+    });
+    // 前端产物：命中真实文件直接发；其余是没有扩展名的路径式路由（/us-market/zh-cn/sp500/annual/），
+    // 交回单页入口由 src/router.js 还原成语言与卷。
+    app.get("/us-market/*", async (req, reply) => {
+      const rest = (req.params as { "*": string })["*"];
+      if (rest === "openapi.json") return sendUs(req, reply, US_DATA, rest);
+      const file = under(US_WEB, rest);
+      if (file && (await isFile(file))) return sendUs(req, reply, US_WEB, rest);
+      if (path.extname(rest)) return reply.code(404).type("text/plain; charset=utf-8").send("Not found");
+      return sendFile(req, reply, path.join(US_WEB, "index.html"), { type: US_TYPES[".html"], cacheControl: "no-cache" });
+    });
     app.get("/api/chronicle/companies", async(req,reply)=>{const q=String((req.query as {q?:string}).q??"");if(q.length>60)return reply.code(400).send({error:"Query too long"});return reply.header("Cache-Control","no-store").send(await findCompanies(q));});
     app.get("/api/chronicle/market", async (req,reply) => {
       const before=(req.query as {before?:string}).before;

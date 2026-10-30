@@ -1,0 +1,1 @@
+import{l as s,a2 as n}from"./index.js";import{W as a}from"./PanelAnnualDist.js";function p({kicker:t,title:e,subtitle:i}){return s.jsx(a,{kicker:t,title:e,subtitle:i,endpoint:"/api/sp500/annual-tr",sectionId:"panel-annual-dist",seriesName:n.sp500})}export{p as PanelAnnualDistSp500};

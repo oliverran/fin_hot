@@ -21,7 +21,7 @@ export function meta() {
 export default function ChronicleHome() {
   return (
     <div className="pb-14">
-      <PhoneBar title="编年史" />
+      <PhoneBar title="A股编年史" />
       <header className="pt-4 lg:pt-0">
         <Kicker>知识库 · 编年史</Kicker>
         <h1 data-page-title="" className="mt-4 text-[30px] font-black leading-[1.2] tracking-[-0.02em] text-ink lg:text-[38px]">A股编年史</h1>
@@ -36,6 +36,11 @@ export default function ChronicleHome() {
           </Link>
         </p>
       </header>
+
+      <Link viewTransition to={ROUTES.usMarket} className="mt-6 block rounded-card border border-line bg-surface px-4 py-3 text-[14px] text-ink transition-colors hover:border-accent/40">
+        <span className="font-semibold text-accent">美股编年史 →</span>
+        <span className="mt-1 block text-[13px] leading-[1.7] text-ink-3">标普 500、纳斯达克、道琼斯与半导体、科技、金融、消费板块及七姐妹的百年走势、估值与回撤。</span>
+      </Link>
 
       <Link to="/chronicle/compare" className="mt-6 block text-accent">多指数对比与区间复盘 →</Link>
       <Link to="/chronicle/sectors-live" className="mt-4 block text-accent">真实行业数据、估值与轮动 →</Link>

@@ -1,0 +1,1 @@
+import{j as s}from"./vendor-react.js";import{a1 as i}from"./app-shared.js";import{P as r}from"./PanelAnnualDist.js";import"./vendor-table.js";function l({kicker:n,title:a,subtitle:t}){return s.jsx(r,{kicker:n,title:a,subtitle:t,endpoint:"/api/sp500/annual-tr",sectionId:"panel-annual-dist",seriesName:i.sp500})}export{l as PanelAnnualDistSp500};

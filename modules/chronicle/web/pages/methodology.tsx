@@ -58,9 +58,9 @@ const BLOCKS: Block[] = [
 export default function ChronicleMethodology() {
   return (
     <div className="mx-auto max-w-[var(--page-max-reading)] pb-14">
-      <PhoneBar back={{ to: ROUTES.home, label: "编年史" }} title="数据口径" />
+      <PhoneBar back={{ to: ROUTES.home, label: "A股编年史" }} title="数据口径" />
       <Link viewTransition to={ROUTES.home} className="hidden py-2 text-[13px] text-ink-3 transition-colors hover:text-accent lg:inline-flex">
-        ← 编年史
+        ← A股编年史
       </Link>
       <header className="pt-4 lg:pt-0">
         <Kicker>编年史 · 数据口径</Kicker>

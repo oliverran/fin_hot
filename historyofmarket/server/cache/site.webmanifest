@@ -1,0 +1,26 @@
+{
+  "name": "History of Market — The Chronicle of the U.S. Stock Market",
+  "short_name": "History of Market",
+  "description": "A century-scale chronicle of the U.S. stock market — S&P 500, Nasdaq, and Dow Jones on a single editorial page.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0E1318",
+  "theme_color": "#0E1318",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,167 @@
+{"_license": "Reuse with attribution is welcome; copying the work is not. Data (/api/**.json): CC BY 4.0. Charts, share images, embeds and quotes: free to reuse when credited \"History of Market (historyofmarket.com)\" with a link. No derivative or look-alike sites, no use of the brand names, no citation without the source. Terms: https://historyofmarket.com/license/", "_attribution": "History of Market (historyofmarket.com)", "_canonical": "https://historyofmarket.com/api/sp500/rules.json", "_terms": "https://historyofmarket.com/license/", "updated": "2026-02",
+  "source": {
+    "name": "S&P U.S. Indices Methodology",
+    "url": "https://www.spglobal.com/spdji/en/documents/methodologies/methodology-sp-us-indices.pdf",
+    "version": "February 2026"
+  },
+  "highlights": [
+    {
+      "label": "样本数量",
+      "labelEn": "Constituent count",
+      "value": "500 家公司",
+      "valueEn": "500 companies",
+      "detail": "衡量美国大盘股 segment。",
+      "detailEn": "Represents the US large-cap equity segment."
+    },
+    {
+      "label": "权重方式",
+      "labelEn": "Weighting scheme",
+      "value": "自由流通市值加权",
+      "valueEn": "Float-adjusted market-cap weighted",
+      "detail": "Float-adjusted market capitalization weighted。",
+      "detailEn": "Float-adjusted market capitalisation weighting."
+    },
+    {
+      "label": "最低市值",
+      "labelEn": "Minimum market cap",
+      "value": "227 亿美元以上",
+      "valueEn": "≥ $22.7 B",
+      "detail": "公司层面总市值，适用于 S&P 500 指南。",
+      "detailEn": "Company-level total market cap, per the current S&P 500 methodology guide."
+    },
+    {
+      "label": "盈利要求",
+      "labelEn": "Earnings test",
+      "value": "最近一季 + 近四季合计为正",
+      "valueEn": "Positive in latest quarter + trailing four quarters",
+      "detail": "GAAP 持续经营净利润必须为正。",
+      "detailEn": "GAAP earnings from continuing operations must be positive."
+    },
+    {
+      "label": "流动性要求",
+      "labelEn": "Liquidity test",
+      "value": "6 个月每月至少成交 25 万股",
+      "valueEn": "≥ 250k shares traded per month, trailing six months",
+      "detail": "新增时 FALR 还需不低于 0.75。",
+      "detailEn": "Float-adjusted liquidity ratio (FALR) must also be ≥ 0.75 at inclusion."
+    },
+    {
+      "label": "结构限制",
+      "labelEn": "Structural constraints",
+      "value": "美国本土、普通股、合规交易所",
+      "valueEn": "US-domiciled common stock on an eligible exchange",
+      "detail": "ADR、SPAC、ETF、LP/LLC 等通常不纳入。",
+      "detailEn": "ADRs, SPACs, ETFs, LPs/LLCs and similar vehicles are typically excluded."
+    }
+  ],
+  "sections": [
+    {
+      "title": "指数简介",
+      "titleEn": "About the index",
+      "intro": "标普500被设计为美国大盘股市场的代表性指数，样本公司从 S&P Total Market Index 中筛选，由指数委员会决定最终纳入名单。与一些被动跟踪规则的指数不同，标普500具有「规则 + 委员会判断」的混合机制。",
+      "introEn": "The S&P 500 is designed as a representative benchmark for US large-cap equities. Candidates are drawn from the S&P Total Market Index, and final membership is decided by the Index Committee — a hybrid of mechanical rules and editorial judgment, not a pure market-cap screen.",
+      "bullets": [
+        "它不是简单按市值前 500 名机械排序，而是带有委员会判断和行业平衡约束。",
+        "指数目标是让样本既覆盖美国大盘股，又维持良好的可投资性和可交易性。"
+      ],
+      "bulletsEn": [
+        "Membership is not a raw top-500-by-market-cap list: Committee judgment and sector balance enter the final cut.",
+        "The index aims for both broad large-cap coverage and practical investability / tradability."
+      ]
+    },
+    {
+      "title": "纳入资格",
+      "titleEn": "Eligibility criteria",
+      "intro": "先满足硬性门槛，再进入委员会的最终筛选范围。",
+      "introEn": "A company clears the hard quantitative thresholds first, then enters the pool the Committee actively considers.",
+      "bullets": [
+        "必须是美国本土公司，并履行美国证券法定期披露义务。",
+        "必须在 NYSE、Nasdaq、Cboe BZX/EDGX 等合规美国交易所上市。",
+        "自由流通公众持股比例必须不低于 50%。",
+        "最近一个季度 GAAP 归母净利润和最近四个季度累计 GAAP 归母净利润都必须为正。",
+        "最近 6 个月平均月度成交量不低于 25 万股，且 FALR 不低于 0.75。",
+        "未流通超过 12 个月的上市新股通常不直接纳入。"
+      ],
+      "bulletsEn": [
+        "Must be a US-domiciled company with ongoing US disclosure obligations.",
+        "Must be listed on an eligible US exchange — NYSE, Nasdaq, or Cboe BZX/EDGX.",
+        "Public float must represent at least 50% of shares outstanding.",
+        "GAAP earnings attributable to the parent must be positive for the most recent quarter AND over the trailing four quarters.",
+        "Trailing six-month average monthly volume ≥ 250 k shares, with a FALR ≥ 0.75.",
+        "Newly listed companies are not normally added until they have traded publicly for at least twelve months."
+      ]
+    },
+    {
+      "title": "纳入与剔除机制",
+      "titleEn": "Additions and removals",
+      "intro": "指数不是固定季度大换血，更多是事件驱动 + 委员会维护。",
+      "introEn": "Membership is maintained on a rolling, event-driven basis rather than through a fixed quarterly rebalance.",
+      "bullets": [
+        "指数委员会拥有最终决定权，满足门槛并不代表一定纳入。",
+        "行业平衡会被纳入考虑，委员会会参考相关市值区间内各 GICS 行业在 S&P Total Market Index 中的权重。",
+        "剔除通常发生在：并购、破产、摘牌、不再满足条件，或被更合格的公司替代。",
+        "重大变更一般会提前若干个交易日公告，便于被动资金完成调仓。"
+      ],
+      "bulletsEn": [
+        "The Index Committee has final say: clearing the thresholds does not guarantee inclusion.",
+        "Sector balance matters — the Committee references each GICS sector's weight in the S&P Total Market Index within the relevant market-cap band.",
+        "Removals typically follow M&A, bankruptcy, delisting, a fall below the criteria, or substitution by a more qualified peer.",
+        "Significant changes are usually announced a few trading days in advance so passive capital can reposition."
+      ]
+    },
+    {
+      "title": "权重与调整",
+      "titleEn": "Weighting & maintenance",
+      "intro": "标普500的核心不是等权，也不是价格加权，而是自由流通市值加权。",
+      "introEn": "The S&P 500 is neither equal-weighted nor price-weighted: the core weighting mechanic is float-adjusted market cap.",
+      "bullets": [
+        "权重取决于公司可流通部分的市值，股本、IWF 和价格都会影响权重。",
+        "指数维护会随着公司行为、股份变化和样本替换持续发生。",
+        "季度性股本调整和年度 IWF 更新使权重保持与实际情况一致。"
+      ],
+      "bulletsEn": [
+        "Weight is the market cap of a company's investable float — share count, IWF, and price all feed in.",
+        "Maintenance is ongoing: corporate actions, share-count changes, and constituent swaps continuously feed back into the index.",
+        "Quarterly share-count adjustments and annual IWF refreshes keep each company's weight aligned with real-world investability."
+      ]
+    }
+  ],
+  "comparison": [
+    {
+      "name": "标普500",
+      "nameEn": "S&P 500",
+      "focus": "美国大盘股",
+      "focusEn": "US large-cap equities",
+      "weighting": "自由流通市值加权",
+      "weightingEn": "Float-adjusted market-cap weighted",
+      "count": "500 家",
+      "countEn": "500 companies",
+      "note": "广泛被视作美国股票市场的核心基准。",
+      "noteEn": "Widely treated as the core benchmark for US equities."
+    },
+    {
+      "name": "道琼斯工业平均",
+      "nameEn": "Dow Jones Industrial Average",
+      "focus": "少数蓝筹股",
+      "focusEn": "Select blue-chip names",
+      "weighting": "价格加权",
+      "weightingEn": "Price-weighted",
+      "count": "30 家",
+      "countEn": "30 companies",
+      "note": "成分股更少，更像高知名度蓝筹样本。",
+      "noteEn": "Small roster; more a hall-of-fame blue-chip sample than a market proxy."
+    },
+    {
+      "name": "纳斯达克100",
+      "nameEn": "Nasdaq 100",
+      "focus": "纳斯达克大型非金融公司",
+      "focusEn": "Largest non-financial Nasdaq-listed companies",
+      "weighting": "修正市值加权",
+      "weightingEn": "Modified market-cap weighted",
+      "count": "100 家",
+      "countEn": "100 companies",
+      "note": "科技与成长风格更集中，行业暴露更偏向创新平台。",
+      "noteEn": "Concentrated in technology and growth names; a sharper bet on innovation platforms."
+    }
+  ]
+}

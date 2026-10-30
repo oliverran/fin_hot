@@ -1,0 +1,4401 @@
+{"_license": "Reuse with attribution is welcome; copying the work is not. Data (/api/**.json): CC BY 4.0. Charts, share images, embeds and quotes: free to reuse when credited \"History of Market (historyofmarket.com)\" with a link. No derivative or look-alike sites, no use of the brand names, no citation without the source. Terms: https://historyofmarket.com/license/", "_attribution": "History of Market (historyofmarket.com)", "_canonical": "https://historyofmarket.com/api/sp500/changes.json", "_terms": "https://historyofmarket.com/license/", "updated": "2026-10-05",
+  "source": {
+    "name": "Index-provider press releases (primary) · public changes list (historical mirror)",
+    "url": "https://press.spglobal.com/index.php?s=43&l=100&keywords=S%26P+500",
+    "note": "近期事件以指数编制方官方公告为权威来源；公开汇总列表作为历史镜像。"
+  },
+  "changes": [
+    {
+      "effectiveDate": "2026-10-06",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "TWLO",
+        "name": "Twilio",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "WBD",
+        "name": "Warner Bros. Discovery",
+        "sector": "Communication Services"
+      },
+      "reason": "标普 500 成分股 Paramount Skydance 收购 Warner Bros. Discovery；Twilio 自标普 MidCap 400 调入，于 10 月 6 日开盘前接替（10 月 1 日公告）。",
+      "reasonEn": "S&P 500 constituent Paramount Skydance is acquiring Warner Bros. Discovery; Twilio moves up from the S&P MidCap 400 to replace it before the open on October 6 (announced October 1).",
+      "sourceUrl": "https://press.spglobal.com/2026-10-01-Vylor-Added-to-the-S-P-500-Twilio-Set-to-Join-S-P-500-Others-to-Join-S-P-MidCap-400-and-S-P-SmallCap-600"
+    },
+    {
+      "effectiveDate": "2026-10-06",
+      "type": "分拆",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "removal": {
+        "ticker": "CTVA",
+        "name": "Corteva",
+        "sector": "Materials"
+      },
+      "reason": "分拆种子业务 Vylor 之后，标普认为 Corteva 更能代表中盘股，10 月 6 日开盘前转入标普 MidCap 400（接替 Olin）。",
+      "reasonEn": "After spinning off its seed business as Vylor, Corteva was deemed more representative of the mid-cap market space and moves to the S&P MidCap 400 (replacing Olin) before the open on October 6.",
+      "sourceUrl": "https://press.spglobal.com/2026-10-01-Vylor-Added-to-the-S-P-500-Twilio-Set-to-Join-S-P-500-Others-to-Join-S-P-MidCap-400-and-S-P-SmallCap-600"
+    },
+    {
+      "effectiveDate": "2026-10-01",
+      "type": "分拆",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "VYLR",
+        "name": "Vylor",
+        "sector": "Consumer Staples"
+      },
+      "removal": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "reason": "Corteva 分拆种子业务 Vylor（每股 CTVA 派发 1 股 VYLR），Vylor 于 10 月 1 日起在 NYSE 交易并直接进入标普 500；10 月 6 日起 GICS 行业改为必需消费。",
+      "reasonEn": "Corteva spun off its seed business as Vylor (one VYLR share per CTVA share); Vylor began trading on the NYSE on October 1 and entered the S&P 500 directly. Its GICS sector changes to Consumer Staples on October 6.",
+      "sourceUrl": "https://press.spglobal.com/2026-10-01-Vylor-Added-to-the-S-P-500-Twilio-Set-to-Join-S-P-500-Others-to-Join-S-P-MidCap-400-and-S-P-SmallCap-600"
+    },
+    {
+      "effectiveDate": "2026-09-21",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "BE",
+        "name": "Bloom Energy",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "TAP",
+        "name": "Molson Coors Beverage",
+        "sector": "Consumer Staples"
+      },
+      "reason": "9 月季度再平衡（9 月 4 日公告，9 月 21 日开盘前生效）：Bloom Energy 自标普 MidCap 400 调入，Molson Coors 调出转入标普 SmallCap 600。",
+      "reasonEn": "September quarterly rebalance (announced Sept 4, effective before the open on Sept 21): Bloom Energy added from the S&P MidCap 400; Molson Coors Beverage removed to the S&P SmallCap 600.",
+      "sourceUrl": "https://press.spglobal.com/2026-09-04-Bloom-Energy,-Illumina,-and-Everpure-Set-to-Join-S-P-500-Others-to-Join-S-P-100,-S-P-MidCap-400,-and-S-P-SmallCap-600"
+    },
+    {
+      "effectiveDate": "2026-09-21",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "P",
+        "name": "Everpure",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "TTD",
+        "name": "The Trade Desk",
+        "sector": "Communication Services"
+      },
+      "reason": "9 月季度再平衡（9 月 4 日公告，9 月 21 日开盘前生效）：Everpure（原 Pure Storage，2026 年 4 月改用代码 P）自标普 MidCap 400 调入，The Trade Desk 调出转入标普 SmallCap 600。",
+      "reasonEn": "September quarterly rebalance (announced Sept 4, effective before the open on Sept 21): Everpure (formerly Pure Storage; ticker changed to P in April 2026) added from the S&P MidCap 400; The Trade Desk removed to the S&P SmallCap 600.",
+      "sourceUrl": "https://press.spglobal.com/2026-09-04-Bloom-Energy,-Illumina,-and-Everpure-Set-to-Join-S-P-500-Others-to-Join-S-P-100,-S-P-MidCap-400,-and-S-P-SmallCap-600"
+    },
+    {
+      "effectiveDate": "2026-09-21",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "ILMN",
+        "name": "Illumina",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "BLDR",
+        "name": "Builders FirstSource",
+        "sector": "Industrials"
+      },
+      "reason": "9 月季度再平衡（9 月 4 日公告，9 月 21 日开盘前生效）：Illumina 自标普 MidCap 400 调入，Builders FirstSource 调出转入标普 SmallCap 600。",
+      "reasonEn": "September quarterly rebalance (announced Sept 4, effective before the open on Sept 21): Illumina added from the S&P MidCap 400; Builders FirstSource removed to the S&P SmallCap 600.",
+      "sourceUrl": "https://press.spglobal.com/2026-09-04-Bloom-Energy,-Illumina,-and-Everpure-Set-to-Join-S-P-500-Others-to-Join-S-P-100,-S-P-MidCap-400,-and-S-P-SmallCap-600"
+    },
+    {
+      "effectiveDate": "2026-08-18",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "RDDT",
+        "name": "Reddit",
+        "sector": "Communication Services"
+      },
+      "removal": {
+        "ticker": "AVB",
+        "name": "AvalonBay Communities",
+        "sector": "Real Estate"
+      },
+      "reason": "标普 500 成分股 Equity Residential 收购 AvalonBay Communities，合并后公司更名为 Vivmark Residential（VMRK）并保留席位；Reddit 于 8 月 18 日开盘前接替 AvalonBay。",
+      "reasonEn": "S&P 500 constituent Equity Residential is acquiring AvalonBay Communities; the combined company is renamed Vivmark Residential (VMRK) and keeps its seat. Reddit took AvalonBay's place before the open on August 18.",
+      "sourceUrl": "https://press.spglobal.com/2026-08-13-Reddit-Set-to-Join-S-P-500-and-Sun-Communities-to-Join-S-P-MidCap-400"
+    },
+    {
+      "effectiveDate": "2026-08-05",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "FERG",
+        "name": "Ferguson Enterprises",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "EA",
+        "name": "Electronic Arts",
+        "sector": "Communication Services"
+      },
+      "reason": "电子艺界被沙特公共投资基金（PIF）、Silver Lake 与 Affinity Partners 组成的财团私有化收购，退出指数；Ferguson Enterprises 于 8 月 5 日开盘前接替其席位。",
+      "reasonEn": "An investor consortium of Saudi Arabia's Public Investment Fund (PIF), Silver Lake and Affinity Partners is taking Electronic Arts private; Ferguson Enterprises took its seat before the open on August 5.",
+      "sourceUrl": "https://press.spglobal.com/2026-07-31-Ferguson-Enterprises-Set-to-Join-S-P-500-and-ADI-Global-Distribution-to-Join-S-P-SmallCap-600"
+    },
+    {
+      "effectiveDate": "2026-06-30",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "removal": {
+        "ticker": "CAG",
+        "name": "Conagra Brands",
+        "sector": "Consumer Staples"
+      },
+      "reason": "康尼格拉市值下滑被调出标普 500，为 6 月 29 日分拆上市的 Honeywell Aerospace 让出席位。",
+      "reasonEn": "Conagra Brands was removed on market capitalization, making room for Honeywell Aerospace, which listed on 29 June.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2026-06-29",
+      "type": "分拆",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "HONA",
+        "name": "Honeywell Aerospace",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "reason": "霍尼韦尔分拆航空航天业务，Honeywell Aerospace 独立上市并直接进入标普 500。",
+      "reasonEn": "Honeywell spun off its aerospace arm; Honeywell Aerospace entered the S&P 500 directly as a separate listing.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2026-06-22",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "MRVL",
+        "name": "Marvell Technology",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "POOL",
+        "name": "Pool Corporation",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "市值再平衡：Marvell Technology 调入，Pool Corporation 调出，后者转入标普 MidCap 400。",
+      "reasonEn": "Market-cap rebalance: Marvell Technology added, Pool Corporation removed to the S&P MidCap 400.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2026-06-22",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "FLEX",
+        "name": "Flex Ltd.",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "CPB",
+        "name": "The Campbell's Company",
+        "sector": "Consumer Staples"
+      },
+      "reason": "市值再平衡：Flex 调入，金宝汤调出，后者转入标普 MidCap 400。",
+      "reasonEn": "Market-cap rebalance: Flex added, Campbell's removed to the S&P MidCap 400.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2026-06-02",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "removal": {
+        "ticker": "EPAM",
+        "name": "EPAM Systems",
+        "sector": "Information Technology"
+      },
+      "reason": "EPAM Systems 市值下滑被调出标普 500，为 6 月 1 日分拆上市的 FedEx Freight 让出席位。",
+      "reasonEn": "EPAM Systems was removed on market capitalization, making room for FedEx Freight, which listed on 1 June.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2026-06-01",
+      "type": "分拆",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "FDXF",
+        "name": "FedEx Freight",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "reason": "联邦快递分拆货运业务，FedEx Freight 独立上市并直接进入标普 500。",
+      "reasonEn": "FedEx spun off its freight arm; FedEx Freight entered the S&P 500 directly as a separate listing.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2026-05-07",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "VEEV",
+        "name": "Veeva Systems",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "CTRA",
+        "name": "Coterra Energy",
+        "sector": "Energy"
+      },
+      "reason": "Devon Energy 收购 Coterra Energy，Veeva Systems 由标普 MidCap 400 调入顶替。",
+      "reasonEn": "Devon Energy acquiring Coterra; Veeva Systems (life-sciences cloud) added in its place.",
+      "sourceUrl": "https://press.spglobal.com/2026-04-30-Veeva-Systems-Set-to-Join-S-P-500"
+    },
+    {
+      "effectiveDate": "2026-04-09",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "CASY",
+        "name": "Casey's",
+        "sector": "Consumer Staples"
+      },
+      "removal": {
+        "ticker": "HOLX",
+        "name": "Hologic",
+        "sector": "Health Care"
+      },
+      "reason": "Blackstone 与 TPG 联合收购 Hologic，Casey's 由标普 MidCap 400 调入顶替。",
+      "reasonEn": "Blackstone Inc. and TPG Inc. acquired Hologic.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2026-03-23",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "VRT",
+        "name": "Vertiv",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "MTCH",
+        "name": "Match Group",
+        "sector": "Communication Services"
+      },
+      "reason": "季度再平衡:Vertiv 调入,Match Group 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2026-03-23",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "LITE",
+        "name": "Lumentum",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "MOH",
+        "name": "Molina Healthcare",
+        "sector": "Health Care"
+      },
+      "reason": "季度再平衡:Lumentum 调入,Molina Healthcare 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2026-03-23",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "COHR",
+        "name": "Coherent Corp.",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "LW",
+        "name": "Lamb Weston",
+        "sector": "Consumer Staples"
+      },
+      "reason": "季度再平衡:Coherent Corp. 调入,Lamb Weston 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2026-03-23",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "SATS",
+        "name": "EchoStar",
+        "sector": "Communication Services"
+      },
+      "removal": {
+        "ticker": "PAYC",
+        "name": "Paycom",
+        "sector": "Information Technology"
+      },
+      "reason": "季度再平衡:EchoStar 调入,Paycom 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2026-02-09",
+      "type": "并购触发",
+      "addition": {
+        "ticker": "CIEN",
+        "name": "Ciena",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "DAY",
+        "name": "Dayforce",
+        "sector": "Industrials"
+      },
+      "reason": "Thoma Bravo 收购 Dayforce；原 S&P MidCap 400 成分股 Ciena 调入 S&P 500。",
+      "sourceUrl": "https://press.spglobal.com/2026-02-04-Ciena-Set-to-Join-S-P-500-and-S-P-MidCap-400-Changes-Effective-February-10,-2026",
+      "typeEn": "M&A trigger",
+      "reasonEn": "Thoma Bravo acquired Dayforce; Ciena (formerly in the S&P MidCap 400) was added to the S&P 500."
+    },
+    {
+      "effectiveDate": "2025-12-22",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "CRH",
+        "name": "CRH",
+        "sector": "Materials"
+      },
+      "removal": {
+        "ticker": "LKQ",
+        "name": "LKQ Corporation",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "季度再平衡:CRH 调入,LKQ Corporation 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2025-12-22",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "CVNA",
+        "name": "Carvana",
+        "sector": "Consumer Discretionary"
+      },
+      "removal": {
+        "ticker": "SOLS",
+        "name": "Solstice Advanced Materials",
+        "sector": "Materials"
+      },
+      "reason": "季度再平衡:Carvana 调入,Solstice Advanced Materials 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2025-12-22",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "FIX",
+        "name": "Comfort Systems USA",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "MHK",
+        "name": "Mohawk Industries",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "季度再平衡:Comfort Systems USA 调入,Mohawk Industries 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2025-12-11",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "ARES",
+        "name": "Ares Management",
+        "sector": "Financials"
+      },
+      "removal": {
+        "ticker": "K",
+        "name": "Kellanova",
+        "sector": "Consumer Staples"
+      },
+      "reason": "Mars 收购 Kellanova，Ares Management 调入 S&P 500 顶替。",
+      "reasonEn": "Mars Inc. acquired Kellanova.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2025-11-28",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "SNDK",
+        "name": "Sandisk",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "IPG",
+        "name": "Interpublic Group",
+        "sector": "Communication Services"
+      },
+      "reason": "S&P 500 成分股 Omnicom Group 收购 Interpublic Group，SanDisk 调入顶替。",
+      "reasonEn": "S&P 500 constituent Omnicom Group Inc. acquired (The) Interpublic Group.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2025-11-04",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "removal": {
+        "ticker": "EMN",
+        "name": "Eastman Chemical Co.",
+        "sector": "Materials"
+      },
+      "reason": "季度再平衡: 调入,Eastman Chemical Co. 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2025-11-03",
+      "type": "分拆",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "Q",
+        "name": "Qnity Electronics",
+        "sector": "Communication Services"
+      },
+      "removal": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "reason": " 因分拆被调出,Qnity Electronics 调入 S&P 500。",
+      "reasonEn": "S&P 500 constituent Dupont de Nemours, Inc. spun off Qnity Electronics.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2025-10-31",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "removal": {
+        "ticker": "KMX",
+        "name": "CarMax",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "季度再平衡: 调入,CarMax 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2025-10-30",
+      "type": "分拆",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "SOLS",
+        "name": "Solstice Advanced Materials",
+        "sector": "Materials"
+      },
+      "removal": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "reason": " 因分拆被调出,Solstice Advanced Materials 调入 S&P 500。",
+      "reasonEn": "S&P 500 and S&P 100 constituent Honeywell International Inc. spun off Solstice Advanced Materials.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2025-09-22",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "EME",
+        "name": "Emcor",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "ENPH",
+        "name": "Enphase Energy",
+        "sector": "Information Technology"
+      },
+      "reason": "季度再平衡:Emcor 调入,Enphase Energy 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2025-09-22",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "HOOD",
+        "name": "Robinhood Markets",
+        "sector": "Financials"
+      },
+      "removal": {
+        "ticker": "CZR",
+        "name": "Caesars Entertainment",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "季度再平衡:Robinhood Markets 调入,Caesars Entertainment 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2025-09-22",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "APP",
+        "name": "AppLovin",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "MKTX",
+        "name": "MarketAxess",
+        "sector": "Financials"
+      },
+      "reason": "季度再平衡:AppLovin 调入,MarketAxess 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2025-08-28",
+      "type": "并购触发",
+      "addition": {
+        "ticker": "IBKR",
+        "name": "Interactive Brokers Group",
+        "sector": "Financials"
+      },
+      "removal": {
+        "ticker": "WBA",
+        "name": "Walgreens Boots Alliance",
+        "sector": "Consumer Staples"
+      },
+      "reason": "Sycamore Partners 收购 Walgreens Boots Alliance，Interactive Brokers Group 由 S&P MidCap 400 调入。",
+      "sourceUrl": "https://press.spglobal.com/2025-08-25-Interactive-Brokers-Group-Set-to-Join-S-P-500,-Talen-Energy-to-Join-S-P-MidCap-400-and-Kinetik-Holdings-to-Join-S-P-SmallCap-600",
+      "typeEn": "M&A trigger",
+      "reasonEn": "Sycamore Partners acquired Walgreens Boots Alliance; Interactive Brokers Group was promoted from the S&P MidCap 400."
+    },
+    {
+      "effectiveDate": "2025-07-23",
+      "type": "并购触发",
+      "addition": {
+        "ticker": "XYZ",
+        "name": "Block",
+        "sector": "Financials"
+      },
+      "removal": {
+        "ticker": "HES",
+        "name": "Hess",
+        "sector": "Energy"
+      },
+      "reason": "Chevron 完成对 Hess 的收购，Block 被调入 S&P 500。",
+      "sourceUrl": "https://press.spglobal.com/2025-07-18-Block-Set-to-Join-S-P-500",
+      "typeEn": "M&A trigger",
+      "reasonEn": "Chevron completed its acquisition of Hess; Block was added to the S&P 500."
+    },
+    {
+      "effectiveDate": "2025-07-18",
+      "type": "并购触发",
+      "addition": {
+        "ticker": "TTD",
+        "name": "The Trade Desk",
+        "sector": "Communication Services"
+      },
+      "removal": {
+        "ticker": "ANSS",
+        "name": "ANSYS",
+        "sector": "Information Technology"
+      },
+      "reason": "Synopsys 收购 ANSYS，The Trade Desk 被调入 S&P 500。",
+      "sourceUrl": "https://press.spglobal.com/2025-07-14-The-Trade-Desk-Set-to-Join-S-P-500",
+      "typeEn": "M&A trigger",
+      "reasonEn": "Synopsys acquired ANSYS; The Trade Desk was added to the S&P 500."
+    },
+    {
+      "effectiveDate": "2025-07-09",
+      "type": "并购触发",
+      "addition": {
+        "ticker": "DDOG",
+        "name": "Datadog",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "JNPR",
+        "name": "Juniper Networks",
+        "sector": "Information Technology"
+      },
+      "reason": "Hewlett Packard Enterprise 收购 Juniper Networks，Datadog 调入 S&P 500。",
+      "sourceUrl": "https://press.spglobal.com/2025-07-02-Datadog-Set-to-Join-S-P-500",
+      "typeEn": "M&A trigger",
+      "reasonEn": "Hewlett Packard Enterprise acquired Juniper Networks; Datadog was added to the S&P 500."
+    },
+    {
+      "effectiveDate": "2025-05-19",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "COIN",
+        "name": "Coinbase",
+        "sector": "Financials"
+      },
+      "removal": {
+        "ticker": "DFS",
+        "name": "Discover Financial",
+        "sector": "Financials"
+      },
+      "reason": "S&P 500 成分股 Capital One Financial 收购 Discover Financial Services，Coinbase 调入顶替。",
+      "reasonEn": "S&P 500 constituent Capital One Financial Corp. acquired Discover Financial Services.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2025-03-24",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "DASH",
+        "name": "DoorDash",
+        "sector": "Consumer Discretionary"
+      },
+      "removal": {
+        "ticker": "BWA",
+        "name": "BorgWarner",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "季度再平衡:DoorDash 调入,BorgWarner 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2025-03-24",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "TKO",
+        "name": "TKO Group Holdings",
+        "sector": "Communication Services"
+      },
+      "removal": {
+        "ticker": "TFX",
+        "name": "Teleflex",
+        "sector": "Health Care"
+      },
+      "reason": "季度再平衡:TKO Group Holdings 调入,Teleflex 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2025-03-24",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "WSM",
+        "name": "Williams-Sonoma, Inc.",
+        "sector": "Consumer Discretionary"
+      },
+      "removal": {
+        "ticker": "CE",
+        "name": "Celanese",
+        "sector": "Materials"
+      },
+      "reason": "季度再平衡:Williams-Sonoma, Inc. 调入,Celanese 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2025-03-24",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "EXE",
+        "name": "Expand Energy",
+        "sector": "Energy"
+      },
+      "removal": {
+        "ticker": "FMC",
+        "name": "FMC Corporation",
+        "sector": "Materials"
+      },
+      "reason": "季度再平衡:Expand Energy 调入,FMC Corporation 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2024-12-23",
+      "type": "季度再平衡",
+      "addition": {
+        "ticker": "APO",
+        "name": "Apollo Global Management",
+        "sector": "Financials"
+      },
+      "removal": {
+        "ticker": "QRVO",
+        "name": "Qorvo",
+        "sector": "Information Technology"
+      },
+      "reason": "季度再平衡中，Apollo 被认为更能代表大盘股空间，取代 Qorvo。",
+      "sourceUrl": "https://press.spglobal.com/2024-12-06-Apollo-Global-Management-and-Workday-Set-to-Join-S-P-500-Others-to-Join-S-P-MidCap-400-and-S-P-SmallCap-600",
+      "typeEn": "Quarterly rebalance",
+      "reasonEn": "At quarterly rebalance, Apollo was deemed more representative of the large-cap universe and replaced Qorvo."
+    },
+    {
+      "effectiveDate": "2024-12-23",
+      "type": "季度再平衡",
+      "addition": {
+        "ticker": "WDAY",
+        "name": "Workday",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "AMTM",
+        "name": "Amentum Holdings",
+        "sector": "Industrials"
+      },
+      "reason": "季度再平衡中，Workday 被认为更能代表大盘股空间，取代 Amentum Holdings。",
+      "sourceUrl": "https://press.spglobal.com/2024-12-06-Apollo-Global-Management-and-Workday-Set-to-Join-S-P-500-Others-to-Join-S-P-MidCap-400-and-S-P-SmallCap-600",
+      "typeEn": "Quarterly rebalance",
+      "reasonEn": "At quarterly rebalance, Workday was deemed more representative of the large-cap universe and replaced Amentum Holdings."
+    },
+    {
+      "effectiveDate": "2024-12-23",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "LII",
+        "name": "Lennox International",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "CTLT",
+        "name": "Catalent",
+        "sector": "Health Care"
+      },
+      "reason": "Novo Holdings A/S 收购 Catalent，Lennox International 调入 S&P 500 顶替。",
+      "reasonEn": "Novo Holdings A/S acquired Catalent.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2024-11-26",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "TPL",
+        "name": "Texas Pacific Land Corporation",
+        "sector": "Energy"
+      },
+      "removal": {
+        "ticker": "MRO",
+        "name": "Marathon Oil",
+        "sector": "Energy"
+      },
+      "reason": "S&P 500/100 成分股 ConocoPhillips 收购 Marathon Oil，Texas Pacific Land 调入顶替。",
+      "reasonEn": "S&P 500 & 100 constituent Conoco Phillips acquired Marathon Oil.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2024-10-01",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "removal": {
+        "ticker": "BBWI",
+        "name": "Bath & Body Works, Inc.",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "季度再平衡: 调入,Bath & Body Works, Inc. 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2024-09-30",
+      "type": "分拆",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "AMTM",
+        "name": "Amentum",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "reason": " 因分拆被调出,Amentum 调入 S&P 500。",
+      "reasonEn": "S&P 500 constituent Jacobs Solutionsspun off its Critical Mission Solutions and Cyber Intelligence business, which merged with private Amentum to create newly publicly traded Amentum Holdings.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2024-09-23",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "PLTR",
+        "name": "Palantir Technologies",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "AAL",
+        "name": "American Airlines Group",
+        "sector": "Industrials"
+      },
+      "reason": "季度再平衡:Palantir Technologies 调入,American Airlines Group 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2024-09-23",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "DELL",
+        "name": "Dell Technologies",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "ETSY",
+        "name": "Etsy",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "季度再平衡:Dell Technologies 调入,Etsy 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2024-09-23",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "ERIE",
+        "name": "Erie Indemnity",
+        "sector": "Financials"
+      },
+      "removal": {
+        "ticker": "BIO",
+        "name": "Bio-Rad Laboratories",
+        "sector": "Health Care"
+      },
+      "reason": "季度再平衡:Erie Indemnity 调入,Bio-Rad Laboratories 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2024-06-24",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "KKR",
+        "name": "KKR",
+        "sector": "Financials"
+      },
+      "removal": {
+        "ticker": "RHI",
+        "name": "Robert Half",
+        "sector": "Industrials"
+      },
+      "reason": "季度再平衡:KKR 调入,Robert Half 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2024-06-24",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "CRWD",
+        "name": "CrowdStrike",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "CMA",
+        "name": "Comerica",
+        "sector": "Financials"
+      },
+      "reason": "季度再平衡:CrowdStrike 调入,Comerica 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2024-06-24",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "GDDY",
+        "name": "GoDaddy",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "ILMN",
+        "name": "Illumina, Inc.",
+        "sector": "Health Care"
+      },
+      "reason": "季度再平衡:GoDaddy 调入,Illumina, Inc. 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2024-05-08",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "VST",
+        "name": "Vistra",
+        "sector": "Utilities"
+      },
+      "removal": {
+        "ticker": "PXD",
+        "name": "Pioneer Natural Resources",
+        "sector": "Energy"
+      },
+      "reason": "S&P 500/100 成分股 Exxon Mobil 收购 Pioneer Natural Resources，Vistra 调入顶替。",
+      "reasonEn": "S&P 500 and S&P 100 constituent Exxon Mobil acquired Pioneer Natural Resources.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2024-04-03",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "removal": {
+        "ticker": "XRAY",
+        "name": "Dentsply Sirona",
+        "sector": "Health Care"
+      },
+      "reason": "季度再平衡: 调入,Dentsply Sirona 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2024-04-03",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "removal": {
+        "ticker": "VFC",
+        "name": "VF Corporation",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "季度再平衡: 调入,VF Corporation 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2024-04-02",
+      "type": "分拆",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "GEV",
+        "name": "GE Vernova",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "reason": " 因分拆被调出,GE Vernova 调入 S&P 500。",
+      "reasonEn": "S&P 500 and 100 constituent General Electric Corp. spun off GE Vernova.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2024-04-01",
+      "type": "分拆",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "SOLV",
+        "name": "Solventum",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "reason": " 因分拆被调出,Solventum 调入 S&P 500。",
+      "reasonEn": "S&P 500 and 100 constituent 3 M Co. spun off Solventum.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2024-03-18",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "SMCI",
+        "name": "Supermicro",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "WHR",
+        "name": "Whirlpool Corporation",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "季度再平衡:Supermicro 调入,Whirlpool Corporation 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2024-03-18",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "DECK",
+        "name": "Deckers Brands",
+        "sector": "Consumer Discretionary"
+      },
+      "removal": {
+        "ticker": "ZION",
+        "name": "Zions Bancorporation",
+        "sector": "Financials"
+      },
+      "reason": "季度再平衡:Deckers Brands 调入,Zions Bancorporation 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2023-12-18",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "UBER",
+        "name": "Uber",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "SEE",
+        "name": "Sealed Air",
+        "sector": "Materials"
+      },
+      "reason": "季度再平衡:Uber 调入,Sealed Air 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2023-12-18",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "JBL",
+        "name": "Jabil",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "ALK",
+        "name": "Alaska Air Group",
+        "sector": "Industrials"
+      },
+      "reason": "季度再平衡:Jabil 调入,Alaska Air Group 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2023-12-18",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "BLDR",
+        "name": "Builders FirstSource",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "SEDG",
+        "name": "SolarEdge",
+        "sector": "Information Technology"
+      },
+      "reason": "季度再平衡:Builders FirstSource 调入,SolarEdge 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2023-10-18",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "HUBB",
+        "name": "Hubbell",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "OGN",
+        "name": "Organon & Co.",
+        "sector": "Health Care"
+      },
+      "reason": "季度再平衡:Hubbell 调入,Organon & Co. 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2023-10-18",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "LULU",
+        "name": "Lululemon Athletica",
+        "sector": "Consumer Discretionary"
+      },
+      "removal": {
+        "ticker": "ATVI",
+        "name": "Activision Blizzard",
+        "sector": "Communication Services"
+      },
+      "reason": "S&P 500/100 成分股 Microsoft 收购 Activision Blizzard，Lululemon 调入顶替。",
+      "reasonEn": "S&P 500 and S&P 100 constituent Microsoft acquired Activision Blizzard.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2023-10-03",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "removal": {
+        "ticker": "DXC",
+        "name": "DXC Technology",
+        "sector": "Information Technology"
+      },
+      "reason": "季度再平衡: 调入,DXC Technology 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2023-10-02",
+      "type": "分拆",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "VLTO",
+        "name": "Veralto",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "reason": " 因分拆被调出,Veralto 调入 S&P 500。",
+      "reasonEn": "S&P 500 and S&P 100 constituent Danaher Corporation spun off Veralto.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2023-09-18",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "BX",
+        "name": "Blackstone",
+        "sector": "Financials"
+      },
+      "removal": {
+        "ticker": "LNC",
+        "name": "Lincoln National Corporation",
+        "sector": "Financials"
+      },
+      "reason": "季度再平衡:Blackstone 调入,Lincoln National Corporation 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2023-09-18",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "ABNB",
+        "name": "Airbnb",
+        "sector": "Consumer Discretionary"
+      },
+      "removal": {
+        "ticker": "NWL",
+        "name": "Newell Brands",
+        "sector": "Consumer Staples"
+      },
+      "reason": "季度再平衡:Airbnb 调入,Newell Brands 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2023-08-25",
+      "type": "其他调整",
+      "typeEn": "Other",
+      "addition": {
+        "ticker": "KVUE",
+        "name": "Kenvue",
+        "sector": "Consumer Staples"
+      },
+      "removal": {
+        "ticker": "AAP",
+        "name": "Advance Auto Parts",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "S&P 500/100 成分股 Johnson & Johnson 以换股分拆方式剥离 Kenvue，Kenvue 独立上市后调入 S&P 500 顶替 Advance Auto Parts。",
+      "reasonEn": "S&P 500 and S&P 100 constituent Johnson & Johnson offered to exchange the shares of Kenvue held for shares of Johnson & Johnson in a split-off exchange offer.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2023-06-20",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "PANW",
+        "name": "Palo Alto Networks",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "DISH",
+        "name": "Dish Network",
+        "sector": "Communication Services"
+      },
+      "reason": "季度再平衡:Palo Alto Networks 调入,Dish Network 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2023-05-04",
+      "type": "其他调整",
+      "typeEn": "Other",
+      "addition": {
+        "ticker": "AXON",
+        "name": "Axon Enterprise",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "FRC",
+        "name": "First Republic Bank",
+        "sector": "Financials"
+      },
+      "reason": "First Republic Bank 被 FDIC 接管，Axon Enterprise 调入 S&P 500 顶替。",
+      "reasonEn": "The Federal Deposit Insurance Corporation(FDIC) placed First Republic Bank into FDIC Receivership.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2023-03-20",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "FICO",
+        "name": "Fair Isaac",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "LUMN",
+        "name": "Lumen Technologies",
+        "sector": "Communication Services"
+      },
+      "reason": "季度再平衡:Fair Isaac 调入,Lumen Technologies 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2023-03-15",
+      "type": "其他调整",
+      "typeEn": "Other",
+      "addition": {
+        "ticker": "BG",
+        "name": "Bunge Global",
+        "sector": "Consumer Staples"
+      },
+      "removal": {
+        "ticker": "SBNY",
+        "name": "Signature Bank",
+        "sector": "Financials"
+      },
+      "reason": "FDIC 接管 Signature Bank，Bunge 调入 S&P 500 顶替。",
+      "reasonEn": "The FDIC placed Signature Bank into FDIC Receivership.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2023-03-15",
+      "type": "其他调整",
+      "typeEn": "Other",
+      "addition": {
+        "ticker": "PODD",
+        "name": "Insulet",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "SIVB",
+        "name": "SVB Financial Group",
+        "sector": "Financials"
+      },
+      "reason": "FDIC 接管 SVB 核心子公司硅谷银行，Insulet 调入 S&P 500 顶替。",
+      "reasonEn": "The FDIC placed SVB's main subsidiary,Silicon Valley Bank, into receivership.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2023-01-05",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "removal": {
+        "ticker": "VNO",
+        "name": "Vornado Realty Trust",
+        "sector": "Real Estate"
+      },
+      "reason": "季度再平衡: 调入,Vornado Realty Trust 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2023-01-04",
+      "type": "分拆",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "GEHC",
+        "name": "GE HealthCare",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "reason": " 因分拆被调出,GE HealthCare 调入 S&P 500。",
+      "reasonEn": "S&P 500 constituent General Electric spun off GE Health Care.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2022-12-22",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "STLD",
+        "name": "Steel Dynamics",
+        "sector": "Materials"
+      },
+      "removal": {
+        "ticker": "ABMD",
+        "name": "Abiomed",
+        "sector": "Health Care"
+      },
+      "reason": "S&P 500 成分股 Johnson & Johnson 收购 Abiomed，Steel Dynamics 调入顶替。",
+      "reasonEn": "S&P 500 constituent Johnson & Johnson acquired Abiomed.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2022-12-19",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "FSLR",
+        "name": "First Solar",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "FBHS",
+        "name": "Fortune Brands Home & Security",
+        "sector": "Industrials"
+      },
+      "reason": "季度再平衡:First Solar 调入,Fortune Brands Home & Security 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2022-12-19",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "removal": {
+        "ticker": "MBC",
+        "name": "MasterBrand",
+        "sector": "Industrials"
+      },
+      "reason": "季度再平衡: 调入,MasterBrand 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2022-12-15",
+      "type": "分拆",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "MBC",
+        "name": "MasterBrand",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "reason": " 因分拆被调出,MasterBrand 调入 S&P 500。",
+      "reasonEn": "S&P 500 constituent Fortune Brands Home & Security spun off Master Brand.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2022-11-01",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "ACGL",
+        "name": "Arch Capital Group",
+        "sector": "Financials"
+      },
+      "removal": {
+        "ticker": "TWTR",
+        "name": "Twitter",
+        "sector": "Communication Services"
+      },
+      "reason": "Elon Musk 完成对 Twitter 的私有化收购，Arch Capital 调入 S&P 500 顶替。",
+      "reasonEn": "Elon Musk acquired Twitter.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2022-10-12",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "TRGP",
+        "name": "Targa Resources",
+        "sector": "Energy"
+      },
+      "removal": {
+        "ticker": "NLSN",
+        "name": "Nielsen Holdings",
+        "sector": "Industrials"
+      },
+      "reason": "Elliott Management 收购 Nielsen Holdings，Targa Resources 调入 S&P 500 顶替。",
+      "reasonEn": "Elliot Management Corp acquired Nielsen Holdings.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2022-10-03",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "PCG",
+        "name": "PG&E",
+        "sector": "Utilities"
+      },
+      "removal": {
+        "ticker": "CTXS",
+        "name": "Citrix Systems",
+        "sector": "Information Technology"
+      },
+      "reason": "Vista Equity Partners 收购 Citrix Systems，PG&E 调入 S&P 500 顶替。",
+      "reasonEn": "Vista Equity Partners acquired Citrix Systems.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2022-10-03",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "EQT",
+        "name": "EQT Corporation",
+        "sector": "Energy"
+      },
+      "removal": {
+        "ticker": "DRE",
+        "name": "Duke Realty",
+        "sector": "Real Estate"
+      },
+      "reason": "S&P 500 成分股 Prologis 收购 Duke Realty，EQT Corp 调入顶替。",
+      "reasonEn": "S&P 500 constituent Prologis Inc. acquired Duke Realty.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2022-09-19",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "CSGP",
+        "name": "CoStar Group",
+        "sector": "Real Estate"
+      },
+      "removal": {
+        "ticker": "PVH",
+        "name": "PVH",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "季度再平衡:CoStar Group 调入,PVH 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2022-09-19",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "INVH",
+        "name": "Invitation Homes",
+        "sector": "Real Estate"
+      },
+      "removal": {
+        "ticker": "PENN",
+        "name": "Penn Entertainment",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "季度再平衡:Invitation Homes 调入,Penn Entertainment 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2022-06-21",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "removal": {
+        "ticker": "UA",
+        "name": "Under Armour(Class C)",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "季度再平衡: 调入,Under Armour(Class C) 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2022-06-21",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "KDP",
+        "name": "Keurig Dr Pepper",
+        "sector": "Consumer Staples"
+      },
+      "removal": {
+        "ticker": "UAA",
+        "name": "Under Armour(Class A)",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "季度再平衡:Keurig Dr Pepper 调入,Under Armour(Class A) 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2022-06-21",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "ON",
+        "name": "ON Semiconductor",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "IPGP",
+        "name": "IPG Photonics",
+        "sector": "Information Technology"
+      },
+      "reason": "季度再平衡:ON Semiconductor 调入,IPG Photonics 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2022-06-08",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "VICI",
+        "name": "Vici Properties",
+        "sector": "Real Estate"
+      },
+      "removal": {
+        "ticker": "CERN",
+        "name": "Cerner",
+        "sector": "Health Care"
+      },
+      "reason": "S&P 500 成分股 Oracle 收购 Cerner，VICI Properties 调入顶替。",
+      "reasonEn": "S&P 500 constituent Oracle Corp. acquired Cerner.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2022-04-11",
+      "type": "其他调整",
+      "typeEn": "Other",
+      "addition": {
+        "ticker": "WBD",
+        "name": "Warner Bros. Discovery",
+        "sector": "Communication Services"
+      },
+      "removal": {
+        "ticker": "DISCA",
+        "name": "Discovery, Inc.",
+        "sector": "Communication Services"
+      },
+      "reason": "Warner Media 与 Discovery 合并成立 Warner Bros. Discovery，WBD 接替 DISCA。",
+      "reasonEn": "Warner Media and Discovery merge to create Warner Bros. Discovery.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2022-04-11",
+      "type": "其他调整",
+      "typeEn": "Other",
+      "addition": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "removal": {
+        "ticker": "DISCK",
+        "name": "Discovery, Inc.",
+        "sector": "Communication Services"
+      },
+      "reason": "Warner Media 与 Discovery 合并成立 Warner Bros. Discovery，DISCK C 类股同时被调出。",
+      "reasonEn": "Warner Media and Discovery merge to create Warner Bros. Discovery.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2022-04-04",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "CPT",
+        "name": "Camden Property Trust",
+        "sector": "Real Estate"
+      },
+      "removal": {
+        "ticker": "PBCT",
+        "name": "People's United Financial",
+        "sector": "Financials"
+      },
+      "reason": "S&P 500 成分股 M&T Bank 收购 People's United Financial，Camden Property Trust 调入顶替。",
+      "reasonEn": "S&P 500 constituent M&T Bank Corp. acquired People's United Financial.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2022-03-02",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "MOH",
+        "name": "Molina Healthcare",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "INFO",
+        "name": "IHS Markit",
+        "sector": "Industrials"
+      },
+      "reason": "S&P 500 成分股 S&P Global 收购 IHS Markit，Molina Healthcare 调入顶替。",
+      "reasonEn": "S&P 500 constituent S&P Global Inc. acquired IHS Markit.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2022-02-15",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "NDSN",
+        "name": "Nordson Corporation",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "XLNX",
+        "name": "Xilinx",
+        "sector": "Information Technology"
+      },
+      "reason": "S&P 500 成分股 AMD 收购 Xilinx，Nordson 调入顶替。",
+      "reasonEn": "S&P 500 constituent Advanced Micro Devices acquired Xilinx.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2022-02-03",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "removal": {
+        "ticker": "GPS",
+        "name": "Gap",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "季度再平衡: 调入,Gap 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2022-02-02",
+      "type": "分拆",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "CEG",
+        "name": "Constellation Energy",
+        "sector": "Utilities"
+      },
+      "removal": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "reason": " 因分拆被调出,Constellation Energy 调入 S&P 500。",
+      "reasonEn": "S&P 500 and 100 constituent Exelon Corp. spun off Constellation Energy.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2021-12-20",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "SBNY",
+        "name": "Signature Bank",
+        "sector": "Financials"
+      },
+      "removal": {
+        "ticker": "LEG",
+        "name": "Leggett & Platt",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "季度再平衡:Signature Bank 调入,Leggett & Platt 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2021-12-20",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "SEDG",
+        "name": "SolarEdge",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "HBI",
+        "name": "Hanesbrands",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "季度再平衡:SolarEdge 调入,Hanesbrands 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2021-12-20",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "FDS",
+        "name": "FactSet",
+        "sector": "Financials"
+      },
+      "removal": {
+        "ticker": "WU",
+        "name": "Western Union",
+        "sector": "Financials"
+      },
+      "reason": "季度再平衡:FactSet 调入,Western Union 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2021-12-14",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "EPAM",
+        "name": "EPAM Systems",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "KSU",
+        "name": "Kansas City Southern",
+        "sector": "Industrials"
+      },
+      "reason": "Canadian Pacific 收购 Kansas City Southern，EPAM Systems 调入 S&P 500 顶替。",
+      "reasonEn": "Canadian Pacific acquired Kansas City Southern.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2021-09-20",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "MTCH",
+        "name": "Match Group",
+        "sector": "Communication Services"
+      },
+      "removal": {
+        "ticker": "PRGO",
+        "name": "Perrigo",
+        "sector": "Health Care"
+      },
+      "reason": "季度再平衡:Match Group 调入,Perrigo 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2021-09-20",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "CDAY",
+        "name": "Ceridian",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "UNM",
+        "name": "Unum",
+        "sector": "Financials"
+      },
+      "reason": "季度再平衡:Ceridian 调入,Unum 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2021-09-20",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "BRO",
+        "name": "Brown & Brown",
+        "sector": "Financials"
+      },
+      "removal": {
+        "ticker": "NOV",
+        "name": "Nov",
+        "sector": "Energy"
+      },
+      "reason": "季度再平衡:Brown & Brown 调入,Nov 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2021-08-30",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "TECH",
+        "name": "Bio-Techne",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "MXIM",
+        "name": "Maxim Integrated",
+        "sector": "Information Technology"
+      },
+      "reason": "S&P 500 成分股 Analog Devices 收购 Maxim Integrated，Bio-Techne 调入顶替。",
+      "reasonEn": "S&P 500 constituent Analog Devices acquired Maxim Integrated Products.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2021-07-21",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "MRNA",
+        "name": "Moderna",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "ALXN",
+        "name": "Alexion Pharmaceuticals",
+        "sector": "Health Care"
+      },
+      "reason": "AstraZeneca 收购 Alexion Pharmaceuticals，Moderna 调入 S&P 500 顶替。",
+      "reasonEn": "Astra Zeneca acquired Alexion Pharmaceuticals.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2021-06-04",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "removal": {
+        "ticker": "HFC",
+        "name": "HollyFrontier",
+        "sector": "Energy"
+      },
+      "reason": "季度再平衡: 调入,HollyFrontier 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2021-06-03",
+      "type": "分拆",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "OGN",
+        "name": "Organon & Co.",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "reason": " 因分拆被调出,Organon & Co. 调入 S&P 500。",
+      "reasonEn": "S&P 500/100 constituent Merck & Co. spun off Organon.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2021-05-14",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "CRL",
+        "name": "Charles River Laboratories",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "FLIR",
+        "name": "FLIR Systems",
+        "sector": "Information Technology"
+      },
+      "reason": "S&P 500 成分股 Teledyne Technologies 收购 FLIR Systems，Charles River Labs 调入顶替。",
+      "reasonEn": "S&P 500 constituent Teledyne Technologies acquired FLIR Systems.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2021-04-20",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "PTC",
+        "name": "PTC",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "VAR",
+        "name": "Varian Medical Systems",
+        "sector": "Health Care"
+      },
+      "reason": "Siemens Healthineers 收购 Varian Medical Systems，PTC 调入 S&P 500 顶替。",
+      "reasonEn": "Siemens Healthineers acquired Varian Medical Systems.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2021-03-22",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "NXPI",
+        "name": "NXP",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "FLS",
+        "name": "Flowserve",
+        "sector": "Industrials"
+      },
+      "reason": "季度再平衡:NXP 调入,Flowserve 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2021-03-22",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "PENN",
+        "name": "Penn National Gaming",
+        "sector": "Consumer Discretionary"
+      },
+      "removal": {
+        "ticker": "SLG",
+        "name": "SL Green Realty",
+        "sector": "Real Estate"
+      },
+      "reason": "季度再平衡:Penn National Gaming 调入,SL Green Realty 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2021-03-22",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "GNRC",
+        "name": "Generac Holdings",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "XRX",
+        "name": "Xerox",
+        "sector": "Information Technology"
+      },
+      "reason": "季度再平衡:Generac Holdings 调入,Xerox 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2021-03-22",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "CZR",
+        "name": "Caesars Entertainment",
+        "sector": "Consumer Discretionary"
+      },
+      "removal": {
+        "ticker": "VNT",
+        "name": "Vontier",
+        "sector": "Industrials"
+      },
+      "reason": "季度再平衡:Caesars Entertainment 调入,Vontier 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2021-02-12",
+      "type": "分拆",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "MPWR",
+        "name": "Monolithic Power Systems",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "FTI",
+        "name": "TechnipFMC",
+        "sector": "Energy"
+      },
+      "reason": "TechnipFMC 因分拆被调出,Monolithic Power Systems 调入 S&P 500。",
+      "reasonEn": "Technip FMC was removed from the S&P 500 in anticipation of its announced spin-off of Technip Energies.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2021-01-21",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "TRMB",
+        "name": "Trimble",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "CXO",
+        "name": "Concho Resources",
+        "sector": "Energy"
+      },
+      "reason": "S&P 500/100 成分股 ConocoPhillips 收购 Concho Resources，Trimble 调入顶替。",
+      "reasonEn": "S&P 500/100 constituent Conoco Phillips acquired Concho Resources.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2021-01-07",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "ENPH",
+        "name": "Enphase Energy",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "TIF",
+        "name": "Tiffany & Co",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "LVMH 完成收购 Tiffany & Co.，Enphase Energy 调入 S&P 500 顶替。",
+      "reasonEn": "LVMHMoet Hennessy-Louis Vuitton SE acquired Tiffany & Co.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2020-12-21",
+      "type": "分拆",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "TSLA",
+        "name": "Tesla",
+        "sector": "Consumer Discretionary"
+      },
+      "removal": {
+        "ticker": "AIV",
+        "name": "Apartment Investment & Management",
+        "sector": "Real Estate"
+      },
+      "reason": "Apartment Investment & Management 因分拆被调出,Tesla 调入 S&P 500。",
+      "reasonEn": "Apartment Investment and Management (Aimco) spun off Apartment Income REIT.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2020-10-12",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "removal": {
+        "ticker": "NBL",
+        "name": "Noble Energy",
+        "sector": "Energy"
+      },
+      "reason": "Chevron 收购 Noble Energy，Noble 被调出(无同日直接替代)。",
+      "reasonEn": "Chevron acquired Noble Energy.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2020-10-09",
+      "type": "分拆",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "VNT",
+        "name": "Vontier",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "reason": " 因分拆被调出,Vontier 调入 S&P 500。",
+      "reasonEn": "S&P 500 constituent Fortivespun off Vontier.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2020-10-07",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "POOL",
+        "name": "Pool Corporation",
+        "sector": "Consumer Discretionary"
+      },
+      "removal": {
+        "ticker": "ETFC",
+        "name": "E-Trade",
+        "sector": "Financials"
+      },
+      "reason": "Morgan Stanley 收购 E*Trade，Pool Corp 调入 S&P 500 顶替。",
+      "reasonEn": "Morgan Stanley acquired E*Trade.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2020-09-21",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "ETSY",
+        "name": "Etsy",
+        "sector": "Consumer Discretionary"
+      },
+      "removal": {
+        "ticker": "HRB",
+        "name": "H&R Block",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "季度再平衡:Etsy 调入,H&R Block 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2020-09-21",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "TER",
+        "name": "Teradyne",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "COTY",
+        "name": "Coty",
+        "sector": "Consumer Staples"
+      },
+      "reason": "季度再平衡:Teradyne 调入,Coty 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2020-09-21",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "CTLT",
+        "name": "Catalent",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "KSS",
+        "name": "Kohl's",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "季度再平衡:Catalent 调入,Kohl's 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2020-06-22",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "BIO",
+        "name": "Bio-Rad Laboratories",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "ADS",
+        "name": "Alliance Data Systems",
+        "sector": "Information Technology"
+      },
+      "reason": "季度再平衡:Bio-Rad Laboratories 调入,Alliance Data Systems 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2020-06-22",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "TDY",
+        "name": "Teledyne",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "HOG",
+        "name": "Harley-Davidson",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "季度再平衡:Teledyne 调入,Harley-Davidson 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2020-06-22",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "TYL",
+        "name": "Tyler Technologies",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "JWN",
+        "name": "Nordstrom",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "季度再平衡:Tyler Technologies 调入,Nordstrom 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2020-05-22",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "WST",
+        "name": "West Pharmaceutical Services",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "HP",
+        "name": "Helmerich & Payne",
+        "sector": "Energy"
+      },
+      "reason": "季度再平衡:West Pharmaceutical Services 调入,Helmerich & Payne 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2020-05-12",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "DPZ",
+        "name": "Domino's Pizza",
+        "sector": "Consumer Discretionary"
+      },
+      "removal": {
+        "ticker": "CPRI",
+        "name": "Capri Holdings",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "季度再平衡:Domino's Pizza 调入,Capri Holdings 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2020-05-12",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "DXCM",
+        "name": "Dexcom",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "AGN",
+        "name": "Allergan",
+        "sector": "Health Care"
+      },
+      "reason": "AbbVie 收购 Allergan，DexCom 调入 S&P 500 顶替。",
+      "reasonEn": "Allergan acquired by Abb Vie.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2020-04-06",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "removal": {
+        "ticker": "M",
+        "name": "Macy's",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "季度再平衡: 调入,Macy's 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2020-04-06",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "removal": {
+        "ticker": "RTN",
+        "name": "Raytheon Company",
+        "sector": "Industrials"
+      },
+      "reason": "United Technologies 分拆 Otis 与 Carrier 后同时完成对 Raytheon 的合并，原 Raytheon(RTN) 被调出。",
+      "reasonEn": "United Technologies spun off Otis and Carrier and acquired Raytheon Company.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2020-04-03",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "OTIS",
+        "name": "Otis Worldwide",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "reason": "United Technologies 分拆 Otis，Otis 作为独立公司调入 S&P 500。",
+      "reasonEn": "United Technologies spun off Otis and Carrier and acquired Raytheon Company.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2020-04-03",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "CARR",
+        "name": "Carrier",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "reason": "United Technologies 分拆 Carrier，Carrier 作为独立公司调入 S&P 500。",
+      "reasonEn": "United Technologies spun off Otis and Carrier and acquired Raytheon Company.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2020-04-01",
+      "type": "其他调整",
+      "typeEn": "Other",
+      "addition": {
+        "ticker": "HWM",
+        "name": "Howmet Aerospace",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "ARNC",
+        "name": "Arconic",
+        "sector": "Industrials"
+      },
+      "reason": "Arconic 拆分为两家公司，Howmet Aerospace (HWM) 保留指数席位并更名，原 ARNC 被调出。",
+      "reasonEn": "Arconic separated into 2 companies - Howmet remained on the index.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2020-03-02",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "IR",
+        "name": "Ingersoll Rand",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "XEC",
+        "name": "Cimarex Energy",
+        "sector": "Energy"
+      },
+      "reason": "Gardner Denver 收购 Ingersoll-Rand 工业业务后改名为新 Ingersoll Rand，IR 调入 S&P 500 顶替 Cimarex Energy。",
+      "reasonEn": "Gardner Denver acquired Ingersoll Rand's industrial businesses then changed its name to the \"new\" Ingersoll Rand Inc.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2020-01-28",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "PAYC",
+        "name": "Paycom",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "WCG",
+        "name": "WellCare",
+        "sector": "Health Care"
+      },
+      "reason": "S&P 500 成分股 Centene 收购 WellCare Health Plans，Paycom 调入顶替。",
+      "reasonEn": "S&P 500 constituent Centene Corp. (NYSE: CNC) acquired Wellcare Health Plans.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2019-12-23",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "LYV",
+        "name": "Live Nation Entertainment",
+        "sector": "Communication Services"
+      },
+      "removal": {
+        "ticker": "AMG",
+        "name": "Affiliated Managers Group",
+        "sector": "Financials"
+      },
+      "reason": "季度再平衡:Live Nation Entertainment 调入,Affiliated Managers Group 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2019-12-23",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "ZBRA",
+        "name": "Zebra Technologies",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "TRIP",
+        "name": "TripAdvisor",
+        "sector": "Communication Services"
+      },
+      "reason": "季度再平衡:Zebra Technologies 调入,TripAdvisor 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2019-12-23",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "STE",
+        "name": "Steris",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "MAC",
+        "name": "Macerich",
+        "sector": "Real Estate"
+      },
+      "reason": "季度再平衡:Steris 调入,Macerich 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2019-12-09",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "ODFL",
+        "name": "Old Dominion Freight Line",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "STI",
+        "name": "SunTrust Banks",
+        "sector": "Financials"
+      },
+      "reason": "BB&T 与 SunTrust 合并组成 Truist Financial，Old Dominion Freight Line 调入 S&P 500 顶替 SunTrust。",
+      "reasonEn": "BB&T acquired Sun Trust to form Truist Financial.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2019-12-05",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "WRB",
+        "name": "W. R. Berkley Corporation",
+        "sector": "Financials"
+      },
+      "removal": {
+        "ticker": "VIAB",
+        "name": "Viacom",
+        "sector": "Communication Services"
+      },
+      "reason": "CBS 与 Viacom 合并成立 ViacomCBS，W. R. Berkley 调入 S&P 500 顶替。",
+      "reasonEn": "CBS acquired Viacom to form Viacom CBS.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2019-11-21",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "NOW",
+        "name": "ServiceNow",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "CELG",
+        "name": "Celgene",
+        "sector": "Health Care"
+      },
+      "reason": "Bristol-Myers Squibb 收购 Celgene，ServiceNow 调入 S&P 500 顶替。",
+      "reasonEn": "Bristol-Myers Squibb(NYSE:BMY) acquired Celgene.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2019-10-03",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "LVS",
+        "name": "Las Vegas Sands",
+        "sector": "Consumer Discretionary"
+      },
+      "removal": {
+        "ticker": "NKTR",
+        "name": "Nektar Therapeutics",
+        "sector": "Health Care"
+      },
+      "reason": "季度再平衡:Las Vegas Sands 调入,Nektar Therapeutics 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2019-09-26",
+      "type": "分拆",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "NVR",
+        "name": "NVR",
+        "sector": "Consumer Discretionary"
+      },
+      "removal": {
+        "ticker": "JEF",
+        "name": "Jefferies Financial Group",
+        "sector": "Financials"
+      },
+      "reason": "Jefferies Financial Group 因分拆被调出,NVR 调入 S&P 500。",
+      "reasonEn": "JEF spun off SPB.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2019-09-23",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "CDW",
+        "name": "CDW Corporation",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "TSS",
+        "name": "TSYS",
+        "sector": "Information Technology"
+      },
+      "reason": "S&P 500 成分股 Global Payments 收购 TSYS，CDW 调入顶替。",
+      "reasonEn": "S&P 500 constituent Global Payments(NYSE: GPN) acquired TSS.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2019-08-09",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "LDOS",
+        "name": "Leidos",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "APC",
+        "name": "Anadarko Petroleum",
+        "sector": "Energy"
+      },
+      "reason": "S&P 500/100 成分股 Occidental Petroleum 收购 Anadarko Petroleum，Leidos 调入顶替。",
+      "reasonEn": "S&P 500 & 100 constituent Occidental Petroleum Corp. (NYSE:OXY) acquired Anadarko Petroleum.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2019-08-09",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "IEX",
+        "name": "IDEX Corporation",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "FL",
+        "name": "Foot Locker",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "季度再平衡:IDEX Corporation 调入,Foot Locker 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2019-07-15",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "TMUS",
+        "name": "T-Mobile US",
+        "sector": "Communication Services"
+      },
+      "removal": {
+        "ticker": "RHT",
+        "name": "Red Hat",
+        "sector": "Information Technology"
+      },
+      "reason": "S&P 500/100 成分股 IBM 收购 Red Hat，T-Mobile 调入顶替。",
+      "reasonEn": "S&P 500 & 100 constituent IBM acquired Red Hat.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2019-07-01",
+      "type": "其他调整",
+      "typeEn": "Other",
+      "addition": {
+        "ticker": "MKTX",
+        "name": "MarketAxess",
+        "sector": "Financials"
+      },
+      "removal": {
+        "ticker": "LLL",
+        "name": "L3 Technologies",
+        "sector": "Industrials"
+      },
+      "reason": "Harris Corporation 收购 L3 Technologies 合并为 L3Harris，MarketAxess 调入 S&P 500 顶替。",
+      "reasonEn": "L3 purchased by Harris Corporation",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2019-06-11",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "AMCR",
+        "name": "Amcor",
+        "sector": "Materials"
+      },
+      "removal": {
+        "ticker": "BMS",
+        "name": "Bemis",
+        "sector": "Materials"
+      },
+      "reason": "Bemis 与 Amcor 完成合并，Amcor (AMCR) 延续指数席位，BMS 被调出。",
+      "reasonEn": "BMS changed to AMCR post merger with Amcor;subsequently renamed to Amcor",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2019-06-07",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "BMS",
+        "name": "Bemis",
+        "sector": "Materials"
+      },
+      "removal": {
+        "ticker": "MAT",
+        "name": "Mattel",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "Bemis 与 Amcor 合并待完成期间，Bemis 作为存续主体先调入 S&P 500 顶替 Mattel。",
+      "reasonEn": "Pending merger of Bemis and Amcor; Bemis treated as the surviving entity.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2019-06-03",
+      "type": "其他调整",
+      "typeEn": "Other",
+      "addition": {
+        "ticker": "DD",
+        "name": "DuPont",
+        "sector": "Materials"
+      },
+      "removal": {
+        "ticker": "DWDP",
+        "name": "DuPont",
+        "sector": "Materials"
+      },
+      "reason": "DowDuPont 分拆 Corteva 后更名为 DuPont de Nemours (DD)，原 DWDP 代码被调出。",
+      "reasonEn": "DWDP changed to DD after spinning off Corteva.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2019-06-03",
+      "type": "分拆",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "CTVA",
+        "name": "Corteva",
+        "sector": "Materials"
+      },
+      "removal": {
+        "ticker": "FLR",
+        "name": "Fluor Corporation",
+        "sector": "Industrials"
+      },
+      "reason": "Fluor Corporation 因分拆被调出,Corteva 调入 S&P 500。",
+      "reasonEn": "CTVA spun off from DWDP (which then changed symbol to DD)",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2019-04-02",
+      "type": "分拆",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "DOW",
+        "name": "Dow",
+        "sector": "Materials"
+      },
+      "removal": {
+        "ticker": "BHF",
+        "name": "Brighthouse Financial",
+        "sector": "Financials"
+      },
+      "reason": "Brighthouse Financial 因分拆被调出,Dow 调入 S&P 500。",
+      "reasonEn": "DOW spun off from DWDP",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2019-03-19",
+      "type": "分拆",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "FOXA",
+        "name": "Fox Corporation",
+        "sector": "Communication Services"
+      },
+      "removal": {
+        "ticker": "FOXA",
+        "name": "21st Century Fox",
+        "sector": "Communication Services"
+      },
+      "reason": "21st Century Fox 因分拆被调出,Fox Corporation 调入 S&P 500。",
+      "reasonEn": "21st Century Fox merged with Disney and some parts spun off as Fox Corporation.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2019-03-19",
+      "type": "分拆",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "FOX",
+        "name": "Fox Corporation",
+        "sector": "Communication Services"
+      },
+      "removal": {
+        "ticker": "FOX",
+        "name": "21st Century Fox",
+        "sector": "Communication Services"
+      },
+      "reason": "21st Century Fox 因分拆被调出,Fox Corporation 调入 S&P 500。",
+      "reasonEn": "21st Century Fox merged with Disney and some parts spun off as Fox Corporation.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2019-02-27",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "WAB",
+        "name": "Wabtec",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "GT",
+        "name": "The Goodyear Tire & Rubber Company",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "Wabtec 收购 GE 运输业务，合并后的 Wabtec 调入 S&P 500 顶替 Goodyear。",
+      "reasonEn": "WAB acquired GE transportation business",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2019-02-15",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "ATO",
+        "name": "Atmos Energy",
+        "sector": "Utilities"
+      },
+      "removal": {
+        "ticker": "NFX",
+        "name": "Newfield Exploration",
+        "sector": "Energy"
+      },
+      "reason": "Encana 收购 Newfield Exploration，Atmos Energy 调入 S&P 500 顶替。",
+      "reasonEn": "ECA acquired NFX",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2019-01-18",
+      "type": "退市/破产",
+      "typeEn": "Delisting / bankruptcy",
+      "addition": {
+        "ticker": "TFX",
+        "name": "Teleflex",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "PCG",
+        "name": "Pacific Gas & Electric Company",
+        "sector": "Utilities"
+      },
+      "reason": "PG&E 因山火责任申请破产保护，Teleflex 调入 S&P 500 顶替。",
+      "reasonEn": "PCG filed for bankruptcy",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2019-01-02",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "FRC",
+        "name": "First Republic Bank",
+        "sector": "Financials"
+      },
+      "removal": {
+        "ticker": "SCG",
+        "name": "SCANA",
+        "sector": "Utilities"
+      },
+      "reason": "Dominion Energy 收购 SCANA，First Republic Bank 调入 S&P 500 顶替。",
+      "reasonEn": "Dominion Energy acquired SCANA Corporation",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2018-12-24",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "CE",
+        "name": "Celanese",
+        "sector": "Materials"
+      },
+      "removal": {
+        "ticker": "ESRX",
+        "name": "Express Scripts",
+        "sector": "Health Care"
+      },
+      "reason": "S&P 500 成分股 Cigna 收购 Express Scripts，Celanese 调入顶替。",
+      "reasonEn": "S&P 500 constituent Cigna (NYSE: CI) acquired ESRX",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2018-12-03",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "LW",
+        "name": "Lamb Weston",
+        "sector": "Consumer Staples"
+      },
+      "removal": {
+        "ticker": "COL",
+        "name": "Rockwell Collins",
+        "sector": "Industrials"
+      },
+      "reason": "United Technologies 收购 Rockwell Collins，Lamb Weston 调入 S&P 500 顶替。",
+      "reasonEn": "UTX acquired COL",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2018-12-03",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "MXIM",
+        "name": "Maxim Integrated",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "AET",
+        "name": "Aetna",
+        "sector": "Health Care"
+      },
+      "reason": "CVS Health 收购 Aetna，Maxim Integrated 调入 S&P 500 顶替。",
+      "reasonEn": "CVS acquired Aetna",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2018-12-03",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "FANG",
+        "name": "Diamondback Energy",
+        "sector": "Energy"
+      },
+      "removal": {
+        "ticker": "SRCL",
+        "name": "Stericycle",
+        "sector": "Industrials"
+      },
+      "reason": "季度再平衡:Diamondback Energy 调入,Stericycle 调出。",
+      "reasonEn": "Market Capitalization change",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2018-11-13",
+      "type": "分拆",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "JKHY",
+        "name": "Jack Henry & Associates",
+        "sector": "Financials"
+      },
+      "removal": {
+        "ticker": "EQT",
+        "name": "EQT Corporation",
+        "sector": "Energy"
+      },
+      "reason": "EQT Corporation 因分拆被调出,Jack Henry & Associates 调入 S&P 500。",
+      "reasonEn": "EQT spun off ETRN",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2018-11-06",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "KEYS",
+        "name": "Keysight",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "CA",
+        "name": "CA Technologies",
+        "sector": "Information Technology"
+      },
+      "reason": "Broadcom 收购 CA Technologies，Keysight Technologies 调入 S&P 500 顶替。",
+      "reasonEn": "CA acquired by Broadcom.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2018-10-11",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "FTNT",
+        "name": "Fortinet",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "EVHC",
+        "name": "Envision Healthcare",
+        "sector": "Health Care"
+      },
+      "reason": "KKR 收购 Envision Healthcare，Fortinet 调入 S&P 500 顶替。",
+      "reasonEn": "EVHC acquired by KKR.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2018-10-01",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "ROL",
+        "name": "Rollins",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "ANDV",
+        "name": "Andeavor",
+        "sector": "Energy"
+      },
+      "reason": "Marathon Petroleum 收购 Andeavor，Rollins 调入 S&P 500 顶替。",
+      "reasonEn": "ANDV acquired by Marathon Petroleum.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2018-09-14",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "WCG",
+        "name": "WellCare",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "XL",
+        "name": "XL Group",
+        "sector": "Financials"
+      },
+      "reason": "AXA 收购 XL Group，WellCare 调入 S&P 500 顶替。",
+      "reasonEn": "XL acquired by Axa.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2018-08-28",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "ANET",
+        "name": "Arista Networks",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "GGP",
+        "name": "GGP",
+        "sector": "Real Estate"
+      },
+      "reason": "Brookfield Property Partners 收购 GGP，Arista Networks 调入 S&P 500 顶替。",
+      "reasonEn": "GGP acquired by Brookfield Property Partners.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2018-07-02",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "CPRT",
+        "name": "Copart",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "DPS",
+        "name": "Dr Pepper Snapple Group",
+        "sector": "Consumer Staples"
+      },
+      "reason": "Keurig 收购 Dr Pepper Snapple 组成 Keurig Dr Pepper，Copart 调入 S&P 500 顶替。",
+      "reasonEn": "DPS acquired by Keurig Green Mountain.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2018-06-20",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "FLT",
+        "name": "FleetCor Technologies",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "TWX",
+        "name": "Time Warner",
+        "sector": "Communication Services"
+      },
+      "reason": "AT&T 收购 Time Warner，FleetCor Technologies 调入 S&P 500 顶替。",
+      "reasonEn": "AT&T acquired Time Warner.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2018-06-18",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "BR",
+        "name": "Broadridge Financial Solutions",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "RRC",
+        "name": "Range Resources",
+        "sector": "Energy"
+      },
+      "reason": "季度再平衡:Broadridge Financial Solutions 调入,Range Resources 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2018-06-18",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "HFC",
+        "name": "HollyFrontier",
+        "sector": "Energy"
+      },
+      "removal": {
+        "ticker": "AYI",
+        "name": "Acuity Brands",
+        "sector": "Industrials"
+      },
+      "reason": "季度再平衡:HollyFrontier 调入,Acuity Brands 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2018-06-07",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "TWTR",
+        "name": "Twitter",
+        "sector": "Communication Services"
+      },
+      "removal": {
+        "ticker": "MON",
+        "name": "Monsanto",
+        "sector": "Materials"
+      },
+      "reason": "Bayer 收购 Monsanto，Twitter 调入 S&P 500 顶替。",
+      "reasonEn": "Bayer acquired Monsanto.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2018-06-05",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "EVRG",
+        "name": "Evergy",
+        "sector": "Utilities"
+      },
+      "removal": {
+        "ticker": "NAVI",
+        "name": "Navient",
+        "sector": "Financials"
+      },
+      "reason": "Westar Energy 与 Great Plains Energy 合并组成 Evergy，Evergy 调入顶替 Navient。",
+      "reasonEn": "Westar Energy (NYSE: WR) acquired Great Plains Energy (NYSE: GXP) and changed name to Evergy.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2018-05-31",
+      "type": "分拆",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "ABMD",
+        "name": "Abiomed",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "WYN",
+        "name": "Wyndham Worldwide",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "Wyndham Worldwide 因分拆被调出,Abiomed 调入 S&P 500。",
+      "reasonEn": "Wyndham Worldwide spun off Wyndham Hotels & Resorts(NYSE:WH).",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2018-04-04",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "MSCI",
+        "name": "MSCI",
+        "sector": "Financials"
+      },
+      "removal": {
+        "ticker": "CSRA",
+        "name": "CSRA",
+        "sector": "Information Technology"
+      },
+      "reason": "S&P 500 成分股 General Dynamics 收购 CSRA，MSCI 调入顶替。",
+      "reasonEn": "S&P 500 constituent General Dynamics(NYSE: GD) acquired CSRA.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2018-03-19",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "TTWO",
+        "name": "Take-Two Interactive",
+        "sector": "Communication Services"
+      },
+      "removal": {
+        "ticker": "SIG",
+        "name": "Signet Jewelers",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "季度再平衡:Take-Two Interactive 调入,Signet Jewelers 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2018-03-19",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "SIVB",
+        "name": "SVB Financial Group",
+        "sector": "Financials"
+      },
+      "removal": {
+        "ticker": "PDCO",
+        "name": "Patterson Companies",
+        "sector": "Health Care"
+      },
+      "reason": "季度再平衡:SVB Financial Group 调入,Patterson Companies 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2018-03-19",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "NKTR",
+        "name": "Nektar Therapeutics",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "CHK",
+        "name": "Chesapeake Energy",
+        "sector": "Energy"
+      },
+      "reason": "季度再平衡:Nektar Therapeutics 调入,Chesapeake Energy 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2018-03-07",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "IPGP",
+        "name": "IPG Photonics",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "SNI",
+        "name": "Scripps Networks Interactive",
+        "sector": "Communication Services"
+      },
+      "reason": "Discovery Communications 收购 Scripps Networks Interactive，IPG Photonics 调入 S&P 500 顶替。",
+      "reasonEn": "Discovery Communications acquired SNI.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2018-01-03",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "HII",
+        "name": "Huntington Ingalls Industries",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "BCR",
+        "name": "CR Bard",
+        "sector": "Health Care"
+      },
+      "reason": "Becton Dickinson 收购 C. R. Bard，Huntington Ingalls Industries 调入 S&P 500 顶替。",
+      "reasonEn": "Becton Dickinson acquired BCR.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2017-10-13",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "NCLH",
+        "name": "Norwegian Cruise Line Holdings",
+        "sector": "Consumer Discretionary"
+      },
+      "removal": {
+        "ticker": "LVLT",
+        "name": "Level 3 Communications",
+        "sector": "Communication Services"
+      },
+      "reason": "CenturyLink 收购 Level 3 Communications，Norwegian Cruise Line 调入 S&P 500 顶替。",
+      "reasonEn": "Century Link acquired LVLT.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2017-09-18",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "CDNS",
+        "name": "Cadence Design Systems",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "SPLS",
+        "name": "Staples",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "Sycamore Partners 收购 Staples，Cadence Design Systems 调入 S&P 500 顶替。",
+      "reasonEn": "Sycamore Partners acquired Staples.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2017-09-01",
+      "type": "其他调整",
+      "typeEn": "Other",
+      "addition": {
+        "ticker": "DWDP",
+        "name": "DuPont",
+        "sector": "Materials"
+      },
+      "removal": {
+        "ticker": "DOW",
+        "name": "Dow Chemical Company",
+        "sector": "Materials"
+      },
+      "reason": "Dow Chemical 与 DuPont 完成合并为 DowDuPont，股票代码由 DOW 改为 DWDP。",
+      "reasonEn": "The Dow Chemical Company renamed to Dow Du Pont Inc. and ticker changed from DOW to DWDP after acquiring Du Pont.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2017-09-01",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "SBAC",
+        "name": "SBA Communications",
+        "sector": "Real Estate"
+      },
+      "removal": {
+        "ticker": "DD",
+        "name": "DuPont",
+        "sector": "Materials"
+      },
+      "reason": "Dow Chemical 完成对 DuPont 的合并，SBA Communications 调入 S&P 500 顶替原 DD 代码。",
+      "reasonEn": "The Dow Chemical Company acquired Du Pont.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2017-08-29",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "Q",
+        "name": "QuintilesIMS",
+        "sector": "Communication Services"
+      },
+      "removal": {
+        "ticker": "WFM",
+        "name": "Whole Foods Market",
+        "sector": "Consumer Staples"
+      },
+      "reason": "Amazon 收购 Whole Foods Market，CenturyLink (Q) 调入 S&P 500 顶替。",
+      "reasonEn": "Amazon acquired Whole Foods Market.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2017-08-08",
+      "type": "分拆",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "BHF",
+        "name": "Brighthouse Financial",
+        "sector": "Financials"
+      },
+      "removal": {
+        "ticker": "AN",
+        "name": "AutoNation",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "AutoNation 因分拆被调出,Brighthouse Financial 调入 S&P 500。",
+      "reasonEn": "BHF replaced AN,MET spun off BHF",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2017-07-26",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "DRE",
+        "name": "Duke RealtyCorp",
+        "sector": "Real Estate"
+      },
+      "removal": {
+        "ticker": "RIG",
+        "name": "Transocean",
+        "sector": "Energy"
+      },
+      "reason": "季度再平衡:Duke RealtyCorp 调入,Transocean 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2017-07-26",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "AOS",
+        "name": "A. O. Smith",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "BBBY",
+        "name": "Bed Bath & Beyond",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "季度再平衡:A. O. Smith 调入,Bed Bath & Beyond 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2017-07-26",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "PKG",
+        "name": "Packaging Corporation of America",
+        "sector": "Materials"
+      },
+      "removal": {
+        "ticker": "MUR",
+        "name": "Murphy Oil",
+        "sector": "Energy"
+      },
+      "reason": "季度再平衡:Packaging Corporation of America 调入,Murphy Oil 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2017-07-26",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "RMD",
+        "name": "ResMed",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "MNK",
+        "name": "Mallinckrodt",
+        "sector": "Health Care"
+      },
+      "reason": "季度再平衡:ResMed 调入,Mallinckrodt 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2017-07-26",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "MGM",
+        "name": "MGM Resorts International",
+        "sector": "Consumer Discretionary"
+      },
+      "removal": {
+        "ticker": "RAI",
+        "name": "Reynolds American",
+        "sector": "Consumer Staples"
+      },
+      "reason": "British American Tobacco 收购 Reynolds American，MGM Resorts 调入 S&P 500 顶替。",
+      "reasonEn": "British American Tobacco(NYSE MKT:BTI) acquired Reynolds American.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2017-07-07",
+      "type": "其他调整",
+      "typeEn": "Other",
+      "addition": {
+        "ticker": "BKR",
+        "name": "Baker Hughes",
+        "sector": "Energy"
+      },
+      "removal": {
+        "ticker": "BHI",
+        "name": "Baker Hughes",
+        "sector": "Energy"
+      },
+      "reason": "Baker Hughes 与 GE Oil & Gas 合并成立新公司(BKR)，保留指数席位，原 BHI 被调出。",
+      "reasonEn": "Baker Hughes merged with GE Oil & Gas to form new company.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2017-06-19",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "HLT",
+        "name": "Hilton",
+        "sector": "Consumer Discretionary"
+      },
+      "removal": {
+        "ticker": "YHOO",
+        "name": "Yahoo!",
+        "sector": "Communication Services"
+      },
+      "reason": "Verizon 收购 Yahoo 运营业务，剩余部分更名 Altaba 转为封闭式基金，Hilton 调入 S&P 500 顶替。",
+      "reasonEn": "VZ acquired YHOO operations; remainder of YHOO converted to closed-end company known as Altaba.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2017-06-19",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "ALGN",
+        "name": "Align Technology",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "TDC",
+        "name": "Teradata",
+        "sector": "Information Technology"
+      },
+      "reason": "季度再平衡:Align Technology 调入,Teradata 调出。",
+      "reasonEn": "Market capitalization changes.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2017-06-19",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "ANSS",
+        "name": "Ansys",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "R",
+        "name": "Ryder System",
+        "sector": "Industrials"
+      },
+      "reason": "季度再平衡:Ansys 调入,Ryder System 调出。",
+      "reasonEn": "Market capitalization changes.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2017-06-19",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "RE",
+        "name": "Everest Re",
+        "sector": "Financials"
+      },
+      "removal": {
+        "ticker": "MJN",
+        "name": "Mead Johnson",
+        "sector": "Consumer Staples"
+      },
+      "reason": "Reckitt Benckiser 收购 Mead Johnson Nutrition，Everest Re 调入 S&P 500 顶替。",
+      "reasonEn": "Reckitt Benckiser acquired Mead Johnson Nutrition.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2017-06-02",
+      "type": "分拆",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "INFO",
+        "name": "IHS Markit",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "TGNA",
+        "name": "Tegna",
+        "sector": "Communication Services"
+      },
+      "reason": "Tegna 因分拆被调出,IHS Markit 调入 S&P 500。",
+      "reasonEn": "TGNA spins off Cars.com",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2017-04-05",
+      "type": "其他调整",
+      "typeEn": "Other",
+      "addition": {
+        "ticker": "IT",
+        "name": "Gartner",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "DNB",
+        "name": "Dun & Bradstreet",
+        "sector": "Industrials"
+      },
+      "reason": "Gartner 收购 CEB，Gartner 调入 S&P 500 顶替 Dun & Bradstreet。",
+      "reasonEn": "IT acquiring CEB",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2017-04-04",
+      "type": "分拆",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "DXC",
+        "name": "DXC Technology",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "SWN",
+        "name": "Southwestern Energy",
+        "sector": "Energy"
+      },
+      "reason": "Southwestern Energy 因分拆被调出,DXC Technology 调入 S&P 500。",
+      "reasonEn": "HPE spins off Everett, merged with CSC to form DXC",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2017-03-20",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "AMD",
+        "name": "Advanced Micro Devices",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "URBN",
+        "name": "Urban Outfitters",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "季度再平衡:Advanced Micro Devices 调入,Urban Outfitters 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2017-03-20",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "RJF",
+        "name": "Raymond James Financial",
+        "sector": "Financials"
+      },
+      "removal": {
+        "ticker": "FTR",
+        "name": "Frontier Communications",
+        "sector": "Communication Services"
+      },
+      "reason": "季度再平衡:Raymond James Financial 调入,Frontier Communications 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2017-03-20",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "ARE",
+        "name": "Alexandria Real Estate Equities",
+        "sector": "Real Estate"
+      },
+      "removal": {
+        "ticker": "FSLR",
+        "name": "First Solar",
+        "sector": "Information Technology"
+      },
+      "reason": "季度再平衡:Alexandria Real Estate Equities 调入,First Solar 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2017-03-16",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "SNPS",
+        "name": "Synopsys",
+        "sector": "Information Technology"
+      },
+      "removal": {
+        "ticker": "HAR",
+        "name": "Harman International",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "Samsung Electronics 收购 Harman International，Synopsys 调入 S&P 500 顶替。",
+      "reasonEn": "Samsung Electronics acquired Harman International Industries.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2017-03-13",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "DISH",
+        "name": "Dish Network",
+        "sector": "Communication Services"
+      },
+      "removal": {
+        "ticker": "LLTC",
+        "name": "Linear Technology",
+        "sector": "Information Technology"
+      },
+      "reason": "S&P 500 成分股 Analog Devices 收购 Linear Technology，Dish Network 调入顶替。",
+      "reasonEn": "S&P 500 constituent Analog Devices(NASD:ADI) acquired Linear Technology.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2017-03-02",
+      "type": "其他调整",
+      "typeEn": "Other",
+      "addition": {
+        "ticker": "REG",
+        "name": "Regency Centers",
+        "sector": "Real Estate"
+      },
+      "removal": {
+        "ticker": "ENDP",
+        "name": "Endo International",
+        "sector": "Health Care"
+      },
+      "reason": "Regency Centers 收购 Equity One，Regency 调入 S&P 500 顶替 Endo International。",
+      "reasonEn": "REG acquires EQY",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2017-03-01",
+      "type": "其他调整",
+      "typeEn": "Other",
+      "addition": {
+        "ticker": "CBOE",
+        "name": "Cboe Holdings",
+        "sector": "Financials"
+      },
+      "removal": {
+        "ticker": "PBI",
+        "name": "Pitney Bowes",
+        "sector": "Industrials"
+      },
+      "reason": "CBOE 收购 Bats Global Markets，CBOE 调入 S&P 500 顶替 Pitney Bowes。",
+      "reasonEn": "CBOE acquires BATS",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2017-02-28",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "INCY",
+        "name": "Incyte",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "SE",
+        "name": "Spectra Energy",
+        "sector": "Energy"
+      },
+      "reason": "Enbridge 收购 Spectra Energy，Incyte 调入 S&P 500 顶替。",
+      "reasonEn": "SE acquired by ENB",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2017-01-05",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "IDXX",
+        "name": "Idexx Laboratories",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "STJ",
+        "name": "St Jude Medical",
+        "sector": "Health Care"
+      },
+      "reason": "S&P 500/100 成分股 Abbott Laboratories 收购 St. Jude Medical，Idexx Laboratories 调入顶替。",
+      "reasonEn": "S&P 100 & 500 constituent Abbott Laboratories (NYSE:ABT) acquired St. Jude Medical.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-12-02",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "MAA",
+        "name": "Mid-America Apartments",
+        "sector": "Real Estate"
+      },
+      "removal": {
+        "ticker": "OI",
+        "name": "Owens-Illinois",
+        "sector": "Materials"
+      },
+      "reason": "季度再平衡:Mid-America Apartments 调入,Owens-Illinois 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-12-02",
+      "type": "市值再平衡",
+      "typeEn": "Market-cap rebalance",
+      "addition": {
+        "ticker": "EVHC",
+        "name": "Envision Healthcare",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "LM",
+        "name": "Legg Mason",
+        "sector": "Financials"
+      },
+      "reason": "季度再平衡:Envision Healthcare 调入,Legg Mason 调出。",
+      "reasonEn": "Market capitalization change.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-11-01",
+      "type": "分拆",
+      "typeEn": "Spin-off",
+      "addition": {
+        "ticker": "ARNC",
+        "name": "Arconic",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "AA",
+        "name": "Alcoa",
+        "sector": "Materials"
+      },
+      "reason": "Alcoa 因分拆被调出,Arconic 调入 S&P 500。",
+      "reasonEn": "AA spins off ARNC",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-09-30",
+      "type": "委员会裁量",
+      "typeEn": "Committee discretion",
+      "addition": {
+        "ticker": "COTY",
+        "name": "Coty",
+        "sector": "Consumer Staples"
+      },
+      "removal": {
+        "ticker": "DO",
+        "name": "Diamond Offshore Drilling",
+        "sector": "Energy"
+      },
+      "reason": "委员会裁量调整：Coty 调入 S&P 500 顶替 Diamond Offshore Drilling。",
+      "reasonEn": "COTY replaces DO",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-09-22",
+      "type": "其他调整",
+      "typeEn": "Other",
+      "addition": {
+        "ticker": "COO",
+        "name": "The Cooper Companies",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "HOT",
+        "name": "Starwood",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "Marriott 完成收购 Starwood Hotels，Cooper Companies 调入 S&P 500 顶替。",
+      "reasonEn": "MAR acquires HOT",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-09-08",
+      "type": "其他调整",
+      "typeEn": "Other",
+      "addition": {
+        "ticker": "CHTR",
+        "name": "Charter Communications",
+        "sector": "Communication Services"
+      },
+      "removal": {
+        "ticker": "EMC",
+        "name": "EMC Corporation",
+        "sector": "Information Technology"
+      },
+      "reason": "Dell 收购 EMC，Charter Communications 调入 S&P 500 顶替。",
+      "reasonEn": "Dell acquires EMC",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-09-06",
+      "type": "其他调整",
+      "typeEn": "Other",
+      "addition": {
+        "ticker": "MTD",
+        "name": "Mettler Toledo",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "TYC",
+        "name": "Tyco International",
+        "sector": "Industrials"
+      },
+      "reason": "Tyco 与 Johnson Controls 合并(沿用 JCI 代码)，Mettler-Toledo 调入 S&P 500 顶替 TYC。",
+      "reasonEn": "TYC acquires JCI (and retains JCI ticker).",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-07-05",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "FTV",
+        "name": "Fortive Corp",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "CPGX",
+        "name": "Columbia Pipeline Group",
+        "sector": "Energy"
+      },
+      "reason": "TransCanada 收购 Columbia Pipeline，Fortive 调入 S&P 500 顶替。",
+      "reasonEn": "CPGX acquired by TRP",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-07-01",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "LNT",
+        "name": "Alliant Energy Corp",
+        "sector": "Utilities"
+      },
+      "removal": {
+        "ticker": "GAS",
+        "name": "AGL Resources",
+        "sector": "Utilities"
+      },
+      "reason": "Southern Company 收购 AGL Resources，Alliant Energy 调入 S&P 500 顶替。",
+      "reasonEn": "GAS acquired by SO",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-07-01",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "ALB",
+        "name": "Albemarle Corporation",
+        "sector": "Materials"
+      },
+      "removal": {
+        "ticker": "TE",
+        "name": "TECO Energy",
+        "sector": "Utilities"
+      },
+      "reason": "Emera 收购 TECO Energy，Albemarle 调入 S&P 500 顶替。",
+      "reasonEn": "TE acquired by EMA",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-06-22",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "FBHS",
+        "name": "Fortune Brands Home & Security",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "CVC",
+        "name": "Cablevision Systems",
+        "sector": "Communication Services"
+      },
+      "reason": "Altice 收购 Cablevision，Fortune Brands Home & Security 调入 S&P 500 顶替。",
+      "reasonEn": "CVC acquired by Altice NV",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-06-03",
+      "type": "其他调整",
+      "typeEn": "Other",
+      "addition": {
+        "ticker": "TDG",
+        "name": "TransDigm Group",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "BXLT",
+        "name": "Baxalta",
+        "sector": "Health Care"
+      },
+      "reason": "Shire 收购 Baxalta，TransDigm Group 调入 S&P 500 顶替。",
+      "reasonEn": "SHPG acquiring BXLT",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-05-31",
+      "type": "其他调整",
+      "typeEn": "Other",
+      "addition": {
+        "ticker": "AJG",
+        "name": "Arthur J. Gallagher & Co.",
+        "sector": "Financials"
+      },
+      "removal": {
+        "ticker": "CCE",
+        "name": "Coca-Cola Enterprises",
+        "sector": "Consumer Staples"
+      },
+      "reason": "Coca-Cola Enterprises 与欧洲装瓶商合并成立 Coca-Cola European Partners，Arthur J. Gallagher 调入顶替 CCE。",
+      "reasonEn": "CCE merging with European bottlers",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-05-23",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "LKQ",
+        "name": "LKQ Corporation",
+        "sector": "Consumer Discretionary"
+      },
+      "removal": {
+        "ticker": "ARG",
+        "name": "Airgas",
+        "sector": "Materials"
+      },
+      "reason": "Air Liquide 收购 Airgas，LKQ 调入 S&P 500 顶替。",
+      "reasonEn": "ARG acquired by Air Liquide",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-05-18",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "DLR",
+        "name": "Digital Realty",
+        "sector": "Real Estate"
+      },
+      "removal": {
+        "ticker": "TWC",
+        "name": "Time Warner Cable",
+        "sector": "Communication Services"
+      },
+      "reason": "Charter Communications 收购 Time Warner Cable，Digital Realty 调入 S&P 500 顶替。",
+      "reasonEn": "TWC acquired by CHTR",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-05-13",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "ALK",
+        "name": "Alaska Air Group",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "SNDK",
+        "name": "SanDisk",
+        "sector": "Information Technology"
+      },
+      "reason": "Western Digital 收购 SanDisk，Alaska Air Group 调入 S&P 500 顶替。",
+      "reasonEn": "SNDK acquired by WDC",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-05-03",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "AYI",
+        "name": "Acuity Brands",
+        "sector": "Industrials"
+      },
+      "removal": {
+        "ticker": "ADT",
+        "name": "ADT",
+        "sector": "Industrials"
+      },
+      "reason": "Apollo Global Management 收购 ADT，Acuity Brands 调入 S&P 500 顶替。",
+      "reasonEn": "ADT acquired by APO",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-04-25",
+      "type": "其他调整",
+      "typeEn": "Other",
+      "addition": {
+        "ticker": "GPN",
+        "name": "Global Payments",
+        "sector": "Financials"
+      },
+      "removal": {
+        "ticker": "GME",
+        "name": "GameStop",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "Global Payments 收购 Heartland Payment Systems，Global Payments 调入 S&P 500 顶替 GameStop。",
+      "reasonEn": "Global Payments is acquiring Heartland Payment Systems",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-04-18",
+      "type": "委员会裁量",
+      "typeEn": "Committee discretion",
+      "addition": {
+        "ticker": "ULTA",
+        "name": "Ulta Beauty",
+        "sector": "Consumer Discretionary"
+      },
+      "removal": {
+        "ticker": "THC",
+        "name": "Tenet Healthcare",
+        "sector": "Health Care"
+      },
+      "reason": "委员会裁量调整：Ulta Beauty 调入 S&P 500 顶替 Tenet Healthcare。",
+      "reasonEn": "Ulta replaces Tenet",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-04-08",
+      "type": "其他调整",
+      "typeEn": "Other",
+      "addition": {
+        "ticker": "UA",
+        "name": "Under Armour(Class C)",
+        "sector": "Consumer Discretionary"
+      },
+      "removal": {
+        "ticker": "",
+        "name": "",
+        "sector": ""
+      },
+      "reason": "Under Armour 发行 C 类股，新代码 UA 与原 UAA 一并纳入指数。",
+      "reasonEn": "Under Armour distribution of second class of stock",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-04-04",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "FL",
+        "name": "Foot Locker",
+        "sector": "Consumer Discretionary"
+      },
+      "removal": {
+        "ticker": "CAM",
+        "name": "Cameron International",
+        "sector": "Energy"
+      },
+      "reason": "Schlumberger 收购 Cameron International，Foot Locker 调入 S&P 500 顶替。",
+      "reasonEn": "Schlumberger acquired Cameron",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-03-30",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "HOLX",
+        "name": "Hologic",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "POM",
+        "name": "Pepco Holdings",
+        "sector": "Utilities"
+      },
+      "reason": "Exelon 收购 Pepco Holdings，Hologic 调入 S&P 500 顶替。",
+      "reasonEn": "Exelon acquired Pepco.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-03-30",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "CNC",
+        "name": "Centene Corporation",
+        "sector": "Health Care"
+      },
+      "removal": {
+        "ticker": "ESV",
+        "name": "Ensco",
+        "sector": "Energy"
+      },
+      "reason": "Centene 收购 Health Net，Centene 调入 S&P 500 顶替 Ensco。",
+      "reasonEn": "Centene acquired Health Net.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-03-07",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "UDR",
+        "name": "UDR",
+        "sector": "Real Estate"
+      },
+      "removal": {
+        "ticker": "GMCR",
+        "name": "Keurig Green Mountain",
+        "sector": "Consumer Staples"
+      },
+      "reason": "JAB Holding 收购 Keurig Green Mountain 并使其私有化，UDR 调入 S&P 500 顶替。",
+      "reasonEn": "JAB Holding Company acquired Keurig Green Mountain",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-03-04",
+      "type": "委员会裁量",
+      "typeEn": "Committee discretion",
+      "addition": {
+        "ticker": "AWK",
+        "name": "American Water Works",
+        "sector": "Utilities"
+      },
+      "removal": {
+        "ticker": "CNX",
+        "name": "Consol Energy",
+        "sector": "Energy"
+      },
+      "reason": "委员会裁量调整：American Water Works 调入 S&P 500 顶替 Consol Energy。",
+      "reasonEn": "AWK replaces CNX",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-02-22",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "CXO",
+        "name": "Concho Resources",
+        "sector": "Energy"
+      },
+      "removal": {
+        "ticker": "PCL",
+        "name": "Plum Creek Timber",
+        "sector": "Real Estate"
+      },
+      "reason": "Weyerhaeuser 收购 Plum Creek Timber，Concho Resources 调入 S&P 500 顶替。",
+      "reasonEn": "PCL taken over by WY",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-02-01",
+      "type": "委员会裁量",
+      "typeEn": "Committee discretion",
+      "addition": {
+        "ticker": "CFG",
+        "name": "Citizens",
+        "sector": "Financials"
+      },
+      "removal": {
+        "ticker": "PCP",
+        "name": "Precision Castparts Corporation",
+        "sector": "Industrials"
+      },
+      "reason": "委员会裁量调整：Citizens Financial Group 调入 S&P 500 顶替 Precision Castparts。",
+      "reasonEn": "CFG replaces PCP",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-02-01",
+      "type": "委员会裁量",
+      "typeEn": "Committee discretion",
+      "addition": {
+        "ticker": "FRT",
+        "name": "Federal Realty Investment Trust",
+        "sector": "Real Estate"
+      },
+      "removal": {
+        "ticker": "BRCM",
+        "name": "Broadcom Corporation",
+        "sector": "Information Technology"
+      },
+      "reason": "委员会裁量调整：Federal Realty Investment Trust 调入 S&P 500 顶替 Broadcom Corporation。",
+      "reasonEn": "FRT replaces BRCM",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-01-19",
+      "type": "委员会裁量",
+      "typeEn": "Committee discretion",
+      "addition": {
+        "ticker": "EXR",
+        "name": "Extra Space Storage",
+        "sector": "Real Estate"
+      },
+      "removal": {
+        "ticker": "ACE",
+        "name": "Chubb",
+        "sector": "Financials"
+      },
+      "reason": "ACE Limited 收购 Chubb 并沿用 CB 代码，释放 ACE 代码，Extra Space Storage 调入 S&P 500 顶替。",
+      "reasonEn": "EXR replaces ACE as ACE Ltd acquires Chubb and retains the CB ticker, giving up ACE",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    },
+    {
+      "effectiveDate": "2016-01-05",
+      "type": "并购触发",
+      "typeEn": "M&A trigger",
+      "addition": {
+        "ticker": "WLTW",
+        "name": "Willis Towers Watson",
+        "sector": "Financials"
+      },
+      "removal": {
+        "ticker": "FOSL",
+        "name": "Fossil Group",
+        "sector": "Consumer Discretionary"
+      },
+      "reason": "Willis Group 与 Towers Watson 合并成立 Willis Towers Watson (WLTW)，WLTW 调入 S&P 500；Fossil Group 因市值下滑同期被调出。",
+      "reasonEn": "WSH merges with TW (and renames to WLTW)",
+      "sourceUrl": "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies#Selected_changes_to_the_list_of_S%26P_500_components"
+    }
+  ]
+}

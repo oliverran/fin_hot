@@ -1,0 +1,115 @@
+{"_license": "Reuse with attribution is welcome; copying the work is not. Data (/api/**.json): CC BY 4.0. Charts, share images, embeds and quotes: free to reuse when credited \"History of Market (historyofmarket.com)\" with a link. No derivative or look-alike sites, no use of the brand names, no citation without the source. Terms: https://historyofmarket.com/license/", "_attribution": "History of Market (historyofmarket.com)", "_canonical": "https://historyofmarket.com/api/static/bessembinder-2026.json", "_terms": "https://historyofmarket.com/license/", "_comment": "Hand-curated static edition of Hendrik Bessembinder, 'One Hundred Years in the U.S. Stock Markets' (March 2026), computed on CRSP monthly data 1926-2025. This file has no cron and is NOT refreshed daily: it is a transcription of printed tables in one research paper and changes only if that paper is revised. Every number below is printed in the paper; nothing here is estimated, interpolated or back-filled. Shares of totals (percentages of firm counts, decade averages) are recomputed in the panels from the counts stored here rather than typed twice.",
+  "source": "Bessembinder, One Hundred Years in the U.S. Stock Markets (2026), CRSP data 1926-2025",
+  "edition": 2026,
+  "window": "1926-2025",
+  "paper": {
+    "title": "One Hundred Years in the U.S. Stock Markets",
+    "author": "Hendrik Bessembinder",
+    "dated": "2026-03-21",
+    "ssrn": "6438198",
+    "universe": "CRSP common stocks, 1926-2025",
+    "firms": 29081,
+    "stocks": 29754,
+    "netWealthCreationUsd": 90960000000000
+  },
+
+  "concentration": {
+    "note": "Number of firms, ranked by shareholder wealth creation, required to account for each cumulative share of net wealth creation. The 100% row is the count of firms with positive net wealth creation that together offset every loser; the paper's own 2018 sample (through 2016) is carried alongside so the tightening is visible rather than asserted.",
+    "thresholdsPct": [10, 25, 50, 75, 100],
+    "periods": [
+      {
+        "key": "century",
+        "from": 1926,
+        "to": 2025,
+        "firms": 29081,
+        "netSwcTrillionUsd": 90.96,
+        "counts": [2, 8, 46, 208, 1082]
+      },
+      {
+        "key": "through2016",
+        "from": 1926,
+        "to": 2016,
+        "firms": 25383,
+        "netSwcTrillionUsd": 42.61,
+        "counts": [5, 20, 89, 195, 1088]
+      },
+      {
+        "key": "recent",
+        "from": 2017,
+        "to": 2025,
+        "firms": 7820,
+        "netSwcTrillionUsd": 48.36,
+        "counts": [2, 4, 13, 77, 411]
+      }
+    ]
+  },
+
+  "waterfall": {
+    "note": "Firms ordered from most-negative to most-positive net shareholder wealth creation, 1926-2025. The first two groups are defined by an equality the paper prints: the aggregate loss of the losing firms is matched, dollar for dollar, by the gain of the next 10,802 winners. Everything the century created above Treasury bills therefore comes from what is left. Shares of the firm count are recomputed from `firms` rather than transcribed: the paper prints 37.15% for the offsetting group, but 10,802/29,081 is 37.14% — that row is derived by subtraction from the other two. The counts are the primary record, so the panels quote them and compute the rest.",
+    "totalFirms": 29081,
+    "netTrillionUsd": 90.96,
+    "steps": [
+      { "key": "destroyers", "firms": 17197, "trillionUsd": -10.67 },
+      { "key": "offsetters", "firms": 10802, "trillionUsd": 10.67 },
+      { "key": "creators", "firms": 1082, "trillionUsd": 90.96 }
+    ],
+    "offsetFirms": 27999,
+    "topCreators": [
+      { "name": "Apple", "trillionUsd": 5.02, "sharePct": 5.52 }
+    ],
+    "cumulativeSharePct": [
+      { "n": 2, "pct": 10.6 },
+      { "n": 5, "pct": 21.4 },
+      { "n": 10, "pct": 29.0 },
+      { "n": 30, "pct": 43.7 }
+    ],
+    "nvidiaRecent": { "sharePct": 9.32, "trillionUsd": 4.51, "years": 9, "from": 2017, "to": 2025 }
+  },
+
+  "skewness": {
+    "note": "Buy-and-hold returns measured over each stock's own life on CRSP, so the horizons differ; 29,754 share classes. The hurdles are cumulative in the sense that each is harder than the last, but they are three separate counts, not a nested subset.",
+    "stocks": 29754,
+    "meanBhPct": 30621,
+    "medianBhPct": -6.87,
+    "hurdles": [
+      { "key": "positive", "pct": 48.22 },
+      { "key": "tbill", "pct": 41.17 },
+      { "key": "market", "pct": 27.60 }
+    ],
+    "benchmark": {
+      "marketTerminal": 15041,
+      "marketCagrPct": 10.1,
+      "billTerminal": 25.34,
+      "billCagrPct": 3.3,
+      "premiumPct": 6.81
+    },
+    "firmCrossTab": {
+      "firms": 29081,
+      "wealthCreationPositive": 11884,
+      "wealthCreationNegative": 17197,
+      "buyHoldAboveBill": 11924
+    },
+    "records": {
+      "cumulative": { "name": "Altria", "terminal": 4420000, "cagrPct": 16.53, "years": 100 },
+      "annualized": { "name": "Nvidia", "terminal": 4959, "cagrPct": 37.04, "years": 27 }
+    }
+  },
+
+  "decades": {
+    "note": "Ten non-overlapping decade horizons. Each row pools every stock present at the decade's start; N is that count, and a stock delisted mid-decade carries its proceeds reinvested per the paper's convention. The three shares and the two return statistics are printed values; the first-six / last-four averages quoted in the panel are plain arithmetic means of these rows and are computed, not stored.",
+    "rows": [
+      { "start": 1926, "positivePct": 40.25, "tbillPct": 36.08, "marketPct": 33.48, "meanPct": 19.39,  "medianPct": -24.53, "n": 887 },
+      { "start": 1936, "positivePct": 89.92, "tbillPct": 89.38, "marketPct": 57.32, "meanPct": 198.32, "medianPct": 132.08, "n": 942 },
+      { "start": 1946, "positivePct": 88.28, "tbillPct": 86.59, "marketPct": 30.37, "meanPct": 225.37, "medianPct": 144.86, "n": 1126 },
+      { "start": 1956, "positivePct": 79.78, "tbillPct": 74.65, "marketPct": 43.53, "meanPct": 126.84, "medianPct": 69.32,  "n": 2552 },
+      { "start": 1966, "positivePct": 33.71, "tbillPct": 21.54, "marketPct": 33.91, "meanPct": -0.75,  "medianPct": -27.07, "n": 6524 },
+      { "start": 1976, "positivePct": 67.74, "tbillPct": 59.05, "marketPct": 48.84, "meanPct": 333.44, "medianPct": 87.20,  "n": 9433 },
+      { "start": 1986, "positivePct": 52.98, "tbillPct": 45.95, "marketPct": 30.27, "meanPct": 84.67,  "medianPct": 8.08,   "n": 12743 },
+      { "start": 1996, "positivePct": 53.89, "tbillPct": 48.89, "marketPct": 36.39, "meanPct": 87.52,  "medianPct": 11.24,  "n": 12274 },
+      { "start": 2006, "positivePct": 51.54, "tbillPct": 49.00, "marketPct": 36.26, "meanPct": 45.29,  "medianPct": 2.52,   "n": 7651 },
+      { "start": 2016, "positivePct": 51.64, "tbillPct": 47.70, "marketPct": 24.34, "meanPct": 71.20,  "medianPct": 1.44,   "n": 8216 }
+    ],
+    "all": { "positivePct": 55.13, "tbillPct": 48.99, "marketPct": 35.62, "meanPct": 112.38, "medianPct": 11.56, "n": 62348 },
+    "splitAt": 6
+  }
+}

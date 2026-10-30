@@ -1,0 +1,1 @@
+import{j as i}from"./vendor-react.js";import{a1 as r}from"./app-shared.js";import{P as o}from"./PanelAnnualDist.js";import"./vendor-table.js";function x({kicker:n,title:a,subtitle:t}){return i.jsx(o,{kicker:n,title:a,subtitle:t,endpoint:"/api/ndx/annual-tr",sectionId:"panel-ndx-annual-dist",seriesName:r.ndx})}export{x as PanelAnnualDistNdx};
