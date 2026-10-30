@@ -6,6 +6,13 @@ x-app: &app
   build: .
   image: aihot-app
   restart: unless-stopped
+  # The host has about 1.8 GB of RAM and no other guard: rotate each role's logs (the json-file
+  # driver never trims itself) and cap what one role may take before the kernel picks a victim.
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "3"
 
 x-backend: &backend
   <<: *app
@@ -27,6 +34,12 @@ services:
   db:
     image: postgres:17-alpine
     restart: unless-stopped
+    mem_limit: 512m
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     environment:
       POSTGRES_USER: aihot
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-aihot}
@@ -43,10 +56,12 @@ services:
   setup:
     <<: *backend
     restart: "no"
+    mem_limit: 512m
     command: ["sh", "-c", "node scripts/migrate.ts && node scripts/seed.ts"]
 
   api:
     <<: *backend
+    mem_limit: 448m
     command: ["node", "apps/api/src/main.ts"]
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/api/health', {signal: AbortSignal.timeout(4000)}).then(r => {if (!r.ok) process.exit(1)}).catch(() => process.exit(1))"]
@@ -64,6 +79,7 @@ services:
 
   worker:
     <<: *backend
+    mem_limit: 512m
     command: ["node", "apps/worker/src/main.ts"]
     healthcheck:
       test: ["CMD", "node", "scripts/worker-health.ts"]
@@ -80,6 +96,7 @@ services:
 
   web:
     <<: *app
+    mem_limit: 384m
     command: ["node", "apps/web/server.ts"]
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health', {signal: AbortSignal.timeout(4000)}).then(r => {if (!r.ok) process.exit(1)}).catch(() => process.exit(1))"]
@@ -106,6 +123,12 @@ services:
     image: caddy:2-alpine
     profiles: ["https"]
     restart: unless-stopped
+    mem_limit: 128m
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     ports:
       - "80:80"
       - "443:443"

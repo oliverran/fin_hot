@@ -29,10 +29,13 @@ const CACHE = "public, max-age=86400, stale-while-revalidate=604800";
 const LIVE_CACHE = "public, max-age=900, stale-while-revalidate=86400";
 
 // 美股编年史：整个子应用（historyofmarket）的前端产物与数据集随仓库提交，挂在这个前缀下整站发出。
-// 文件名不带内容哈希，所以用短缓存 + ETag 重新验证，改版后最多一小时就开始换新。
+// 数据集与字体换版就换内容，与入口解耦，可以放长缓存；脚本与样式为了对上源码里的 import()
+// 而不带内容哈希（见 web/vite.config.js），改版后旧分包会跟新的 index.html 错配，所以每次都让
+// 浏览器带 ETag 回来核对——命中时 api 从内存里直接答 304，代价很小。
 const US_WEB = path.join(REPO_ROOT, "historyofmarket/web/dist");
 const US_DATA = path.join(REPO_ROOT, "historyofmarket/server/cache");
 const US_CACHE = "public, max-age=3600, stale-while-revalidate=86400";
+const US_STABLE = /\.(?:json|woff2|webmanifest|ico|png|jpe?g|svg|webp)$/;
 /** 子应用里引擎的静态表不含这几类，缺了它们浏览器会按 MIME 拒收脚本与样式。 */
 const US_TYPES: Record<string, string> = {
   ".js": "text/javascript; charset=utf-8",
@@ -54,7 +57,7 @@ const isFile = (file: string) => stat(file).then((s) => s.isFile(), () => false)
 function sendUs(req: FastifyRequest, reply: FastifyReply, base: string, rel: string) {
   const file = under(base, rel);
   if (!file) return reply.code(404).type("text/plain; charset=utf-8").send("Not found");
-  return sendFile(req, reply, file, { type: US_TYPES[path.extname(file)], cacheControl: US_CACHE });
+  return sendFile(req, reply, file, { type: US_TYPES[path.extname(file)], cacheControl: US_STABLE.test(file) ? US_CACHE : "no-cache" });
 }
 
 export default defineServerModule({
