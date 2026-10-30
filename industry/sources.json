@@ -246,6 +246,67 @@
       "syndicate_fulltext": false
     },
     {
+      "id": "web-safe-whxw",
+      "name": "国家外汇管理局·外汇新闻",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.safe.gov.cn/safe/whxw/index.html",
+        "parseMode": "html",
+        "itemSelector": ".list_conr > ul > li",
+        "linkSelector": "dt a",
+        "titleSelector": "dt a",
+        "publishedAtSelector": "dd",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://www.safe.gov.cn/safe/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": "safe",
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "官方",
+        "外汇"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "web-safe-zcfg",
+      "name": "国家外汇管理局·政策法规",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.safe.gov.cn/safe/zcfg/index.html",
+        "parseMode": "html",
+        "itemSelector": ".list_conr > ul > li",
+        "linkSelector": "dt a",
+        "titleSelector": "dt a",
+        "publishedAtSelector": "dd",
+        "publishedAtUtcOffset": "+08:00",
+        "allowUrlPrefixes": [
+          "https://www.safe.gov.cn/safe/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": "safe",
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "官方",
+        "外汇",
+        "政策"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
       "id": "json-yicai-finance",
       "name": "第一财经·金融",
       "kind": "json_list",
@@ -681,6 +742,79 @@
       "tags": [
         "媒体",
         "财经"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "web-21jingji-finance",
+      "name": "21世纪经济报道·金融",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.21jingji.com/channel/finance",
+        "parseMode": "html",
+        "itemSelector": ".news > a",
+        "linkSelector": "a",
+        "titleSelector": "h2",
+        "allowUrlPrefixes": [
+          "https://m.21jingji.com/article/"
+        ],
+        "detail": {
+          "maxFetches": 20,
+          "publishedAtSelector": ".newsDate",
+          "publishedAtUtcOffset": "+08:00"
+        },
+        "_aihot": {
+          "initialBackfillLimit": 10
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "媒体",
+        "财经"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "json-10jqka-flash",
+      "name": "同花顺·快讯",
+      "kind": "json_list",
+      "config": {
+        "url": "https://news.10jqka.com.cn/tapp/news/push/stock/?page=1&tag=&track=website&pagesize=30",
+        "mode": "json_api",
+        "itemsPath": "data.list",
+        "titlePaths": [
+          "title"
+        ],
+        "summaryPaths": [
+          "digest"
+        ],
+        "authorPaths": [
+          "source"
+        ],
+        "urlTemplate": "{raw:url}",
+        "publishedAtPath": "ctime",
+        "publishedAtUnit": "epoch_s",
+        "externalIdPath": "id",
+        "allowUrlPrefixes": [
+          "https://news.10jqka.com.cn/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 10
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "媒体",
+        "财经",
+        "快讯"
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
