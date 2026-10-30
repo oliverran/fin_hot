@@ -20,7 +20,7 @@ import { sql } from "../db.ts";
 import { chatJson, MODELS, type ContentPart } from "../providers/llm.ts";
 import { completeReceipt, failedReceiptId, failureKind } from "../providers/receipts.ts";
 import { collapseWhitespace } from "../lib/text.ts";
-import { modelFor, modelRoute, modelSupportsVision } from "./models.ts";
+import { modelRoute, modelSupportsVision } from "./models.ts";
 import { buildMaterial, firstImagePart, loadAnalyzeInput, type AnalyzeInputArticle } from "./input.ts";
 import { pageFetchable } from "../content/extract.ts";
 import { shutdownSignal } from "../jobs/queue.ts";
@@ -229,10 +229,10 @@ const subjectOf = (a: AnalyzeInputArticle) => `article:${a.id}@${a.revision}`;
 const tagged = (attemptTag: string | undefined, step: string) => [attemptTag, step].filter(Boolean).join(":") || undefined;
 
 async function runPrefilter(a: AnalyzeInputArticle, opts: StepOpts): Promise<NonNullable<AnalysisRun["prefilter"]>> {
-  const model = await modelFor("prefilter");
+  const route = await modelRoute("prefilter");
   checkAnalysisRunning();
   const res = await chatJson({
-    model,
+    ...route,
     purpose: "prefilter_article",
     subject: subjectOf(a),
     promptVersion: PROMPT_VERSIONS.prefilter,
@@ -271,8 +271,9 @@ async function runScores(
   opts: StepOpts,
   onReceipt?: ReceiptObserver,
 ): Promise<NonNullable<AnalysisRun["scores"]>> {
-  const model = opts.scoreModel ?? (await modelFor("score"));
-  const call = scoreCall(model);
+  // An explicit model (SelectBench) is measured on its own; only the site's evaluated pair fails over.
+  const route = opts.scoreModel ? { model: opts.scoreModel } : await modelRoute("score");
+  const call = scoreCall(route.model);
   const input = buildScoreInput(a);
   const values: number[] = [];
   const receiptIds: number[] = [];
@@ -282,7 +283,7 @@ async function runScores(
     checkAnalysisRunning();
     try {
       const res = await chatJson({
-        model, purpose: "score_article", subject: subjectOf(a), promptVersion: PROMPT_VERSIONS.score, system: SCORE_SYSTEM, user: input,
+        ...route, purpose: "score_article", subject: subjectOf(a), promptVersion: PROMPT_VERSIONS.score, system: SCORE_SYSTEM, user: input,
         schema: ScoreSchema, temperature: call.temperature, maxTokens: call.maxTokens, timeoutMs: call.timeoutMs,
         // Each call is its own paid request; an explicit re-evaluation gets new ones.
         attemptTag: tagged(opts.attemptTag, `score-${i + 1}`),
@@ -295,11 +296,11 @@ async function runScores(
       const receiptId = failedReceiptId(error);
       if (receiptId !== null) onReceipt?.(receiptId);
       // The model's content filter declines the material (Zhipu 1301): not scored, so not selected.
-      if (isContentFilter(error)) return { model, threshold, values, receiptIds, reused: false, refused: true };
+      if (isContentFilter(error)) return { model: route.model, threshold, values, receiptIds, reused: false, refused: true };
       throw error;
     }
   }
-  return { model, threshold, values, receiptIds, reused };
+  return { model: route.model, threshold, values, receiptIds, reused };
 }
 
 /** The production score step; its threshold stays case-specific even when an evaluator shares model output. */
@@ -313,10 +314,10 @@ export async function runSelectionScores(
 }
 
 export async function runStructure(a: AnalyzeInputArticle, opts: StepOpts = {}): Promise<NonNullable<AnalysisRun["structure"]>> {
-  const model = await modelFor("structure");
+  const route = await modelRoute("structure");
   checkAnalysisRunning();
   const res = await chatJson({
-    model,
+    ...route,
     purpose: "structure_article",
     subject: subjectOf(a),
     promptVersion: PROMPT_VERSIONS.structure,
@@ -332,18 +333,18 @@ export async function runStructure(a: AnalyzeInputArticle, opts: StepOpts = {}):
 
 /** Content understanding grounded in the original; null on a content-filter refusal. */
 export async function runUnderstand(a: AnalyzeInputArticle, opts: StepOpts = {}): Promise<AnalysisRun["writing"]> {
-  const model = await modelFor("understand");
+  const route = await modelRoute("understand");
   const text = understandUser(a);
   const call = (image: ContentPart | null) => {
     checkAnalysisRunning();
     return chatJson({
-      model, purpose: "understand_article", subject: subjectOf(a), promptVersion: PROMPT_VERSIONS.understand, system: UNDERSTAND_SYSTEM,
+      ...route, purpose: "understand_article", subject: subjectOf(a), promptVersion: PROMPT_VERSIONS.understand, system: UNDERSTAND_SYSTEM,
       user: image ? [{ type: "text", text }, image] : text, schema: UnderstandSchema, temperature: 0.2, maxTokens: 16_384,
       timeoutMs: 180_000, attemptTag: tagged(opts.attemptTag, "understand"),
     });
   };
   // Image input is opt-in: an unspecified capability must not become a paid provider probe.
-  const image = modelSupportsVision(model) ? await firstImagePart(a) : null;
+  const image = modelSupportsVision(route.model) ? await firstImagePart(a) : null;
   let res: Awaited<ReturnType<typeof call>>;
   try {
     res = await call(image);
@@ -386,7 +387,7 @@ async function mendWording(a: AnalyzeInputArticle, w: NonNullable<AnalysisRun["w
   let res;
   try {
     res = await chatJson({
-      model: await modelFor("wording"), purpose: "mend_wording", subject: subjectOf(a), promptVersion: PROMPT_VERSIONS.wording, system: MEND_SYSTEM,
+      ...await modelRoute("wording"), purpose: "mend_wording", subject: subjectOf(a), promptVersion: PROMPT_VERSIONS.wording, system: MEND_SYSTEM,
       user: [
         `来源：${t.sourceName ?? "（未注明）"}`, `原题：${t.title}`,
         `中文稿：\n${JSON.stringify({ titleZh: w.titleZh, summaryZh: w.summaryZh, reasonZh: w.reasonZh })}`,

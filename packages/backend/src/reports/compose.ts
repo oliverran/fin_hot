@@ -7,7 +7,7 @@ import { z } from "zod";
 import { EDITION_TIMES, REPORTS, SITE } from "@aihot/site";
 import { PLAIN_TERMS, RELEASE } from "@aihot/industry/taxonomy";
 import { promptText, promptVersion } from "../editorial/prompts.ts";
-import { modelFor } from "../editorial/models.ts";
+import { modelRoute } from "../editorial/models.ts";
 import { ENTITIES, entityNames, isRelease } from "../editorial/vocabulary.ts";
 import { addDays, beijingAt, beijingDate, beijingTime, isoWeekLabel, isoWeekRange, monthRange } from "@aihot/contracts/time";
 import { sql } from "../db.ts";
@@ -214,12 +214,12 @@ async function composePeriod(kind: "weekly" | "monthly", key: string, startDate:
     .map((label) => ({ label, items: top.filter((e) => sectionOf(e.category) === label) }))
     .filter((g) => g.items.length > 0);
   const corpus = [`${startDate} ${endDateInclusive}`, ...top.map((e) => `${e.title} ${e.summary}`)].join("\n");
-  const model = await modelFor("report");
+  const route = await modelRoute("report");
   let written: z.infer<typeof PeriodSchema> = { overview: "", sections: {} };
   let receiptId: number | null = null;
   try {
     const res = await chatJson({
-      model, purpose: `report_${kind}`, subject: `report:${kind}:${key}`, promptVersion: REPORT_VERSION,
+      ...route, purpose: `report_${kind}`, subject: `report:${kind}:${key}`, promptVersion: REPORT_VERSION,
       ...periodPrompt(kind, startDate, endDateInclusive, groups), schema: PeriodSchema, temperature: 0.3, maxTokens: 2500,
     });
     written = res.data;
@@ -249,9 +249,9 @@ async function composePeriod(kind: "weekly" | "monthly", key: string, startDate:
     themes: groups.map((g) => ({ heading: g.label, summary: intro(g), storyRefs: g.items.map(({ category: _c, factKey: _f, ...e }) => e) })),
     storyOrder: top.map((e) => e.itemId),
     metrics: { totalStories: top.length, selectedCount: selected.length, reportsCovered: issues },
-    generator: { version: REPORT_VERSION, model, written: overview !== null },
+    generator: { version: REPORT_VERSION, model: route.model, written: overview !== null },
   };
-  await saveReport(kind, key, start, end, content, reason, model, receiptId === null ? [] : [receiptId]);
+  await saveReport(kind, key, start, end, content, reason, route.model, receiptId === null ? [] : [receiptId]);
   return { key, entries: top.length };
 }
 

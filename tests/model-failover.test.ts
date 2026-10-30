@@ -2,11 +2,15 @@
 // forgets the outage; a saved backup answer is bought again; timeouts lose their billing history;
 // budget, input and output errors accidentally trigger a second provider.
 import { pointModels, Reply, stub, tag } from "./setup.ts";
+import { analysisStep, SELECTING_SCORE } from "./analysis-steps.ts";
 import assert from "node:assert/strict";
 import { after, beforeEach, test } from "node:test";
 import { spawn } from "node:child_process";
 import { z } from "zod";
 import { sql, closeDb } from "@aihot/backend/db";
+import { analyzeArticle } from "@aihot/backend/editorial/analyze";
+import { CAPABILITIES, type Capability } from "@aihot/backend/editorial/models";
+import { upsertMaterial } from "@aihot/backend/content/materials";
 import { chatJson } from "@aihot/backend/providers/llm";
 import { BudgetExceededError, failureKind, ModelOutputError, ReceiptUnknownError } from "@aihot/backend/providers/receipts";
 import { autoReleaseUnknownReceipts } from "@aihot/backend/operations/recover";
@@ -149,4 +153,41 @@ test("429 account refusals stop at the primary while temporary throttling can us
   primaryAnswer = () => new Reply(429, { error: { code: "1302", message: "请求频率过高" } });
   assert.equal((await chatJson({ ...opts, subject: `${opts.subject}-rate`, user: "rate-limited" })).model, "qwen3.8-flash");
   assert.equal(backup.hits(), calls + 1);
+});
+
+// The site backs the default model with an independently operated provider (site/models.ts). A step
+// left on the default must reach that backup when its provider is down, or the first paid call of the
+// analysis stops the whole pipeline.
+test("an analysis left on the default model reaches its evaluated backup when the provider is down", async () => {
+  const answering = await stub((_hit, req) => {
+    const step = analysisStep(req.body);
+    const content = step === "prefilter" ? { label: "PASS", reason: "产品发行" }
+      : step === "score" ? { attentionScore: SELECTING_SCORE }
+        : step === "structure" ? { category: "funds", tags: ["产品更新"], subjects: [], fact: null }
+          : { itemType: "product_launch", authorRole: "principal", tags: ["产品更新"], editorialJudgment: "有明确的规模提升", titleZh: `备用模型的标题 ${T}`, summaryZh: "由备用模型写成的摘要。第二句。" };
+    return { id: "stub-backup", choices: [{ message: { content: JSON.stringify(content) } }], usage: { prompt_tokens: 1, completion_tokens: 1 } };
+  });
+  const assigned = { LLM_BASE_URL: `${primary.url}/v1`, LLM_API_KEY: "test-key", LLM_MODEL: "one-model", KIMI_BASE_URL: `${answering.url}/v1`, KIMI_API_KEY: "test-key" };
+  const saved = Object.entries(assigned).map(([key, value]) => [key, process.env[key], value] as const);
+  const steps = (Object.values(CAPABILITIES) as Capability[]).map((c) => [c.env, process.env[c.env], c.default === "default" ? "" : "default"] as const);
+  const source = `test-failover-analyze-${T}`;
+  primaryAnswer = () => new Reply(503, { error: "overloaded" });
+  for (const [key, , value] of [...saved, ...steps]) process.env[key] = value;
+  try {
+    await sql`INSERT INTO sources (id,name,kind,tier,participation_mode,next_fetch_at)
+      VALUES (${source},'Failover analysis','rss','T1','editorial','2100-01-01')`;
+    const { articleId } = await upsertMaterial({ sourceId: source, url: `https://example.com/failover-${T}`, title: `A product launch ${T}`,
+      bodyText: `A company launched a product with pricing and availability. ${T} `.repeat(6), bodyStatus: "ok", via: "fetch", publishedAt: new Date() } as never);
+    const res = await analyzeArticle(articleId);
+    assert.equal(res?.output?.selected, true);
+    assert.equal(res?.output?.titleZh, `备用模型的标题 ${T}`);
+    const answered = await sql<{ n: number }[]>`SELECT count(*)::int AS n FROM receipts WHERE subject LIKE ${`article:${articleId}%`} AND service = 'moonshot'`;
+    assert.equal(answered[0]!.n, 5, "every step of the analysis was attempted at the default provider and answered by its evaluated backup");
+  } finally {
+    for (const [key, value] of [...saved, ...steps]) {
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
+    await answering.close();
+  }
 });

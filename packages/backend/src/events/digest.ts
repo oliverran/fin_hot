@@ -1,7 +1,7 @@
 // Story digest: rewritten incrementally as reports arrive; contradictions with earlier reporting are
 // stated explicitly. Latest progress is bound to a current public report, not generated independently.
 import { z } from "zod";
-import { modelFor } from "../editorial/models.ts";
+import { modelRoute } from "../editorial/models.ts";
 import { beijingDate, beijingTime } from "@aihot/contracts/time";
 import { sql } from "../db.ts";
 import { chatJson } from "../providers/llm.ts";
@@ -69,7 +69,7 @@ export async function composeStoryDigest(storyId: number, opts: { rewrite?: bool
   // A withdrawal clears the public projection but retains its history. Restoring exactly the same
   // evidence reuses that digest through the normal version/input checks, without another model call.
   const res = !opts.rewrite && last?.inputs_hash === inputsHash ? { data: { title: "", digest: last.digest }, receiptId: last.receipt_id } : await chatJson({
-    model: await modelFor("digest"), purpose: "story_digest", subject: `story:${storyId}@${ids.length}`, promptVersion: DIGEST_PROMPT_VERSION,
+    ...await modelRoute("digest"), purpose: "story_digest", subject: `story:${storyId}@${ids.length}`, promptVersion: DIGEST_PROMPT_VERSION,
     system: DIGEST_SYSTEM, user, schema: DigestSchema, ...DIGEST_SAMPLING,
   });
   const version = story.version + 1;

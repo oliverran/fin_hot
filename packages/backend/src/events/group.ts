@@ -15,7 +15,7 @@
 // reports merges into where it went, so its address keeps working. Discussion posts that found no
 // story get another look when a report founds a fact close to them (rematchSignals); history
 // (isHistorical) founds no event. Runs serially (queue concurrency 1).
-import { modelFor, modelRoute } from "../editorial/models.ts";
+import { modelRoute } from "../editorial/models.ts";
 import { beijingDate, beijingMidnight } from "@aihot/contracts/time";
 import { sql, type Db, type Tx } from "../db.ts";
 import { newShortId, newUuid } from "../lib/ids.ts";
@@ -87,7 +87,7 @@ async function judgeBatch(articleId: string, query: ReportView, cands: Candidate
 /** The review model reads both reports on their own; a merge stands only when it agrees. */
 async function confirmMerge(articleId: string, query: ReportView, cand: CandidateView): Promise<{ relation: Relation; receiptId: number }> {
   const res = await chatJson({
-    model: await modelFor("groupReview"), purpose: "group_review", subject: `article:${articleId}:fact:${cand.factId}`, promptVersion: RELATE_PROMPT_VERSION,
+    ...await modelRoute("groupReview"), purpose: "group_review", subject: `article:${articleId}:fact:${cand.factId}`, promptVersion: RELATE_PROMPT_VERSION,
     system: PAIR_SYSTEM, user: pairUser(query, cand.report), schema: PairSchema, temperature: 0, maxTokens: 400,
   });
   return { relation: res.data.relation, receiptId: res.receiptId };

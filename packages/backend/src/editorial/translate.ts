@@ -17,7 +17,7 @@ import { completeReceipt, failureKind, ProviderRejectedError, rejectReceivedResp
 import { collapseWhitespace, isChineseText } from "../lib/text.ts";
 import { isEmptyOrLinkOnly } from "../content/posts.ts";
 import { sha256 } from "../lib/ids.ts";
-import { modelFor } from "./models.ts";
+import { modelRoute } from "./models.ts";
 import { shutdownSignal } from "../jobs/queue.ts";
 import { promptText, promptVersion } from "./prompts.ts";
 import { emit } from "../modules.ts";
@@ -81,10 +81,10 @@ interface BatchTranslation {
 }
 
 async function translateBatch(articleId: string, revision: number, index: number, parts: string[], system: string, attemptTag?: string): Promise<BatchTranslation> {
-  const model = await modelFor("translate");
+  const route = await modelRoute("translate");
   shutdownSignal.signal.throwIfAborted();
   const res = await chatJson({
-    model,
+    ...route,
     purpose: "translate_body",
     subject: `article:${articleId}@${revision}#${index}`,
     promptVersion: TRANSLATE_PROMPT_VERSION,
@@ -299,7 +299,7 @@ export async function translateQuotes(opts: { days?: number; limit?: number; bud
       origin = "model";
       try {
         const res = await chatJson({
-          model: await modelFor("translate"), purpose: "translate_quoted", subject: `quote:${r.tweet_id}`, promptVersion: TRANSLATE_PROMPT_VERSION,
+          ...await modelRoute("translate"), purpose: "translate_quoted", subject: `quote:${r.tweet_id}`, promptVersion: TRANSLATE_PROMPT_VERSION,
           system: SYSTEM_POST, user: JSON.stringify({ segments: [r.text] }), schema: Output, temperature: 0.2,
           maxTokens: Math.min(4000, Math.ceil(r.text.length * 1.5) + 200), timeoutMs: 120_000,
         });
