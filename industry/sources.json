@@ -341,41 +341,6 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "json-sina-finance",
-      "name": "新浪财经·要闻滚动",
-      "kind": "json_list",
-      "config": {
-        "url": "https://feed.mix.sina.com.cn/api/roll/get?pageid=153&lid=2516&num=30&page=1",
-        "itemsPath": "result.data",
-        "titlePaths": [
-          "title"
-        ],
-        "summaryPaths": [
-          "intro"
-        ],
-        "authorPaths": [
-          "media_name"
-        ],
-        "publishedAtPath": "ctime",
-        "publishedAtUnit": "epoch_s",
-        "externalIdPath": "docid",
-        "urlTemplate": "{raw:url}",
-        "_aihot": {
-          "initialBackfillLimit": 10
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 60,
-      "tags": [
-        "媒体",
-        "财经"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
       "id": "json-wscn-lives",
       "name": "华尔街见闻·快讯",
       "kind": "json_list",

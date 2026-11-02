@@ -26,7 +26,7 @@ What FinHOT changed on top of the framework is the field itself, all of it insid
 
 - **Name and brand**: FinHOT, the field word “金融” (finance), home and about copy, report nameplates, the MCP prefix `finhot` (`site/`)
 - **Field taxonomy and topics**: 7 categories (AI in finance, policy and regulation, market, mutual and private funds, industry news, research, opinion) with matching tags (`industry/taxonomy.ts`, `industry/topics.json`)
-- **Sources**: 22 demo financial sources, covering official channels such as the CSRC, the Shanghai Stock Exchange, the People's Bank of China, the Ministry of Finance, the National Bureau of Statistics and the NFRA, plus financial media and Eastmoney research reports (`industry/sources.json`)
+- **Sources**: 25 demo financial sources, covering official channels such as the CSRC, the Shanghai Stock Exchange, the People's Bank of China, the Ministry of Finance, the National Bureau of Statistics and the NFRA, plus financial media and Eastmoney research reports (`industry/sources.json`)
 - **Prompts and thresholds**: 17 prompts rewritten for finance; thresholds set per source tier at T1 60 / T1.5 65 / T2 76 (`industry/prompts/`, `industry/selection.ts`)
 - **Models**: the default model comes from `LLM_*` in `.env`; `site/models.ts` configures deepseek-v4.1-flash on an Alibaba Cloud MaaS gateway as a fallback for it
 - **Chronicle tab**: A-share history as a column you can read on its own, filling in the background of “where this market and these sectors came from” while you read the news (`modules/chronicle/`)
