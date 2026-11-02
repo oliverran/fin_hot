@@ -86,8 +86,26 @@ function extractJson(text: string): unknown {
   try {
     return JSON.parse(body);
   } catch {
-    return JSON.parse(escapeControlCharsInStrings(body));
+    // 只修模型常犯的两处：字符串里的裸控制符，和漏掉的收尾括号。正文一个字不动。
+    return JSON.parse(closeOpenStructures(escapeControlCharsInStrings(body)));
   }
+}
+
+/** 补上模型漏写的收尾括号；括号本来就配平时原样返回，配多了也没有可补的。 */
+function closeOpenStructures(json: string): string {
+  const open: string[] = [];
+  let inString = false;
+  let escaped = false;
+  for (const ch of json) {
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (ch === "\\") escaped = true;
+      else if (ch === '"') inString = false;
+    } else if (ch === '"') inString = true;
+    else if (ch === "{" || ch === "[") open.push(ch);
+    else if (ch === "}" || ch === "]") open.pop();
+  }
+  return json + open.reverse().map((ch) => (ch === "{" ? "}" : "]")).join("");
 }
 
 /** Models sometimes emit raw newlines or tabs inside JSON strings (multi-line posts); escape only those. */

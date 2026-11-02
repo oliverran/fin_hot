@@ -137,6 +137,17 @@ test("input rejection, unusable output and a stopped budget do not switch provid
   assert.equal(backup.hits(), calls);
 });
 
+// A model that drops only the last closing brace (MiniMax did this on group_article in production)
+// still said everything; accept the answer instead of failing the step.
+test("output missing only its final closing brace is accepted", async () => {
+  const calls = backup.hits();
+  primaryAnswer = () => ({ choices: [{ message: { content: `{"value":"brace","a":{"b":1}` } }] });
+  const result = await chatJson(request("missing-brace"));
+  assert.equal(result.model, "deepseek-flash");
+  assert.equal(result.data.value, "brace");
+  assert.equal(backup.hits(), calls);
+});
+
 // A permanent 429 must not buy a fallback or trip the temporary-outage circuit. A real
 // rate limit still uses the existing fallback policy and keeps the original attempt failed.
 test("429 account refusals stop at the primary while temporary throttling can use the backup", async () => {

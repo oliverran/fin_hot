@@ -3,11 +3,18 @@
 import { PhoneBar } from "@aihot/web/components/shell/PhoneBar";
 import type { Screen } from "@aihot/web/components/shell/screens";
 import { Kicker } from "@aihot/web/components/ui/Kicker";
+import { PillTabs } from "@aihot/web/components/ui/Tabs";
 import { pageMeta } from "@aihot/web/lib/seo";
 import { Link } from "react-router";
 import { ROUTES } from "../../catalog.ts";
 
 export const handle: Screen = { tab: "chronicle", name: "美股编年史" };
+
+/** A股 / 美股两个编年史的切换；手机底栏只有一个「编年史」页签，切换放在页内。 */
+const SCOPE_TABS = [
+  { key: "a-share", label: "A股编年史", to: ROUTES.home },
+  { key: "us", label: "美股编年史", to: ROUTES.usMarket },
+];
 
 export function meta() {
   return pageMeta({
@@ -36,6 +43,7 @@ export default function UsMarketChronicle() {
             数据口径与免责
           </Link>
         </p>
+        <PillTabs items={SCOPE_TABS} active="us" layoutId="chronicle-scope" size="sm" label="编年史范围" className="mt-5" />
       </header>
       {/* 子应用自己有语言切换与卷内导航，地址是路径式的（/us-market/zh-cn/sp500/annual/），刷新回落单页入口。 */}
       <iframe

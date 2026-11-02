@@ -41,20 +41,23 @@ export function parseDayBars(payload: unknown, code: string): QuoteBar[] {
     // 每一行是 [日期, 开, 收, 高, 低, 成交量]。
     if (!Array.isArray(row) || row.length < 6) throw new Error(`Invalid quote row for ${code}`);
     const [date, open, close, high, low, volume] = row as string[];
-    const bar = {
-      date: date!, open: Number(open), close: Number(close), high: Number(high), low: Number(low),
-      volume: Number.isFinite(Number(volume)) ? Math.round(Number(volume)) : 0,
-    };
-    const at = new Date(`${bar.date}T00:00:00Z`);
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(bar.date) || !Number.isFinite(at.getTime())
-      || at.toISOString().slice(0, 10) !== bar.date
+    const at = new Date(`${date}T00:00:00Z`);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(date)) || !Number.isFinite(at.getTime())
+      || at.toISOString().slice(0, 10) !== date
       || ![open, close, high, low, volume].every((v) => (typeof v === "string" && v.trim() !== "") || typeof v === "number")
-      || ![bar.open, bar.close, bar.high, bar.low].every((v) => Number.isFinite(v) && v > 0)
-      || bar.low > Math.min(bar.open, bar.close) || bar.high < Math.max(bar.open, bar.close)
+      || ![open, close, high, low].every((v) => Number.isFinite(Number(v)) && Number(v) > 0)
       || !Number.isFinite(Number(volume)) || Number(volume) < 0) {
       throw new Error(`Invalid quote bar for ${code} at ${String(date)}`);
     }
-    return [bar];
+    // 腾讯偶有一根日线的高低点越过开盘收盘（2015-03-27 的上证：低点=高点=3710.477，高过开收）。
+    // 这是一根还能画的数据，不是坏行：把高低点钳到开收之外，保住整页，而不是让一次补齐全盘失败。
+    const o = Number(open);
+    const c = Number(close);
+    return [{
+      date: date!, open: o, close: c,
+      high: Math.max(o, c, Number(high)), low: Math.min(o, c, Number(low)),
+      volume: Math.round(Number(volume)),
+    }];
   });
 }
 
