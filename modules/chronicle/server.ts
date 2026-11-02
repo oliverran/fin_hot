@@ -20,6 +20,7 @@ import { defineServerModule } from "@aihot/backend/modules";
 import { LIVE_CHARTS, LIVE_INDICES, LIVE_SOURCE, GROUPS, liveChart, pageOf, type LiveIndex } from "./catalog.ts";
 import { liveChartJson } from "./backend/charts.ts";
 import { quotesFetchedAt, refreshQuotes } from "./backend/quotes.ts";
+import { refreshUsMarket, usFreshRoot } from "./backend/us-market.ts";
 // 主题 → 图表的对应表在 topic-map.ts，网页侧也读它（借类型）。
 import { chronicleForTopic } from "./topic-map.ts";
 
@@ -67,10 +68,13 @@ export default defineServerModule({
     // 美股编年史子应用：/us-market/ 下整站发出（前端产物 + 数据集）。地址与网页侧一致，见 module.ts 的 apiPaths。
     // 不带尾斜杠的根地址不是站内链接，当来访是手输，转去中文首页。
     app.get("/us-market", (_req, reply) => reply.redirect("/us-market/zh-cn/", 302));
-    // 数据集：/us-market/api/<…> → historyofmarket/server/cache/api/<…>（117 个随包的 JSON）。
-    app.get("/us-market/api/*", (req, reply) => {
+    // 数据集：/us-market/api/<…> → 先读定期回源下来的那份，没有才退回随包的快照（117 个 JSON）。
+    app.get("/us-market/api/*", async (req, reply) => {
       const rest = (req.params as { "*": string })["*"];
-      return sendUs(req, reply, US_DATA, path.join("api", rest));
+      const rel = path.join("api", rest);
+      const fresh = under(usFreshRoot(), rel);
+      if (fresh && (await isFile(fresh))) return sendUs(req, reply, usFreshRoot(), rel);
+      return sendUs(req, reply, US_DATA, rel);
     });
     // 前端产物：命中真实文件直接发；其余是没有扩展名的路径式路由（/us-market/zh-cn/sp500/annual/），
     // 交回单页入口由 src/router.js 还原成语言与卷。
@@ -157,6 +161,14 @@ export default defineServerModule({
       missed: "once",
       when: () => process.env.COLLECT_ENABLED === "true",
       run: () => refreshQuotes(),
+    },
+    // 美股子应用的数据集从上游回源：上游清早生成，晚上抓一次，只搬 manifest 上哈希变了的那些。
+    {
+      name: "chronicle.us-market",
+      cron: "0 21 * * *",
+      missed: "once",
+      when: () => process.env.COLLECT_ENABLED === "true",
+      run: () => refreshUsMarket(),
     },
   ],
   // 这一块只讲“这个主题该看哪几张图”，与主题下的条目无关，所以 recheck 是空的。
