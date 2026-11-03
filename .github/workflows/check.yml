@@ -71,7 +71,7 @@ jobs:
         run: npx playwright install --with-deps chromium webkit
       - name: Web tests
         env:
-          NAVIGATION_DIAGNOSTIC_SAMPLES: "20"
+          NAVIGATION_DIAGNOSTIC_SAMPLES: "50"
         run: node --test apps/web/tests/*.test.ts
 
       # Each test file runs on its own copy of aihot_ci (tests/databases.ts), which the run migrates and

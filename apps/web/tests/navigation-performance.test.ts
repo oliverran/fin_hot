@@ -28,6 +28,7 @@ const hits: string[] = [];
 let suggestionsVersion=1;
 let failing='';
 let ttl=60;
+let articleDelay=0;
 let web:WebServer;
 let origin:string;
 let chrome:Browser;
@@ -54,7 +55,7 @@ const api=fakeApi((url,res,req)=>{
     const page=Number(url.searchParams.get('page')||1);
     return {filters:{channel:'all',category:null,tag:null,q:null,tab:'time'},items:[{...item,title:'全部第 '+page+' 页'}],page,pageCount:3,total:3,todayCount:1,freshness:at};
   }
-  if(p==='/api/site/items/navigation-fixture')return detail;
+  if(p==='/api/site/items/navigation-fixture')return articleDelay?new Promise(resolve=>setTimeout(()=>resolve(detail),articleDelay)):detail;
   if(p==='/api/site/items/navigation-fixture/original')return {...detail,body:{zh:null,original:'<p>Original fixture</p>',zhKind:null,complete:true},bodyLanguage:'original'};
   if(p==='/api/site/items/reader-fixture')return {...detail,id:'reader-fixture',title:'阅读增强检查',body:{...detail.body,zh:readerBody}};
   if(p==='/api/site/items/reader-fixture/original')return {...detail,id:'reader-fixture',title:'阅读增强检查',body:{...detail.body,zh:null,original:'<p>Original reader text</p>'},bodyLanguage:'original'};
@@ -82,6 +83,7 @@ after(async()=>{
 // Temporary diagnostics: preserve the failing assertion and exercise fresh WebKit documents repeatedly.
 for(let sample=0;sample<Number(process.env.NAVIGATION_DIAGNOSTIC_SAMPLES||1);sample++)
 test(`SSR list and visited query variants return offline without another read [${sample+1}]`,async()=>{
+  articleDelay=[0,0,0,1,5,20,50,150,450,1200][sample%10];
   const context=await safari.newContext({viewport:{width:390,height:844}});
   const page=await context.newPage();
   const events:unknown[]=[];
@@ -126,9 +128,9 @@ test(`SSR list and visited query variants return offline without another read [$
         resources:performance.getEntriesByType('resource').filter(r=>r.name.includes('.data')).map(r=>r.toJSON()),
       };
     }));
-    console.error('NAVIGATION_DIAGNOSTIC',JSON.stringify({sample,events,hits}));
+    console.error('NAVIGATION_DIAGNOSTIC',JSON.stringify({sample,articleDelay,events,hits}));
     throw error;
-  }finally{await context.close();}
+  }finally{articleDelay=0;await context.close();}
 });
 
 test('hover downloads nothing, a press fetches article data once for its click, touches that move do not, and failed prefetch does not replace the current page',async()=>{
