@@ -18,6 +18,10 @@ concurrency:
 
 jobs:
   check:
+    strategy:
+      fail-fast: false
+      matrix:
+        shadow: ['original', 'none']
     runs-on: ubuntu-latest
     timeout-minutes: 25
     services:
@@ -32,6 +36,7 @@ jobs:
     env:
       DEBUG_COLORS: "0"
       NAVIGATION_TRACE_LEVEL: detailed
+      NAVIGATION_SHADOW_VARIANT: ${{ matrix.shadow }}
       DATABASE_URL: postgres://postgres:ci@127.0.0.1:5432/aihot_ci
       SITE_URL: http://127.0.0.1:3000
       API_BASE_URL: http://127.0.0.1:3001
@@ -73,7 +78,7 @@ jobs:
         run: npm run build -w @aihot/web
       - name: Browser test engines
         run: npx playwright install --with-deps chromium webkit
-      - name: Web tests (single cold frame-progress experiment)
+      - name: Web tests (matched cold shadow experiment)
         run: |
           failed=0
           mkdir -p "$RUNNER_TEMP/webkit-protocol"
@@ -89,7 +94,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: webkit-frame-progress-single
+          name: webkit-shadow-${{ matrix.shadow }}
           path: ${{ runner.temp }}/webkit-protocol/*.log
           if-no-files-found: ignore
           retention-days: 7

@@ -147,6 +147,12 @@ test('SSR list and visited query variants return offline without another read',a
     await visit(page,origin+'/');
     mark('visit-done');
     await expect(page.getByRole('link',{name:'性能检查文章',exact:true})).toBeVisible();
+    const shadowVariant=process.env.NAVIGATION_SHADOW_VARIANT??'original';
+    assert.ok(shadowVariant==='original'||shadowVariant==='none');
+    const shadow=shadowVariant==='none'?'none':'-10px 0 28px rgba(0,0,0,0.12)';
+    // Matched diagnostic style insertion; only the push snapshot shadow differs between arms.
+    await page.addStyleTag({content:`:root[data-vt="push"]::view-transition-new(root) { box-shadow: ${shadow} !important; }`});
+    console.error('NAVIGATION_SHADOW_VARIANT',JSON.stringify({variant:shadowVariant,shadow}));
     previousDebug=debug.disable();
     debug.enable([previousDebug,'pw:protocol'].filter(Boolean).join(','));
     // Temporary, version-bound in-process bridge to the existing WebKit target session.
