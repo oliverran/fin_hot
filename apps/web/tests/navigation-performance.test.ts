@@ -86,6 +86,19 @@ test('SSR list and visited query variants return offline without another read',a
   let previousDebug:string|undefined;
   let heartbeat:ReturnType<typeof setInterval>|undefined;
   const nodeGaps:{at:number;gap:number}[]=[];
+  let timelineSession:any;
+  let timelineStarted:number|undefined;
+  const stopTimeline=async()=>{
+    const session=timelineSession;
+    if(!session)return;
+    timelineSession=undefined;
+    const stopRequested=Date.now();
+    try{
+      await session.send('Timeline.stop');
+      await session.send('Timeline.disable');
+      console.error('NAVIGATION_TIMELINE_CAPTURE',JSON.stringify({started:timelineStarted,stopRequested,stopped:Date.now()}));
+    }catch(error){console.error('NAVIGATION_TIMELINE_ERROR',String(error));}
+  };
   const context=await safari.newContext({viewport:{width:390,height:844}});
   const phases:{phase:string;at:number}[]=[];
   const mark=(phase:string)=>phases.push({phase,at:Date.now()});
@@ -136,6 +149,14 @@ test('SSR list and visited query variants return offline without another read',a
     await expect(page.getByRole('link',{name:'性能检查文章',exact:true})).toBeVisible();
     previousDebug=debug.disable();
     debug.enable([previousDebug,'pw:protocol'].filter(Boolean).join(','));
+    // Temporary, version-bound in-process bridge to the existing WebKit target session.
+    try{
+      const session=(page as any)._connection.toImpl(page).delegate._session;
+      timelineStarted=Date.now();
+      await session.send('Timeline.enable');
+      await session.send('Timeline.start',{maxCallStackDepth:1});
+      timelineSession=session;
+    }catch(error){console.error('NAVIGATION_TIMELINE_ERROR',String(error));}
     mark('click-start');
     await page.getByRole('link',{name:'性能检查文章',exact:true}).click();
     mark('click-done');
@@ -150,6 +171,7 @@ test('SSR list and visited query variants return offline without another read',a
     clearInterval(heartbeat);
     mark('body-assert-passed');
     console.error('NAVIGATION_TIMING_SUCCESS',JSON.stringify({phases,nodeGaps,state:await page.evaluate(()=>({now:performance.now(),timeOrigin:performance.timeOrigin,dateNow:Date.now(),events:(globalThis as any).__navigationTiming,resources:performance.getEntriesByType('resource').map(r=>r.toJSON())}))}));
+    await stopTimeline();
     await context.setOffline(true);
     await page.goBack();
     await expect(page.getByRole('link',{name:'性能检查文章',exact:true})).toBeVisible({timeout:1500});
@@ -195,9 +217,11 @@ test('SSR list and visited query variants return offline without another read',a
       return {...snapshot,resolution};
     });
     console.error('NAVIGATION_FAILURE_DIAGNOSTIC',JSON.stringify({phases,nodeGaps,state,hits,server: web.logs()}));
+    await stopTimeline();
     throw error;
   }finally{
     clearInterval(heartbeat);
+    await stopTimeline();
     try{await context.close();}finally{if(previousDebug!==undefined)debug.enable(previousDebug);}
   }
 });

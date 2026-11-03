@@ -6,6 +6,8 @@ type Call={key:string;method:string;at:number;end?:number;params:string;response
 const calls=new Map<string,Call>();
 let diagnostic:any;
 let unparsed=0;
+const timeline:{received:number;record:any}[]=[];
+const timelineMarkers:{at:number;method:string;params:any}[]=[];
 const lines=readFileSync(process.argv[2],'utf8').split('\n');
 function decode(value:any):any{
   if(value?.o)return Object.fromEntries(value.o.map((p:any)=>[p.k,decode(p.v)]));
@@ -18,6 +20,8 @@ function accept(message:any,direction:string,at:number,target:string){
     try{accept(JSON.parse(message.params.message),direction,at,`${message.pageProxyId??''}/${message.params.targetId}`);}catch{unparsed++;}
     return;
   }
+  if(message.method==='Timeline.eventRecorded')timeline.push({received:at,record:message.params.record});
+  else if(message.method?.startsWith('Timeline.'))timelineMarkers.push({at,method:message.method,params:message.params});
   const key=`${target}/${message.id}`;
   if(direction==='SEND'&&message.id!==undefined){
     calls.set(key,{key,method:message.method,at,params:JSON.stringify(message.params?.arguments?.filter((a:any)=>a.value&&typeof a.value==='object')??message.params??{})});
@@ -51,3 +55,21 @@ if(start!==undefined&&end!==undefined){
   }));
   console.log('NAVIGATION_PROTOCOL_SUMMARY',JSON.stringify({start,end,unparsed,calls:summary}));
 }else console.log('NAVIGATION_PROTOCOL_SUMMARY',JSON.stringify({unparsed,error:'No completed article assertion diagnostic found'}));
+
+const baseline=timelineMarkers.find(m=>m.method==='Timeline.recordingStarted');
+const flat:any[]=[];
+function flatten(record:any,received:number,depth=0){
+  flat.push({type:record.type,start:record.startTime,end:record.endTime,
+    relativeStartMs:baseline?1000*(record.startTime-baseline.params.startTime):null,
+    durationMs:record.endTime===undefined?null:1000*(record.endTime-record.startTime),
+    received,depth,data:record.data,stackTrace:record.stackTrace});
+  for(const child of record.children??[])flatten(child,received,depth+1);
+}
+for(const item of timeline)flatten(item.record,item.received);
+const counts:Record<string,number>={};
+for(const record of flat)counts[record.type]=(counts[record.type]??0)+1;
+console.log('NAVIGATION_TIMELINE_SUMMARY',JSON.stringify({markers:timelineMarkers,
+  commands:[...calls.values()].filter(c=>c.method.startsWith('Timeline.')).map(c=>({method:c.method,at:c.at,end:c.end,response:c.response})),
+  rootCount:timeline.length,totalCount:flat.length,counts,
+  longest:flat.filter(r=>r.durationMs>=10).sort((a,b)=>b.durationMs-a.durationMs).slice(0,35),
+}));
