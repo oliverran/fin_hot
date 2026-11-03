@@ -27,7 +27,6 @@ const report = (kind:'daily'|'weekly'|'monthly'): ReportDetail => ({kind,key:kin
 const hits: string[] = [];
 let suggestionsVersion=1;
 let failing='';
-let articleGate:Promise<void>|undefined;
 let ttl=60;
 let web:WebServer;
 let origin:string;
@@ -55,7 +54,7 @@ const api=fakeApi((url,res,req)=>{
     const page=Number(url.searchParams.get('page')||1);
     return {filters:{channel:'all',category:null,tag:null,q:null,tab:'time'},items:[{...item,title:'全部第 '+page+' 页'}],page,pageCount:3,total:3,todayCount:1,freshness:at};
   }
-  if(p==='/api/site/items/navigation-fixture')return articleGate?articleGate.then(()=>detail):detail;
+  if(p==='/api/site/items/navigation-fixture')return detail;
   if(p==='/api/site/items/navigation-fixture/original')return {...detail,body:{zh:null,original:'<p>Original fixture</p>',zhKind:null,complete:true},bodyLanguage:'original'};
   if(p==='/api/site/items/reader-fixture')return {...detail,id:'reader-fixture',title:'阅读增强检查',body:{...detail.body,zh:readerBody}};
   if(p==='/api/site/items/reader-fixture/original')return {...detail,id:'reader-fixture',title:'阅读增强检查',body:{...detail.body,zh:null,original:'<p>Original reader text</p>'},bodyLanguage:'original'};
@@ -82,12 +81,50 @@ after(async()=>{
 // pointer behaviour such as hover and mouse presses. The router and caches are the same code in both.
 test('SSR list and visited query variants return offline without another read',async()=>{
   const context=await safari.newContext({viewport:{width:390,height:844}});
+  await context.addInitScript((disable)=>{
+    const scope=globalThis as any;
+    const events:any[]=[];
+    scope.__navigationTiming=events;
+    const record=(event:string,extra:unknown=null)=>events.push({event,at:performance.now(),extra});
+    document.addEventListener('click',(event)=>{
+      const link=(event.target as Element)?.closest?.('a');
+      if(!link?.getAttribute('href')?.startsWith('/items/navigation-fixture'))return;
+      record('activation');
+      const observer=new MutationObserver(()=>{
+        if(Array.from(document.querySelectorAll('p')).some(p=>p.textContent==='固定正文')){
+          record('body-in-dom');observer.disconnect();
+        }
+      });
+      observer.observe(document,{childList:true,subtree:true,characterData:true});
+    },true);
+    const doc=document as any;
+    const start=doc.startViewTransition?.bind(document);
+    record('capabilities',{viewTransition:!!start,prefetch:document.createElement('link').relList.supports('prefetch'),disabled:disable});
+    if(disable){doc.startViewTransition=undefined;return;}
+    if(!start)return;
+    doc.startViewTransition=(callback:any)=>{
+      record('start');
+      const detail=scope.__reactRouterDataRouter?.state.loaderData?.['routes/item']?.detail;
+      if(detail)detail.then(()=>record('detail-resolved'),(error:unknown)=>record('detail-rejected',String(error)));
+      const transition=start(()=>{
+        record('callback-start');
+        const result=callback();
+        Promise.resolve(result).then(()=>record('callback-resolved'),(error:unknown)=>record('callback-rejected',String(error)));
+        return result;
+      });
+      for(const event of ['updateCallbackDone','ready','finished'])transition[event].then(
+        ()=>record(event), (error:unknown)=>record(event+':rejected',String(error)),
+      );
+      return transition;
+    };
+  },process.env.NAVIGATION_DISABLE_TRANSITIONS==='true');
   const page=await context.newPage();
   try{
     await visit(page,origin+'/');
     await expect(page.getByRole('link',{name:'性能检查文章',exact:true})).toBeVisible();
     await page.getByRole('link',{name:'性能检查文章',exact:true}).click();
     await expect(page.getByText('固定正文',{exact:true})).toBeVisible();
+    console.error('NAVIGATION_TIMING_SUCCESS',JSON.stringify(await page.evaluate(()=>({now:performance.now(),events:(globalThis as any).__navigationTiming}))));
     await context.setOffline(true);
     await page.goBack();
     await expect(page.getByRole('link',{name:'性能检查文章',exact:true})).toBeVisible({timeout:1500});
@@ -113,7 +150,11 @@ test('SSR list and visited query variants return offline without another read',a
         tracked:detail._tracked,hasData:'_data' in detail,hasError:'_error' in detail,
         itemId:detail._data?.item?.id,body:detail._data?.item?.body,error:String(detail._error),status:detail.status,
       }:null;
+      const root=(document as any)[Object.keys(document).find(key=>key.startsWith('__reactContainer$'))??'']?.stateNode;
       const snapshot={
+        now:performance.now(),events:(globalThis as any).__navigationTiming,
+        bodyVisible:!!Array.from(document.querySelectorAll('p')).find(p=>p.textContent==='固定正文'),
+        root:root?{pending:root.pendingLanes,suspended:root.suspendedLanes,pinged:root.pingedLanes,warm:root.warmLanes,callback:!!root.callbackNode,priority:root.callbackPriority,commitBlocked:!!root.cancelPendingCommit}:null,
         url:location.href,navigation:state?.navigation,errors:state?.errors,
         loaderKeys:Object.keys(state?.loaderData??{}),previewId:data?.preview?.id,promise,
         busy:!!document.querySelector('article[aria-busy]'),visibility:document.visibilityState,
@@ -129,58 +170,6 @@ test('SSR list and visited query variants return offline without another read',a
     console.error('NAVIGATION_FAILURE_DIAGNOSTIC',JSON.stringify({state,hits,server: web.logs()}));
     throw error;
   }finally{await context.close();}
-});
-
-// Temporary controlled reproduction: release the real synthetic HTTP response at lifecycle boundaries.
-// No request interception is used, so browser HTTP caching and press-prefetch behavior remain intact.
-for(let round=0;round<2;round++)for(const input of ['mouse','keyboard'] as const)for(const phase of ['preview','ready','finished','no-transition'] as const)
-test(`deferred article resolves at ${phase} after ${input} activation [${round+1}]`,async()=>{
-  const context=await safari.newContext({viewport:{width:390,height:844}});
-  await context.addInitScript((disable)=>{
-    const scope=globalThis as any;
-    scope.__articleTransitions=[];
-    scope.__prefetchSupported=document.createElement('link').relList.supports('prefetch');
-    const doc=document as any;
-    const start=doc.startViewTransition?.bind(document);
-    if(disable){doc.startViewTransition=undefined;return;}
-    if(!start)return;
-    doc.startViewTransition=(...args:any[])=>{
-      const transition=start(...args);
-      scope.__articleTransitions.push('start');
-      for(const event of ['updateCallbackDone','ready','finished'])transition[event].then(
-        ()=>scope.__articleTransitions.push(event),
-        (error:unknown)=>scope.__articleTransitions.push(event+':'+String(error)),
-      );
-      return transition;
-    };
-  },phase==='no-transition');
-  const page=await context.newPage();
-  let release!:()=>void;
-  articleGate=new Promise<void>(resolve=>{release=resolve;});
-  try{
-    await visit(page,origin+'/');
-    const link=page.getByRole('link',{name:'性能检查文章',exact:true});
-    if(input==='mouse')await link.click();else await link.press('Enter');
-    await expect(page.locator('article[aria-busy="true"]')).toBeVisible();
-    if(phase==='ready'||phase==='finished')await page.waitForFunction(event=>(globalThis as any).__articleTransitions.includes(event),phase,{timeout:5000});
-    release();
-    await expect(page.getByText('固定正文',{exact:true})).toBeVisible();
-    await expect(page.locator('article[aria-busy="true"]')).toHaveCount(0);
-  }catch(error){
-    console.error('ARTICLE_LIFECYCLE_DIAGNOSTIC',JSON.stringify({round,input,phase,hits,state:await page.evaluate(()=>{
-      const scope=globalThis as any;
-      const data=scope.__reactRouterDataRouter?.state.loaderData?.['routes/item'];
-      const detail=data?.detail;
-      const root=(document as any)[Object.keys(document).find(key=>key.startsWith('__reactContainer$'))??'']?.stateNode;
-      return {
-        transitions:scope.__articleTransitions,prefetchSupported:scope.__prefetchSupported,
-        tracked:detail?._tracked,hasData:detail?'_data' in detail:false,hasError:detail?'_error' in detail:false,
-        root:root?{pending:root.pendingLanes,suspended:root.suspendedLanes,pinged:root.pingedLanes,warm:root.warmLanes,callback:!!root.callbackNode,priority:root.callbackPriority,commitBlocked:!!root.cancelPendingCommit}:null,
-        resources:performance.getEntriesByType('resource').filter(r=>r.name.includes('.data')).map(r=>r.toJSON()),
-      };
-    })}));
-    throw error;
-  }finally{release();articleGate=undefined;await context.close();}
 });
 
 test('hover downloads nothing, a press fetches article data once for its click, touches that move do not, and failed prefetch does not replace the current page',async()=>{
