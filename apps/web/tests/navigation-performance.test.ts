@@ -251,18 +251,22 @@ test('Agent tabs finish offline with matching canonical; invalid direct tabs and
 
 test('phone suggestions load only on opening, use one small read, retry failures and update on reopening',async()=>{
   const context=await safari.newContext({viewport:{width:390,height:844}});const page=await context.newPage();
+  // Module cards can refresh independently; still count every core site read, including unwanted full pages.
+  const siteReads=()=>hits.filter(path=>path.startsWith('/api/site/'));
   try{
     suggestionsVersion=1;await visit(page,origin+'/');
     assert.equal(hits.filter(x=>x==='/api/site/search/suggestions').length,0);
-    let start=hits.length;
+    let start=siteReads().length;
+    // An unrelated quote refresh must not be mistaken for search overfetch.
+    await page.evaluate(()=>fetch('/api/chronicle/live?code=sh000001&kind=minute').then(r=>r.text()));
     await page.getByRole('button',{name:'搜索',exact:true}).click();
     await expect(page.getByRole('link',{name:'1 建议版本 1',exact:true})).toBeVisible();
-    assert.deepEqual(hits.slice(start),['/api/site/search/suggestions']);
+    assert.deepEqual(siteReads().slice(start),['/api/site/search/suggestions']);
     await page.getByRole('button',{name:'取消',exact:true}).click();
-    suggestionsVersion=2;start=hits.length;
+    suggestionsVersion=2;start=siteReads().length;
     await page.getByRole('button',{name:'搜索',exact:true}).click();
     await expect(page.getByRole('link',{name:'1 建议版本 2',exact:true})).toBeVisible();
-    assert.deepEqual(hits.slice(start),['/api/site/search/suggestions']);
+    assert.deepEqual(siteReads().slice(start),['/api/site/search/suggestions']);
     await page.getByRole('button',{name:'取消',exact:true}).click();
     failing='/api/site/search/suggestions';await page.getByRole('button',{name:'搜索',exact:true}).click();
     await expect(page.getByRole('link',{name:'1 建议版本 2',exact:true})).not.toBeVisible();
