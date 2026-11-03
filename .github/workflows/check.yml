@@ -77,7 +77,7 @@ jobs:
             node --test apps/web/tests/*.test.ts || failed=1
             echo "::endgroup::"
           done
-          exit "$failed
+          exit "$failed"
 
       # Each test file runs on its own copy of aihot_ci (tests/databases.ts), which the run migrates and
       # leaves empty; the smoke check then reads that empty database.
