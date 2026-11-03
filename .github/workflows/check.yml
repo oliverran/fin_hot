@@ -34,6 +34,7 @@ jobs:
         options: >-
           --health-cmd "pg_isready -U postgres" --health-interval 2s --health-timeout 5s --health-retries 30
     env:
+      DEBUG_COLORS: "0"
       NAVIGATION_TRACE_LEVEL: ${{ matrix.trace-level }}
       DATABASE_URL: postgres://postgres:ci@127.0.0.1:5432/aihot_ci
       SITE_URL: http://127.0.0.1:3000
@@ -74,15 +75,26 @@ jobs:
         run: npm run build -w @aihot/web
       - name: Browser test engines
         run: npx playwright install --with-deps chromium webkit
-      - name: Web tests (temporary cold timing comparison)
+      - name: Web tests (temporary cold protocol comparison)
         run: |
           failed=0
+          mkdir -p "$RUNNER_TEMP/webkit-protocol"
           for sample in $(seq 1 5); do
             echo "::group::Cold web suite $sample"
-            node --test apps/web/tests/*.test.ts || failed=1
+            log="$RUNNER_TEMP/webkit-protocol/sample-$sample.log"
+            node --test apps/web/tests/*.test.ts > "$log" 2>&1 || failed=1
+            node scripts/summarize-webkit-protocol.ts "$log" || failed=1
             echo "::endgroup::"
           done
           exit "$failed"
+      - name: Preserve temporary WebKit protocol diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: webkit-protocol-${{ matrix.trace-level }}
+          path: ${{ runner.temp }}/webkit-protocol/*.log
+          if-no-files-found: ignore
+          retention-days: 7
 
       # Each test file runs on its own copy of aihot_ci (tests/databases.ts), which the run migrates and
       # leaves empty; the smoke check then reads that empty database.

@@ -11,6 +11,7 @@
 // - tiny/linked pictures become zoom buttons, or language changes keep old handlers;
 // - a deep return loses its anchor, or folded dates confuse the anchor search.
 import assert from "node:assert/strict";
+import { createRequire } from "node:module";
 import { before, after, test } from "node:test";
 import { chromium, webkit, expect, type Browser } from "@playwright/test";
 import type { ReportDetail } from "@aihot/contracts/site";
@@ -80,6 +81,11 @@ after(async()=>{
 // One engine per behaviour: WebKit for what phone readers do (iPhone Safari), Chromium for desktop-only
 // pointer behaviour such as hover and mouse presses. The router and caches are the same code in both.
 test('SSR list and visited query variants return offline without another read',async()=>{
+  // Temporary diagnostics: protocol traffic is restricted to this local-fixture test process.
+  const debug=createRequire(import.meta.url)('playwright-core/lib/utilsBundle').debug;
+  let previousDebug:string|undefined;
+  let heartbeat:ReturnType<typeof setInterval>|undefined;
+  const nodeGaps:{at:number;gap:number}[]=[];
   const context=await safari.newContext({viewport:{width:390,height:844}});
   const phases:{phase:string;at:number}[]=[];
   const mark=(phase:string)=>phases.push({phase,at:Date.now()});
@@ -128,13 +134,22 @@ test('SSR list and visited query variants return offline without another read',a
     await visit(page,origin+'/');
     mark('visit-done');
     await expect(page.getByRole('link',{name:'性能检查文章',exact:true})).toBeVisible();
+    previousDebug=debug.disable();
+    debug.enable([previousDebug,'pw:protocol'].filter(Boolean).join(','));
     mark('click-start');
     await page.getByRole('link',{name:'性能检查文章',exact:true}).click();
     mark('click-done');
     mark('body-assert-start');
+    let lastBeat=Date.now();
+    heartbeat=setInterval(()=>{
+      const now=Date.now();
+      if(now-lastBeat>250&&nodeGaps.length<20)nodeGaps.push({at:now,gap:now-lastBeat});
+      lastBeat=now;
+    },100);
     await expect(page.getByText('固定正文',{exact:true})).toBeVisible();
+    clearInterval(heartbeat);
     mark('body-assert-passed');
-    console.error('NAVIGATION_TIMING_SUCCESS',JSON.stringify({phases,state:await page.evaluate(()=>({now:performance.now(),timeOrigin:performance.timeOrigin,dateNow:Date.now(),events:(globalThis as any).__navigationTiming,resources:performance.getEntriesByType('resource').map(r=>r.toJSON())}))}));
+    console.error('NAVIGATION_TIMING_SUCCESS',JSON.stringify({phases,nodeGaps,state:await page.evaluate(()=>({now:performance.now(),timeOrigin:performance.timeOrigin,dateNow:Date.now(),events:(globalThis as any).__navigationTiming,resources:performance.getEntriesByType('resource').map(r=>r.toJSON())}))}));
     await context.setOffline(true);
     await page.goBack();
     await expect(page.getByRole('link',{name:'性能检查文章',exact:true})).toBeVisible({timeout:1500});
@@ -150,6 +165,7 @@ test('SSR list and visited query variants return offline without another read',a
     await expect(page.getByRole('link',{name:'分类 ai-finance',exact:true})).toBeVisible({timeout:1500});
     await expect(page.locator('link[rel=canonical]')).toHaveAttribute('href',origin+'/?category=ai-finance');
   }catch(error){
+    clearInterval(heartbeat);
     mark('failure-caught');
     // Temporary failure-only diagnostics. Do not change the navigation, assertion or timing before failure.
     const state=await page.evaluate(async()=>{
@@ -178,9 +194,12 @@ test('SSR list and visited query variants return offline without another read',a
       ]):null;
       return {...snapshot,resolution};
     });
-    console.error('NAVIGATION_FAILURE_DIAGNOSTIC',JSON.stringify({phases,state,hits,server: web.logs()}));
+    console.error('NAVIGATION_FAILURE_DIAGNOSTIC',JSON.stringify({phases,nodeGaps,state,hits,server: web.logs()}));
     throw error;
-  }finally{await context.close();}
+  }finally{
+    clearInterval(heartbeat);
+    try{await context.close();}finally{if(previousDebug!==undefined)debug.enable(previousDebug);}
+  }
 });
 
 test('hover downloads nothing, a press fetches article data once for its click, touches that move do not, and failed prefetch does not replace the current page',async()=>{
