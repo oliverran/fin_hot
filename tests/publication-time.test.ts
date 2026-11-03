@@ -5,6 +5,7 @@ import { tag } from "./setup.ts";
 import assert from "node:assert/strict";
 import { after, before, test } from "node:test";
 import { closeDb, sql } from "@aihot/backend/db";
+import { chronicleNews } from "@aihot/backend/publication/chronicle";
 import { stopBoss } from "@aihot/backend/jobs/queue";
 import { buildApp } from "../apps/api/src/app.ts";
 
@@ -51,4 +52,34 @@ test("RSS gives no pubDate for an item without a known publication time", async 
   const entry = (id: string) => feed.split("<item>").find((block) => block.includes(`>${id}</guid>`));
   assert.ok(entry(ids.undated) && !entry(ids.undated)!.includes("<pubDate>"));
   assert.ok(entry(ids.dated)!.includes(`<pubDate>${published.toUTCString()}</pubDate>`));
+});
+
+test("chronicle news keeps Beijing calendar boundaries and public selected visibility", async () => {
+  const fixtures = [
+    { name: "before", at: "2024-02-28T15:59:59.999Z" },
+    { name: "start", at: "2024-02-28T16:00:00.000Z" },
+    { name: "last", at: "2024-02-29T15:59:59.999Z" },
+    { name: "after", at: "2024-02-29T16:00:00.000Z" },
+    { name: "unselected", at: "2024-02-29T00:00:00.000Z", selected: false },
+    { name: "unseated", at: "2024-02-29T00:00:00.000Z", seat: false },
+    { name: "withdrawn", at: "2024-02-29T00:00:00.000Z", visibility: "withdrawn" },
+    { name: "unreleased", at: "2024-02-29T00:00:00.000Z", release: "2100-01-01T00:00:00Z" },
+  ];
+  for (const fixture of fixtures) {
+    const id = `${T}-chronicle-${fixture.name}`;
+    const at = new Date(fixture.at);
+    const url = `https://example.org/${id}`;
+    await sql`INSERT INTO articles (id, source_id, identity_key, url, title, discovered_at, timeline_at, published_at)
+      VALUES (${id}, ${SOURCE}, ${id}, ${url}, ${id}, ${at}, ${at}, ${at})`;
+    await sql`INSERT INTO publications (article_id, title, source_id, channel, url, discovered_at, timeline_at, published_at, sort_at,
+        eligible, selected, seat, visible_after, visibility, tags, summary)
+      VALUES (${id}, ${id}, ${SOURCE}, 'news', ${url}, ${at}, ${at}, ${at}, ${at},
+        true, ${fixture.selected ?? true}, ${fixture.seat ?? true}, ${new Date(fixture.release ?? fixture.at)},
+        ${fixture.visibility ?? "public"}, ${[T]}, 'fixture summary')`;
+  }
+  const news = await chronicleNews("2024-02-29", "2024-02-29");
+  assert.deepEqual(news.map(({ id, date }) => ({ id, date })), [
+    { id: `${T}-chronicle-last`, date: "2024-02-29" },
+    { id: `${T}-chronicle-start`, date: "2024-02-29" },
+  ]);
 });
