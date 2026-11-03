@@ -50,8 +50,9 @@ after(async () => {
 });
 
 test("issue numbers count the whole series across the navigation's 400-issue limit", async (t) => {
+  // Read after all 407 every-other-day issues are published (the series spans over two years).
   // The index is kept for a minute; an expired read waits for its replacement.
-  t.mock.timers.enable({ apis: ["Date"], now: Date.now() });
+  t.mock.timers.enable({ apis: ["Date"], now: Date.UTC(year + 3, 0, 4) });
   const refresh = () => t.mock.timers.tick(600_001);
 
   await insert("daily", daily.slice(0, 405));

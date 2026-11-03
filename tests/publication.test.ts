@@ -23,7 +23,7 @@ import { buildApp } from "../apps/api/src/app.ts";
 const T = tag();
 const SOURCE = `test-publication-${T}`;
 const BODY = `FULLTEXT-${T} `.repeat(40);
-const REPORT_KEY = `2099-12-${String(10 + Math.floor(Math.random() * 19))}`;
+const REPORT_KEY = `2025-12-${String(10 + Math.floor(Math.random() * 19))}`;
 const app = await buildApp();
 
 before(async () => {

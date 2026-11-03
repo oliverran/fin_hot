@@ -115,7 +115,7 @@ test('report directories skip a withdrawn lead for the next citation, including 
     { label: 'first', items: [{ itemId: id(2106), title: 'Withdrawn first' }] },
     { label: 'second', items: [{ itemId: `${T}-historical`, title: 'Historical fallback' }, { itemId: id(2), title: 'Third item' }] },
   ] };
-  const key = `2097-12-${String(1 + Math.floor(Math.random() * 28)).padStart(2, '0')}`;
+  const key = `2025-12-${String(1 + Math.floor(Math.random() * 28)).padStart(2, '0')}`;
   await sql`INSERT INTO reports (kind, key, window_start, window_end, content, generated_at, origin)
     VALUES ('daily', ${key}, ${now}, ${now}, ${sql.json(content)}, ${now}, 'manual')`;
   const entry = (await listReports('daily')).find((r) => r.key === key)!;

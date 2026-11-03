@@ -55,7 +55,7 @@ test('withdrawing a named lead preserves the replacement headline and its own fr
   t.mock.timers.enable({ apis: ['Date'], now: Date.now() + 600_001 });
   const removed = await citation('Withdrawn lead');
   const replacement = await citation('Replacement lead');
-  const key = '2096-01-01';
+  const key = '2025-01-01';
   await issue('daily', key, { leadItemId: removed.itemId, lead: { title: removed.title, leadParagraph: removed.summary },
     highlights: [replacement.itemId], sections: [{ label: 'News', items: [removed, replacement] }] });
   await sql`UPDATE publications SET visibility = 'withdrawn' WHERE article_id = ${removed.itemId}`;
@@ -71,7 +71,7 @@ test('a historical written daily lead follows withdrawal of the citation it desc
   t.mock.timers.enable({ apis: ['Date'], now: Date.now() + 1_200_002 });
   const removed = await citation('历史模型发布与能力升级');
   const replacement = await citation('新的安全工具发布');
-  const key = '2096-01-02';
+  const key = '2025-01-02';
   await issue('daily', key, { lead: { title: removed.title, leadParagraph: removed.summary }, highlights: [replacement.itemId], sections: [{ label: 'News', items: [removed, replacement] }] });
   const before = await v1Daily(key);
   assert.equal(before!.report.lead?.title, removed.title, 'the written lead remains while its citation is public');
@@ -84,7 +84,7 @@ test('a historical written daily lead follows withdrawal of the citation it desc
 });
 
 test('daily, weekly and monthly citations share the public list release boundary', async (t) => {
-  for (const [kind, key] of [['daily', '2096-01-03'], ['weekly', '2096-W02'], ['monthly', '2096-01']] as const) {
+  for (const [kind, key] of [['daily', '2025-01-03'], ['weekly', '2025-W02'], ['monthly', '2025-01']] as const) {
     await t.test(kind, async () => {
       const pending = await citation(`Not released ${kind}`);
       const visible = await citation(`Released ${kind}`);
@@ -108,7 +108,7 @@ test('daily, weekly and monthly citations share the public list release boundary
 test('a daily citation without a frozen summary, and a flash with an earlier frozen date, read the same in JSON and website', async () => {
   const entry = await citation('Older report citation');
   const flash = await citation('Flash date');
-  const key = '2096-01-04';
+  const key = '2025-01-04';
   const { summary: _, ...old } = entry;
   await issue('daily', key, { sections: [{ label: 'News', items: [old] }], flashes: [{ ...flash, publishedAt: '2020-01-01T00:00:00Z' }] });
   const site = (await loadReport('daily', key))!;
@@ -134,7 +134,7 @@ for (const kind of ['weekly', 'monthly'] as const) {
       const removed = await citation(`Removed ${kind} ${reduction}`);
       const visible = await citation(`Remaining ${kind} ${reduction}`);
       const n = ['withdrawn', 'summary-only', 'ineligible'].indexOf(reduction) + 10;
-      const key = kind === 'weekly' ? `2096-W${n}` : `2095-${String(n - 8).padStart(2, '0')}`;
+      const key = kind === 'weekly' ? `2025-W${n}` : `2024-${String(n - 8).padStart(2, '0')}`;
       const overview = `Overview about ${removed.title}`;
       const introduction = `Introduction about ${removed.title}`;
       await issue(kind, key, { leadItemId: removed.itemId, highlights: [visible.itemId], overview,
@@ -160,7 +160,7 @@ for (const kind of ['weekly', 'monthly'] as const) {
   }
 }
 
-for (const [kind, key] of [['daily', '2096-01-06'], ['weekly', '2096-W30'], ['monthly', '2096-10']] as const) {
+for (const [kind, key] of [['daily', '2025-01-06'], ['weekly', '2025-W30'], ['monthly', '2025-10']] as const) {
   test(`${kind} imported citations retain the same original link, source and date as the website`, async () => {
     const original = `https://example.com/historical/${kind}/${T}`;
     const old = { itemId: `absent-${kind}-${T}`, title: 'Historical citation', source: { name: 'Historical source' }, links: { original }, publishedAt: '2020-01-01T00:00:00Z' };
@@ -176,7 +176,7 @@ for (const [kind, key] of [['daily', '2096-01-06'], ['weekly', '2096-W30'], ['mo
 }
 
 
-for (const [kind, key] of [['weekly', '2096-W40'], ['monthly', '2096-11']] as const) {
+for (const [kind, key] of [['weekly', '2025-W40'], ['monthly', '2025-11']] as const) {
   test(`a historical written ${kind} headline follows withdrawal of its matched citation`, async () => {
     const removed = await citation(`旧版${kind}模型正式发布`);
     const replacement = await citation(`替补${kind}安全系统更新`);
@@ -196,7 +196,7 @@ for (const [kind, key] of [['weekly', '2096-W40'], ['monthly', '2096-11']] as co
 }
 
 
-for (const [kind, key] of [['weekly', '2096-W41'], ['monthly', '2096-12']] as const) {
+for (const [kind, key] of [['weekly', '2025-W41'], ['monthly', '2025-12']] as const) {
   test(`an unmatched written ${kind} headline cannot restore an unavailable overview`, async () => {
     const removed = await citation('应当撤回的单条证据');
     const title = '本期技术行业综述';
@@ -216,7 +216,7 @@ test('an expired report index waits for the current withdrawal result',async(t)=
   t.mock.timers.enable({apis:['Date'],now:Date.now()+86_400_000});
   const removed=await citation('索引旧头条');
   const replacement=await citation('索引新头条');
-  const key='2099-01-01';
+  const key='2026-01-01';
   await issue('daily',key,{leadItemId:removed.itemId,lead:{title:removed.title,leadParagraph:removed.summary},highlights:[replacement.itemId],sections:[{label:'News',items:[removed,replacement]}]});
   assert.equal((await v1Dailies(50)).items.find(r=>r.date===key)!.leadTitle,removed.title);
   await sql`UPDATE publications SET visibility='withdrawn' WHERE article_id=${removed.itemId}`;
