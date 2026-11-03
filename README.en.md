@@ -1,121 +1,139 @@
+<h1 align="center">FinHOT</h1>
+
 <p align="center">
-  <b>FinHOT</b><br>
-  A news aggregator and daily-briefing site for the finance industry: it screens items from a set of financial sources, clusters them into events, and publishes a briefing you can actually finish.
+  <b>Turn scattered financial news into source-linked events and daily briefings.</b><br>
+  A self-hosted finance news hub with AI screening, summaries, event clustering, scheduled reports, and A-share and US market history.
 </p>
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-176b75?style=flat-square" alt="MIT License"></a>
+  <a href="https://github.com/oliverran/fin_hot/actions/workflows/check.yml"><img src="https://github.com/oliverran/fin_hot/actions/workflows/check.yml/badge.svg?branch=main" alt="Check workflow status"></a>
   <img src="https://img.shields.io/badge/Node.js-24-176b75?style=flat-square&logo=nodedotjs&logoColor=white" alt="Node.js 24">
-  <img src="https://img.shields.io/badge/PostgreSQL-17-176b75?style=flat-square&logo=postgresql&logoColor=white" alt="PostgreSQL 17">
   <img src="https://img.shields.io/badge/Docker-Compose-176b75?style=flat-square&logo=docker&logoColor=white" alt="Docker Compose">
 </p>
 
 <p align="center">
-  <a href="README.md">简体中文</a> · <b>English</b>
+  <a href="README.md">简体中文</a> · <b>English</b><br>
+  <a href="#quick-start">Quick start</a> · <a href="#connect-your-agent-or-reader">Agent / RSS</a> · <a href="docs/deploy.md">Deployment</a> · <a href="#data-boundaries-and-project-status">Data and status</a>
 </p>
 
-<br>
+Built on [AIHOT](https://github.com/KKKKhazix/AIHOT) by Khazix (数字生命卡兹克), with finance-specific sources, scoring criteria, writing prompts and a Chronicle module. [Attribution and license ↓](#attribution-and-license)
 
-## Acknowledgements: where this project comes from
+## What you can do
 
-FinHOT is **a finance-industry site built on the open-source [AIHOT](https://github.com/KKKKhazix/AIHOT) framework by Khazix (数字生命卡兹克)**.
+- **Read a financial briefing each day.** Screen regulatory notices, financial media and research reports, with source links and less repeated coverage.
+- **Follow events rather than individual headlines.** Group reports about the same story and track follow-ups and attention across sources.
+- **Read news alongside market history.** Explore index trends, drawdowns, sector rotation and historical charts in the Chronicle.
+- **Build your own information workflow.** Connect a reader or agent through RSS, the public API, MCP or Agent Markdown.
 
-Everything genuinely hard here comes from AIHOT: collecting from six kinds of sources, pre-screening, scoring every promising item twice on the same rubric, Chinese writing and translation, event clustering and the heat algorithm, and the whole set of public prompts and selection thresholds. Khazix open-sourced an engine that runs in production, which is what makes building a hot-topic site for another field possible at all. **Our sincere thanks to Khazix and the AIHOT project.**
+For financial-news readers, researchers and developers building a self-hosted vertical news site. The interface and generated content are primarily in Chinese; this English README does not imply an English-language UI.
 
-What FinHOT changed on top of the framework is the field itself, all of it inside the site's own folders:
+## From source to briefing
 
-- **Name and brand**: FinHOT, the field word “金融” (finance), home and about copy, report nameplates, the MCP prefix `finhot` (`site/`)
-- **Field taxonomy and topics**: 7 categories (AI in finance, policy and regulation, market, mutual and private funds, industry news, research, opinion) with matching tags (`industry/taxonomy.ts`, `industry/topics.json`)
-- **Sources**: 25 demo financial sources, covering official channels such as the CSRC, the Shanghai Stock Exchange, the People's Bank of China, the Ministry of Finance, the National Bureau of Statistics and the NFRA, plus financial media and Eastmoney research reports (`industry/sources.json`)
-- **Prompts and thresholds**: 17 prompts rewritten for finance; thresholds set per source tier at T1 60 / T1.5 65 / T2 76 (`industry/prompts/`, `industry/selection.ts`)
-- **Models**: the default model comes from `LLM_*` in `.env`; `site/models.ts` configures deepseek-v4.1-flash on an Alibaba Cloud MaaS gateway as a fallback for it
-- **Chronicle tab**: A-share history as a column you can read on its own, filling in the background of “where this market and these sectors came from” while you read the news (`modules/chronicle/`)
+```text
+Collect → Deduplicate and pre-screen → Score twice → Write summaries → Group events → Select and publish
+                                                                          └→ RSS / API / MCP
+```
 
-The framework itself (`apps/`, `packages/`) is unchanged; the Chronicle, needed only by this site, is a module of its own under `modules/`. AIHOT's name and logo are not used.
-
-## What this is
-
-Every day FinHOT collects material from a set of financial sources. A model first judges whether an item belongs to the field and carries real information; promising items are then scored twice, independently, on the same rubric, and get a Chinese headline and summary. Reports of the same story from different sources cluster into one **event**, and events are ranked by how many sources are talking about them. A daily briefing comes out every morning, a weekly report every Monday, a monthly report on the 1st.
-
-It only covers **news, policy and research**: regulatory notices, policy analysis, A-share and fund market developments, broker research arguments and frameworks, and what financial institutions are doing. It is not a market terminal and carries no order books, tick data or trading data; the first screen of the featured page adds an intraday / daily candlestick chart of the Shanghai Composite and ChiNext, taken from a public market-data API — delayed, for background only, not investment advice. The index charts on the Chronicle tab use daily closes from the same kind of API, for retrospective study and background.
-
-The interface, the site's own copy and everything the model writes are in Chinese; see [Make this site yours](#make-this-site-yours) below for where to change that.
-
-## How it works
-
-An item comes in from a source, is checked for duplicates, and pre-screened. Items that might matter are scored twice, independently, get a headline and a summary, are clustered with other reports into an event, and count toward its heat. An item enters the selection only if its score clears the threshold and it doesn't repeat news already selected. The daily briefing is compiled from the day's top stories by rule; weekly and monthly reports are compiled from the dailies. Every step's prompt is in [`industry/prompts/`](industry/prompts/), so changing the standard doesn't mean changing code. See [Selection and calibration](docs/selection.md).
-
-**Clustering and heat**: it looks for candidates from the past two weeks by embedding the headline and summary (or, without an embedding service, by text overlap), then asks a model whether they are the same story, a follow-up, or two different stories. Heat is computed per event, not per article: within 48 hours each independent source counts once, halving every 24 hours, so what ranks at the top is what many people are really talking about.
-
-## What you get
-
-| | |
+| Capability | Current implementation |
 |---|---|
-| **Six kinds of sources** | RSS, web listing pages, JSON APIs, X accounts, WeChat Official Accounts, and content your own scripts push in. Three tiers (official first-hand; official and semi-official; media and individuals), each with its own threshold; fetch frequency adjusts to how often a source publishes |
-| **Selection** | A pre-screen, then two independent scores on the same rubric, then a threshold set by the source's tier. One piece of news takes one slot; the same news reworded doesn't get in. All prompts and thresholds are public and editable; calibrate them in SelectBench with samples you labelled yourself |
-| **Writing** | Headlines, answer-first summaries, reasons to read, full translation of foreign-language text; categories, tags and news facts extracted separately; guards against the model putting companies the original never mentioned into a headline |
-| **Clustering** | Reports of the same story become one event, with follow-ups under the same event and an overview on the event page. Manual corrections to clustering are never overwritten |
-| **Trending** | Heat per event: the more independent sources, the higher, and discussion counts too. Compared with six hours earlier, fast risers are marked rising and newcomers are marked new |
-| **Daily, weekly and monthly reports** | A daily briefing at 08:00, compiled from the day's top stories by rule; a weekly report every Monday at 10:00 and a monthly report on the 1st at 10:30, compiled from the dailies. Change the times in `EDITION_TIMES` in `site/site.ts` |
-| **Topics and search** | Topic pages for institutions and products, directions, and markets; search over headlines and summaries, and full-text relevance search |
-| **Chronicle** | An A-share history column to read alongside the news: broad-index trend, drawdown, annual returns, intra-year turbulence, volatility, seasonality and return distribution, plus how sectors rose and rotated; every chart carries a short explainer. The core broad-market indices come from a public API and refresh after each trading day's close; the rest are sample data. The featured page's first screen also carries live intraday / daily candlesticks for the Shanghai Composite and ChiNext |
-| **For agents** | RSS (selection, everything, full text, daily, weekly, monthly), a public API, MCP, Agent Markdown and `llms.txt`: the same content for people and for agents |
-| **Admin** | Source management and trial fetches, content diagnostics and manual score corrections, selection evaluation, a separate model for each step, budget breakers for paid services, run history and alerts |
+| **Financial sources** | 25 example source configurations, including Chinese regulators, financial media and Eastmoney research. The framework supports RSS, web lists, JSON APIs, X, WeChat Official Accounts and external ingestion; some require separate service credentials |
+| **Editable selection criteria** | Pre-screening followed by two independent scores on one rubric. Thresholds are T1 60 / T1.5 65 / T2 76 for first-hand official, semi-official, and media or individual sources. Edit the prompts, taxonomy and thresholds |
+| **Events and trends** | Cluster reports about the same event and associate follow-ups. Heat uses independent sources and time decay, rather than treating every repost as new evidence of importance |
+| **Scheduled reports** | Defaults: daily at 08:00, weekly on Monday at 10:00, monthly on the 1st at 10:30, all Beijing time (UTC+8). Edit `site/site.ts`; publication depends on available content and a running worker |
+| **Chronicle** | A-share indices and historical charts, plus an embedded US market-history app. Optional Tushare integration adds sector valuations, company metrics, market context and disclosed fund holdings. Data coverage varies |
+| **Admin tools** | Source previews and management, score diagnostics, selection evaluation, per-step models, paid-request limits, run history and alerts |
 
-## Run it
+Prompts live in [`industry/prompts/`](industry/prompts/). See [selection and calibration](docs/selection.md) and [event grouping](docs/grouping.md) for the rules and evaluation workflow.
 
-You need [Docker](https://docs.docker.com/get-started/get-docker/), [Node.js 24](https://nodejs.org/en/download) (to run `init-env`, which generates the configuration), and an API key for any OpenAI-compatible model API.
+## Quick start
 
-`init-env` configures DeepSeek by default. For another provider, change `LLM_BASE_URL`, `LLM_MODEL` and `LLM_EXTRA_JSON` in `.env`, following the examples in `.env.example`. With a reasoning model (one that thinks before answering), also set `LLM_REASONING_TOKENS` to leave output room for the reasoning.
+You need **Docker Compose**, **Node.js 24.22.1 or newer**, and an API key for an OpenAI-compatible model service. Docker starts PostgreSQL 17, the API, the worker and the web app.
+
+### 1. Get the code and generate configuration
 
 ```bash
 git clone https://github.com/oliverran/fin_hot.git finhot
 cd finhot
-node scripts/init-env.ts --llm-key <your model API key>
-docker compose up -d --build
+node scripts/init-env.ts
 ```
 
-Open <http://localhost:3000>. The admin is at `/admin`, and the admin password is `ADMIN_PASSWORD` in `.env`. Content starts to appear after a minute or two, and the first import takes about half an hour to process.
+The script creates `.env`, random secrets and an admin password. Open `.env` in a local editor and fill in `LLM_API_KEY`. For another model provider, also change `LLM_BASE_URL`, `LLM_MODEL` and the relevant `LLM_EXTRA_JSON`. The example defaults use DeepSeek; configure `LLM_REASONING_TOKENS` as needed for a reasoning model. Do not commit `.env` or put secrets in shell history.
 
-Once the site is up, `/agent` lets you copy how to connect over MCP, RSS or the API; agents that can only read web pages start from `/api/v1/agent`; the API description is at `/openapi-v1.json`. For deployment, domains, HTTPS, and using a proxy to reach overseas sources from mainland China, see [Deployment](docs/deploy.md).
+**Check costs and switches before starting:** the generated `.env` sets `COLLECT_ENABLED=true` and `MODEL_CALLS_ENABLED=true`, enabling collection and potentially billable model calls. To inspect the site structure first, set both to `false`; news content will not be generated automatically. Optional data sync and manual source previews have separate controls; see the deployment and source guides.
 
-## Make this site yours
+### 2. Start the services
 
-Nearly everything to change is in the [`site/`](site/) and [`industry/`](industry/) folders; the code itself mostly stays as it is:
+```bash
+docker compose up -d --build
+docker compose ps
+```
 
-| File | What to change |
+- Site: <http://localhost:3000>
+- Admin: <http://localhost:3000/admin>, using `ADMIN_PASSWORD` from `.env`
+- Agent connection guide: <http://localhost:3000/agent>
+
+Initial build and processing time depend on network access, sources and the model service. If the page has no content yet, check source status and run history in the admin, or inspect logs:
+
+```bash
+docker compose logs --tail=100 api worker web
+```
+
+For a server deployment, configure the public `SITE_URL`, domain and HTTPS. See [deployment](docs/deploy.md) for updates, backups, proxies and running without Docker.
+
+## Connect your agent or reader
+
+After starting the site, open `/agent` to choose a connection method. Paths below are relative to your own deployment.
+
+| Entry point | Purpose |
 |---|---|
-| `site/site.ts` | Site name, field terms, publishing times, home page copy, about page, the wording on items and reports, the categories of the public interfaces |
-| `industry/taxonomy.ts`, `industry/topics.json` | Categories, tags, topics |
-| `industry/sources.json` | The sources imported on first start |
-| `industry/prompts/` | The selection standard and the writing requirements. **Your field's know-how goes here** |
-| `industry/selection.ts` | Selection thresholds |
-| `site/models.ts` | Which model each step uses by default (optional: otherwise every step uses the one in `.env`) |
-| `site/brand/`, `site/pages/`, `site/public/`, `site/changelog.json` | Icons and logo, terms of use and privacy notice, files served from the site root, the changelog |
-| `modules/chronicle/` | The Chronicle tab: the chart list and copy (`catalog.ts`), where the market data comes from and how it refreshes (`backend/`). This site's own module, outside the framework |
+| `/agent` | Copy the MCP, RSS and API connection instructions |
+| `/api/mcp` | MCP service, with the `finhot` tool prefix |
+| `/api/v1/agent` | Markdown entry point for agents that can read web pages |
+| `/openapi-v1.json` | OpenAPI description of the public API |
+| `/llms.txt` | Site information and content entry points |
 
-To run the site in English or another language, rewrite the prompts in [`industry/prompts/`](industry/prompts/) to write in that language and translate the interface text in `site/site.ts` and the components.
+RSS supports selected items, all items, full text, and daily / weekly / monthly reports. Full-text availability depends on source rights and configuration. People and agents read the same published content.
 
-What is most worth your time is the scoring rubric (`industry/prompts/selection-score.md`) and the thresholds: take one or two hundred items you labelled yourself, run them through `scripts/eval-selection.ts`, see how accurately it selects, and go back and adjust. How to do it is in [Selection and calibration](docs/selection.md).
+## Data boundaries and project status
 
-## Documentation
+- **News and summaries:** AI scores and summaries can be wrong. Check the original for important information. Example source configurations do not guarantee continuous availability or permission to redistribute full text.
+- **A-share data:** some broad-index charts read public market-data APIs; other charts may use examples or historical snapshots. Check each page's source, date and coverage. The home-page intraday and daily charts may be delayed.
+- **Pro data:** Tushare requires your own token and relevant data access. Sync is disabled by default. Disclosed fund holdings lag the market, sample coverage is not full-market coverage, and ETF share changes are not net capital inflows. See [Pro data](docs/pro-data.md).
+- **US market data:** the embedded app uses bundled snapshots and supports refreshes from `historyofmarket.com`. Old data may remain when the upstream is unavailable; a scheduled refresh does not prove a dataset is current.
+- **Intended use:** news reading and historical research. No trade execution, return guarantees or investment advice.
+- **Build status:** check [GitHub Actions](https://github.com/oliverran/fin_hot/actions/workflows/check.yml). In the [2026-11-02 run for `1a8b866`](https://github.com/oliverran/fin_hot/actions/runs/41436941077), typechecking, the web build, 62 web tests and Docker smoke checks passed. Backend tests passed 952/981 with 29 failures, and the main job's later smoke step was skipped. This is not a fully passing regression-tested release.
 
-The documents below are in Chinese.
+## Adapt it to your research
 
-| Document | Contents |
+| Location | What to change |
 |---|---|
-| [Make it your field](docs/customize.md) | Site name, categories, topics, sources, prompts, thresholds, models, brand, step by step |
-| [Sources](docs/sources.md) | How to configure the six kinds of sources, tiers and full text, fetch frequency, the external push interface |
-| [Selection and calibration](docs/selection.md) | How an item becomes a selection and goes into the daily, weekly and monthly reports, and how to calibrate with your own samples |
-| [Event grouping and relation evaluation](docs/grouping.md) | How relations between events are judged, and how to evaluate with your own labelled pairs |
-| [Overview evaluation](docs/story-digest-evaluation.md) | Before changing the event overview prompt, how to compare versions side by side on the same events |
-| [Deployment](docs/deploy.md) | Docker, domains and HTTPS, mainland China, updates, backups, what it costs |
-| [Architecture](docs/architecture.md) | Three processes, the rules that don't change, directories, modules, database migrations, public outputs, tests |
+| [`site/site.ts`](site/site.ts) | Site name, home and about copy, report times and public-interface descriptions |
+| [`industry/sources.json`](industry/sources.json) | Example sources imported on first start; manage running sources in the admin |
+| [`industry/taxonomy.ts`](industry/taxonomy.ts), [`industry/topics.json`](industry/topics.json) | Categories, tags and topics |
+| [`industry/prompts/`](industry/prompts/), [`industry/selection.ts`](industry/selection.ts) | Scoring and writing criteria, and tier thresholds |
+| [`site/models.ts`](site/models.ts) | Per-step models and fallbacks, with credentials for each service |
+| [`modules/chronicle/`](modules/chronicle/) | Chronicle pages, chart catalog and data integration |
 
-Stack: Node.js 24 · TypeScript · React Router (server-side rendering) · Fastify · PostgreSQL · pg-boss · Tailwind CSS · Docker Compose.
+Use your own labelled examples with `scripts/eval-selection.ts` before changing scoring criteria and thresholds. See the [customization guide](docs/customize.md). A non-Chinese site also requires translating prompts, site copy and relevant interface components.
 
-## License
+## Documentation and contributions
 
-The code keeps AIHOT's [MIT License](LICENSE). **The AIHOT name and logo are not covered by the license**, and FinHOT does not use them. The fonts have their own licenses; see [NOTICE](NOTICE).
+The detailed guides are in Chinese.
 
-Thanks again to [Khazix](https://github.com/KKKKhazix) and the [AIHOT](https://github.com/KKKKhazix/AIHOT) project.
+- [Deployment and operations](docs/deploy.md): configuration, domains, HTTPS, updates, backups and costs.
+- [Sources](docs/sources.md): six collection types, fields, permissions and external ingestion.
+- [Selection and calibration](docs/selection.md) · [Event grouping](docs/grouping.md) · [Overview evaluation](docs/story-digest-evaluation.md).
+- [Architecture](docs/architecture.md): process boundaries, modules, migrations, public outputs and tests.
+- [Pro data](docs/pro-data.md): sector, market, company and fund coverage and limitations.
+- [Issues and suggestions](https://github.com/oliverran/fin_hot/issues): include the version, reproduction steps and redacted logs. Do not upload keys or `.env`.
+
+Stack: Node.js 24 · TypeScript · React Router (SSR) · Fastify · PostgreSQL · pg-boss · Tailwind CSS · Docker Compose.
+
+## Attribution and license
+
+FinHOT is built on [AIHOT](https://github.com/KKKKhazix/AIHOT), open-sourced by [Khazix (数字生命卡兹克)](https://github.com/KKKKhazix). Collection, pre-screening, dual scoring, writing and translation, event grouping, heat calculation and public content interfaces come from that framework. Thank you to its author and contributors.
+
+This repository adds finance-specific sources, taxonomy, prompts, thresholds and branding, plus the Chronicle module. A-share Chronicle content attribution appears in [`modules/chronicle/catalog.ts`](modules/chronicle/catalog.ts). The US market sub-app and data are in [`historyofmarket/`](historyofmarket/); see [`backend/us-market.ts`](modules/chronicle/backend/us-market.ts) for its refresh logic.
+
+The code retains the [MIT License](LICENSE). **The AIHOT name and logo are not covered by that license**; FinHOT uses its own brand. See [NOTICE](NOTICE) for fonts and other third-party material. News and market data remain subject to their sources' rights and terms.
