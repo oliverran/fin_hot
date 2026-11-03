@@ -28,7 +28,6 @@ const hits: string[] = [];
 let suggestionsVersion=1;
 let failing='';
 let ttl=60;
-let articleDelay=0;
 let web:WebServer;
 let origin:string;
 let chrome:Browser;
@@ -55,7 +54,7 @@ const api=fakeApi((url,res,req)=>{
     const page=Number(url.searchParams.get('page')||1);
     return {filters:{channel:'all',category:null,tag:null,q:null,tab:'time'},items:[{...item,title:'全部第 '+page+' 页'}],page,pageCount:3,total:3,todayCount:1,freshness:at};
   }
-  if(p==='/api/site/items/navigation-fixture')return articleDelay?new Promise(resolve=>setTimeout(()=>resolve(detail),articleDelay)):detail;
+  if(p==='/api/site/items/navigation-fixture')return detail;
   if(p==='/api/site/items/navigation-fixture/original')return {...detail,body:{zh:null,original:'<p>Original fixture</p>',zhKind:null,complete:true},bodyLanguage:'original'};
   if(p==='/api/site/items/reader-fixture')return {...detail,id:'reader-fixture',title:'阅读增强检查',body:{...detail.body,zh:readerBody}};
   if(p==='/api/site/items/reader-fixture/original')return {...detail,id:'reader-fixture',title:'阅读增强检查',body:{...detail.body,zh:null,original:'<p>Original reader text</p>'},bodyLanguage:'original'};
@@ -80,20 +79,9 @@ after(async()=>{
 
 // One engine per behaviour: WebKit for what phone readers do (iPhone Safari), Chromium for desktop-only
 // pointer behaviour such as hover and mouse presses. The router and caches are the same code in both.
-// Temporary diagnostics: preserve the failing assertion and exercise fresh WebKit documents repeatedly.
-for(let sample=0;sample<Number(process.env.NAVIGATION_DIAGNOSTIC_SAMPLES||1);sample++)
-test(`SSR list and visited query variants return offline without another read [${sample+1}]`,async()=>{
-  articleDelay=[0,0,0,1,5,20,50,150,450,1200][sample%10];
+test('SSR list and visited query variants return offline without another read',async()=>{
   const context=await safari.newContext({viewport:{width:390,height:844}});
   const page=await context.newPage();
-  const events:unknown[]=[];
-  const started=Date.now();
-  const record=(kind:string,value:unknown)=>events.push({ms:Date.now()-started,kind,value});
-  page.on('request',r=>{if(r.url().includes('.data'))record('request',{url:r.url(),type:r.resourceType()});});
-  page.on('response',r=>{if(r.url().includes('.data'))record('response',{url:r.url(),status:r.status()});});
-  page.on('requestfinished',r=>{if(r.url().includes('.data'))record('finished',r.url());});
-  page.on('requestfailed',r=>record('failed',{url:r.url(),failure:r.failure()}));
-  page.on('pageerror',e=>record('pageerror',String(e)));
   try{
     await visit(page,origin+'/');
     await expect(page.getByRole('link',{name:'性能检查文章',exact:true})).toBeVisible();
@@ -113,24 +101,7 @@ test(`SSR list and visited query variants return offline without another read [$
     await page.goBack();
     await expect(page.getByRole('link',{name:'分类 ai-finance',exact:true})).toBeVisible({timeout:1500});
     await expect(page.locator('link[rel=canonical]')).toHaveAttribute('href',origin+'/?category=ai-finance');
-  }catch(error){
-    record('state',await page.evaluate(()=>{
-      const router=(globalThis as any).__reactRouterDataRouter;
-      const state=router?.state;
-      const data=state?.loaderData?.['routes/item'];
-      const detail=data?.detail;
-      return {
-        url:location.href,navigation:state?.navigation,errors:state?.errors,
-        loaderKeys:Object.keys(state?.loaderData??{}),preview:data?.preview,
-        detail:detail?{tracked:detail._tracked,hasData:'_data' in detail,data:detail._data,error:String(detail._error),status:detail.status}:null,
-        busy:document.querySelector('article[aria-busy]')?.outerHTML,
-        transitions:document.getAnimations().map(a=>({state:a.playState,time:a.currentTime})),
-        resources:performance.getEntriesByType('resource').filter(r=>r.name.includes('.data')).map(r=>r.toJSON()),
-      };
-    }));
-    console.error('NAVIGATION_DIAGNOSTIC',JSON.stringify({sample,articleDelay,events,hits}));
-    throw error;
-  }finally{articleDelay=0;await context.close();}
+  }finally{await context.close();}
 });
 
 test('hover downloads nothing, a press fetches article data once for its click, touches that move do not, and failed prefetch does not replace the current page',async()=>{
@@ -251,7 +222,7 @@ test('Agent tabs finish offline with matching canonical; invalid direct tabs and
 
 test('phone suggestions load only on opening, use one small read, retry failures and update on reopening',async()=>{
   const context=await safari.newContext({viewport:{width:390,height:844}});const page=await context.newPage();
-  // Module cards can refresh independently; still count every core site read, including unwanted full pages.
+  // Module cards refresh independently; count every core site read, including unwanted full pages.
   const siteReads=()=>hits.filter(path=>path.startsWith('/api/site/'));
   try{
     suggestionsVersion=1;await visit(page,origin+'/');
