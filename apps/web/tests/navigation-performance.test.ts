@@ -79,9 +79,19 @@ after(async()=>{
 
 // One engine per behaviour: WebKit for what phone readers do (iPhone Safari), Chromium for desktop-only
 // pointer behaviour such as hover and mouse presses. The router and caches are the same code in both.
-test('SSR list and visited query variants return offline without another read',async()=>{
+// Temporary diagnostics: preserve the failing assertion and exercise fresh WebKit documents repeatedly.
+for(let sample=0;sample<Number(process.env.NAVIGATION_DIAGNOSTIC_SAMPLES||1);sample++)
+test(`SSR list and visited query variants return offline without another read [${sample+1}]`,async()=>{
   const context=await safari.newContext({viewport:{width:390,height:844}});
   const page=await context.newPage();
+  const events:unknown[]=[];
+  const started=Date.now();
+  const record=(kind:string,value:unknown)=>events.push({ms:Date.now()-started,kind,value});
+  page.on('request',r=>{if(r.url().includes('.data'))record('request',{url:r.url(),type:r.resourceType()});});
+  page.on('response',r=>{if(r.url().includes('.data'))record('response',{url:r.url(),status:r.status()});});
+  page.on('requestfinished',r=>{if(r.url().includes('.data'))record('finished',r.url());});
+  page.on('requestfailed',r=>record('failed',{url:r.url(),failure:r.failure()}));
+  page.on('pageerror',e=>record('pageerror',String(e)));
   try{
     await visit(page,origin+'/');
     await expect(page.getByRole('link',{name:'性能检查文章',exact:true})).toBeVisible();
@@ -101,6 +111,23 @@ test('SSR list and visited query variants return offline without another read',a
     await page.goBack();
     await expect(page.getByRole('link',{name:'分类 ai-finance',exact:true})).toBeVisible({timeout:1500});
     await expect(page.locator('link[rel=canonical]')).toHaveAttribute('href',origin+'/?category=ai-finance');
+  }catch(error){
+    record('state',await page.evaluate(()=>{
+      const router=(globalThis as any).__reactRouterDataRouter;
+      const state=router?.state;
+      const data=state?.loaderData?.['routes/item'];
+      const detail=data?.detail;
+      return {
+        url:location.href,navigation:state?.navigation,errors:state?.errors,
+        loaderKeys:Object.keys(state?.loaderData??{}),preview:data?.preview,
+        detail:detail?{tracked:detail._tracked,hasData:'_data' in detail,data:detail._data,error:String(detail._error),status:detail.status}:null,
+        busy:document.querySelector('article[aria-busy]')?.outerHTML,
+        transitions:document.getAnimations().map(a=>({state:a.playState,time:a.currentTime})),
+        resources:performance.getEntriesByType('resource').filter(r=>r.name.includes('.data')).map(r=>r.toJSON()),
+      };
+    }));
+    console.error('NAVIGATION_DIAGNOSTIC',JSON.stringify({sample,events,hits}));
+    throw error;
   }finally{await context.close();}
 });
 
