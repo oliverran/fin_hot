@@ -7,6 +7,12 @@ const calls=new Map<string,Call>();
 let diagnostic:any;
 let unparsed=0;
 const lines=readFileSync(process.argv[2],'utf8').split('\n');
+function decode(value:any):any{
+  if(value?.o)return Object.fromEntries(value.o.map((p:any)=>[p.k,decode(p.v)]));
+  if(value?.a)return value.a.map(decode);
+  if(value&&typeof value==='object'&&'v' in value)return value.v;
+  return value;
+}
 function accept(message:any,direction:string,at:number,target:string){
   if(message.method==='Target.sendMessageToTarget'||message.method==='Target.dispatchMessageFromTarget'){
     try{accept(JSON.parse(message.params.message),direction,at,`${message.pageProxyId??''}/${message.params.targetId}`);}catch{unparsed++;}
@@ -14,7 +20,7 @@ function accept(message:any,direction:string,at:number,target:string){
   }
   const key=`${target}/${message.id}`;
   if(direction==='SEND'&&message.id!==undefined){
-    calls.set(key,{key,method:message.method,at,params:JSON.stringify(message.params??{})});
+    calls.set(key,{key,method:message.method,at,params:JSON.stringify(message.params?.arguments?.filter((a:any)=>a.value&&typeof a.value==='object')??message.params??{})});
   }else if(direction==='RECV'&&message.id!==undefined){
     const call=calls.get(key);
     if(call){call.end=at;call.response=message.result??message.error;}
@@ -34,12 +40,14 @@ for(const original of lines){
 const start=diagnostic?.phases.find((p:any)=>p.phase==='body-assert-start')?.at;
 const end=diagnostic?.phases.find((p:any)=>p.phase==='failure-caught'||p.phase==='body-assert-passed')?.at;
 if(start!==undefined&&end!==undefined){
-  const selected=[...calls.values()].filter(c=>c.at>=start-250&&c.at<=end+400&&c.method.startsWith('Runtime.'));
+  const selected=[...calls.values()].filter(c=>c.at>=start-250&&c.at<=end+400&&c.method==='Runtime.callFunctionOn'&&(c.params.includes('固定正文')||c.end===undefined||c.end-c.at>=250));
   const summary=selected.map(c=>({
     key:c.key,method:c.method,start:c.at-start,end:c.end===undefined?null:c.end-start,
     duration:c.end===undefined?null:c.end-c.at,
     article:c.params.includes('固定正文'),expect:c.params.includes('to.be.visible'),
-    response:JSON.stringify(c.response)?.slice(0,700),
+    matches:decode((c.response as any)?.result?.value)?.matches,
+    stages:decode((c.response as any)?.result?.value)?.__navigationExpectTrace,
+    response:JSON.stringify(c.response)?.slice(0,250),
   }));
   console.log('NAVIGATION_PROTOCOL_SUMMARY',JSON.stringify({start,end,unparsed,calls:summary}));
 }else console.log('NAVIGATION_PROTOCOL_SUMMARY',JSON.stringify({unparsed,error:'No completed article assertion diagnostic found'}));

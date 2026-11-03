@@ -52,6 +52,8 @@ jobs:
 
       - name: Install
         run: npm ci --no-audit --no-fund
+      - name: Temporary browser assertion-stage probe
+        run: node scripts/instrument-webkit-expect.ts
       - name: Online migration safety
         # New migrations against the PR base: deployed ones unchanged, no whole-table rewrite or blocking index in a release.
         env:
