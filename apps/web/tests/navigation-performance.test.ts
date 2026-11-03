@@ -168,15 +168,21 @@ test('SSR list and visited query variants return offline without another read',a
       lastBeat=now;
     },100);
     await expect(page.getByText('固定正文',{exact:true})).toBeVisible();
-    clearInterval(heartbeat);
     mark('body-assert-passed');
     console.error('NAVIGATION_TIMING_SUCCESS',JSON.stringify({phases,nodeGaps,state:await page.evaluate(()=>({now:performance.now(),timeOrigin:performance.timeOrigin,dateNow:Date.now(),events:(globalThis as any).__navigationTiming,resources:performance.getEntriesByType('resource').map(r=>r.toJSON())}))}));
-    await stopTimeline();
     await context.setOffline(true);
     await page.goBack();
     await expect(page.getByRole('link',{name:'性能检查文章',exact:true})).toBeVisible({timeout:1500});
     await context.setOffline(false);
-    await page.getByRole('button',{name:/^筛选/}).click();
+    const serverPage=(page as any)._connection.toImpl(page);
+    serverPage.__navigationStabilityProbe=true;
+    mark('filter-click-start');
+    try{await page.getByRole('button',{name:/^筛选/}).click();}
+    finally{delete serverPage.__navigationStabilityProbe;}
+    mark('filter-click-done');
+    clearInterval(heartbeat);
+    await stopTimeline();
+    console.error('NAVIGATION_FILTER_PHASES',JSON.stringify({phases,nodeGaps}));
     await page.getByRole('link',{name:'AI金融',exact:true}).click();
     await expect(page.getByRole('link',{name:'分类 ai-finance',exact:true})).toBeVisible();
     await page.getByRole('button',{name:/^筛选/}).click();

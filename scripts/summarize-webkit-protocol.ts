@@ -5,6 +5,7 @@ import { readFileSync } from 'node:fs';
 type Call={key:string;method:string;at:number;end?:number;params:string;response?:unknown};
 const calls=new Map<string,Call>();
 let diagnostic:any;
+let filterDiagnostic:any;
 let unparsed=0;
 const timeline:{received:number;record:any}[]=[];
 const timelineMarkers:{at:number;method:string;params:any}[]=[];
@@ -38,19 +39,22 @@ for(const original of lines){
     continue;
   }
   console.log(original);
+  const filterRecord=line.match(/NAVIGATION_FILTER_PHASES (.+)$/);
+  if(filterRecord)try{filterDiagnostic=JSON.parse(filterRecord[1]);}catch{}
   const record=line.match(/NAVIGATION_(?:FAILURE_DIAGNOSTIC|TIMING_SUCCESS) (.+)$/);
   if(record)try{diagnostic=JSON.parse(record[1]);}catch{}
 }
 const start=diagnostic?.phases.find((p:any)=>p.phase==='body-assert-start')?.at;
-const end=diagnostic?.phases.find((p:any)=>p.phase==='failure-caught'||p.phase==='body-assert-passed')?.at;
+const end=filterDiagnostic?.phases.find((p:any)=>p.phase==='filter-click-done')?.at??diagnostic?.phases.findLast((p:any)=>p.phase==='failure-caught'||p.phase==='body-assert-passed')?.at;
 if(start!==undefined&&end!==undefined){
-  const selected=[...calls.values()].filter(c=>c.at>=start-250&&c.at<=end+400&&c.method==='Runtime.callFunctionOn'&&(c.params.includes('固定正文')||c.end===undefined||c.end-c.at>=250));
+  const selected=[...calls.values()].filter(c=>c.at>=start-250&&c.at<=end+400&&c.method==='Runtime.callFunctionOn'&&(c.params.includes('固定正文')||c.params.includes('stabilityProbe')||c.end===undefined||c.end-c.at>=250));
   const summary=selected.map(c=>({
     key:c.key,method:c.method,start:c.at-start,end:c.end===undefined?null:c.end-start,
     duration:c.end===undefined?null:c.end-c.at,
     article:c.params.includes('固定正文'),expect:c.params.includes('to.be.visible'),
     matches:decode((c.response as any)?.result?.value)?.matches,
     stages:decode((c.response as any)?.result?.value)?.__navigationExpectTrace,
+    stability:decode((c.response as any)?.result?.value)?.__navigationStabilityTrace,
     response:JSON.stringify(c.response)?.slice(0,250),
   }));
   console.log('NAVIGATION_PROTOCOL_SUMMARY',JSON.stringify({start,end,unparsed,calls:summary}));
