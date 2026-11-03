@@ -81,7 +81,10 @@ after(async()=>{
 // pointer behaviour such as hover and mouse presses. The router and caches are the same code in both.
 test('SSR list and visited query variants return offline without another read',async()=>{
   const context=await safari.newContext({viewport:{width:390,height:844}});
-  await context.addInitScript((disable)=>{
+  const phases:{phase:string;at:number}[]=[];
+  const mark=(phase:string)=>phases.push({phase,at:Date.now()});
+  mark('test-start');
+  if(process.env.NAVIGATION_TRACE_LEVEL==='detailed')await context.addInitScript(()=>{
     const scope=globalThis as any;
     const events:any[]=[];
     scope.__navigationTiming=events;
@@ -90,7 +93,9 @@ test('SSR list and visited query variants return offline without another read',a
       const link=(event.target as Element)?.closest?.('a');
       if(!link?.getAttribute('href')?.startsWith('/items/navigation-fixture'))return;
       record('activation');
+      let previewSeen=false;
       const observer=new MutationObserver(()=>{
+        if(!previewSeen&&document.querySelector('article[aria-busy]')){previewSeen=true;record('preview-in-dom');}
         if(Array.from(document.querySelectorAll('p')).some(p=>p.textContent==='固定正文')){
           record('body-in-dom');observer.disconnect();
         }
@@ -99,8 +104,7 @@ test('SSR list and visited query variants return offline without another read',a
     },true);
     const doc=document as any;
     const start=doc.startViewTransition?.bind(document);
-    record('capabilities',{viewTransition:!!start,prefetch:document.createElement('link').relList.supports('prefetch'),disabled:disable});
-    if(disable){doc.startViewTransition=undefined;return;}
+    record('capabilities',{viewTransition:!!start,prefetch:document.createElement('link').relList.supports('prefetch'),level:'detailed'});
     if(!start)return;
     doc.startViewTransition=(callback:any)=>{
       record('start');
@@ -117,14 +121,20 @@ test('SSR list and visited query variants return offline without another read',a
       );
       return transition;
     };
-  },process.env.NAVIGATION_DISABLE_TRANSITIONS==='true');
+  });
   const page=await context.newPage();
   try{
+    mark('visit-start');
     await visit(page,origin+'/');
+    mark('visit-done');
     await expect(page.getByRole('link',{name:'性能检查文章',exact:true})).toBeVisible();
+    mark('click-start');
     await page.getByRole('link',{name:'性能检查文章',exact:true}).click();
+    mark('click-done');
+    mark('body-assert-start');
     await expect(page.getByText('固定正文',{exact:true})).toBeVisible();
-    console.error('NAVIGATION_TIMING_SUCCESS',JSON.stringify(await page.evaluate(()=>({now:performance.now(),events:(globalThis as any).__navigationTiming}))));
+    mark('body-assert-passed');
+    console.error('NAVIGATION_TIMING_SUCCESS',JSON.stringify({phases,state:await page.evaluate(()=>({now:performance.now(),timeOrigin:performance.timeOrigin,dateNow:Date.now(),events:(globalThis as any).__navigationTiming,resources:performance.getEntriesByType('resource').map(r=>r.toJSON())}))}));
     await context.setOffline(true);
     await page.goBack();
     await expect(page.getByRole('link',{name:'性能检查文章',exact:true})).toBeVisible({timeout:1500});
@@ -140,6 +150,7 @@ test('SSR list and visited query variants return offline without another read',a
     await expect(page.getByRole('link',{name:'分类 ai-finance',exact:true})).toBeVisible({timeout:1500});
     await expect(page.locator('link[rel=canonical]')).toHaveAttribute('href',origin+'/?category=ai-finance');
   }catch(error){
+    mark('failure-caught');
     // Temporary failure-only diagnostics. Do not change the navigation, assertion or timing before failure.
     const state=await page.evaluate(async()=>{
       const router=(globalThis as any).__reactRouterDataRouter;
@@ -152,14 +163,14 @@ test('SSR list and visited query variants return offline without another read',a
       }:null;
       const root=(document as any)[Object.keys(document).find(key=>key.startsWith('__reactContainer$'))??'']?.stateNode;
       const snapshot={
-        now:performance.now(),events:(globalThis as any).__navigationTiming,
+        now:performance.now(),timeOrigin:performance.timeOrigin,dateNow:Date.now(),events:(globalThis as any).__navigationTiming,
         bodyVisible:!!Array.from(document.querySelectorAll('p')).find(p=>p.textContent==='固定正文'),
         root:root?{pending:root.pendingLanes,suspended:root.suspendedLanes,pinged:root.pingedLanes,warm:root.warmLanes,callback:!!root.callbackNode,priority:root.callbackPriority,commitBlocked:!!root.cancelPendingCommit}:null,
         url:location.href,navigation:state?.navigation,errors:state?.errors,
         loaderKeys:Object.keys(state?.loaderData??{}),previewId:data?.preview?.id,promise,
         busy:!!document.querySelector('article[aria-busy]'),visibility:document.visibilityState,
-        transitions:document.getAnimations().map(a=>({state:a.playState,time:a.currentTime,pseudo:(a.effect as KeyframeEffect)?.pseudoElement})),
-        resources:performance.getEntriesByType('resource').filter(r=>r.name.includes('.data')).map(r=>r.toJSON()),
+        transitions:document.getAnimations().map(a=>({state:a.playState,time:a.currentTime,start:a.startTime,timeline:a.timeline?.currentTime,pseudo:(a.effect as KeyframeEffect)?.pseudoElement})),
+        resources:performance.getEntriesByType('resource').map(r=>r.toJSON()),
       };
       const resolution=detail?await Promise.race([
         detail.then((v:any)=>({state:'resolved',itemId:v?.item?.id,body:v?.item?.body}), (e:unknown)=>({state:'rejected',error:String(e)})),
@@ -167,7 +178,7 @@ test('SSR list and visited query variants return offline without another read',a
       ]):null;
       return {...snapshot,resolution};
     });
-    console.error('NAVIGATION_FAILURE_DIAGNOSTIC',JSON.stringify({state,hits,server: web.logs()}));
+    console.error('NAVIGATION_FAILURE_DIAGNOSTIC',JSON.stringify({phases,state,hits,server: web.logs()}));
     throw error;
   }finally{await context.close();}
 });
