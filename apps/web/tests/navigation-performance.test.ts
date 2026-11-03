@@ -101,6 +101,32 @@ test('SSR list and visited query variants return offline without another read',a
     await page.goBack();
     await expect(page.getByRole('link',{name:'分类 ai-finance',exact:true})).toBeVisible({timeout:1500});
     await expect(page.locator('link[rel=canonical]')).toHaveAttribute('href',origin+'/?category=ai-finance');
+  }catch(error){
+    // Temporary failure-only diagnostics. Do not change the navigation, assertion or timing before failure.
+    const state=await page.evaluate(async()=>{
+      const router=(globalThis as any).__reactRouterDataRouter;
+      const state=router?.state;
+      const data=state?.loaderData?.['routes/item'];
+      const detail=data?.detail;
+      const promise=detail?{
+        tracked:detail._tracked,hasData:'_data' in detail,hasError:'_error' in detail,
+        itemId:detail._data?.item?.id,body:detail._data?.item?.body,error:String(detail._error),status:detail.status,
+      }:null;
+      const snapshot={
+        url:location.href,navigation:state?.navigation,errors:state?.errors,
+        loaderKeys:Object.keys(state?.loaderData??{}),previewId:data?.preview?.id,promise,
+        busy:!!document.querySelector('article[aria-busy]'),visibility:document.visibilityState,
+        transitions:document.getAnimations().map(a=>({state:a.playState,time:a.currentTime,pseudo:(a.effect as KeyframeEffect)?.pseudoElement})),
+        resources:performance.getEntriesByType('resource').filter(r=>r.name.includes('.data')).map(r=>r.toJSON()),
+      };
+      const resolution=detail?await Promise.race([
+        detail.then((v:any)=>({state:'resolved',itemId:v?.item?.id,body:v?.item?.body}), (e:unknown)=>({state:'rejected',error:String(e)})),
+        new Promise(resolve=>setTimeout(()=>resolve({state:'pending after failure'}),1000)),
+      ]):null;
+      return {...snapshot,resolution};
+    });
+    console.error('NAVIGATION_FAILURE_DIAGNOSTIC',JSON.stringify({state,hits,server: web.logs()}));
+    throw error;
   }finally{await context.close();}
 });
 

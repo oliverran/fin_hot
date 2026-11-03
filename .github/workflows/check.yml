@@ -69,8 +69,15 @@ jobs:
         run: npm run build -w @aihot/web
       - name: Browser test engines
         run: npx playwright install --with-deps chromium webkit
-      - name: Web tests
-        run: node --test apps/web/tests/*.test.ts
+      - name: Web tests (temporary cold-process diagnostics)
+        run: |
+          failed=0
+          for sample in $(seq 1 10); do
+            echo "::group::Cold web suite $sample"
+            node --test apps/web/tests/*.test.ts || failed=1
+            echo "::endgroup::"
+          done
+          exit "$failed
 
       # Each test file runs on its own copy of aihot_ci (tests/databases.ts), which the run migrates and
       # leaves empty; the smoke check then reads that empty database.
