@@ -11,7 +11,6 @@
 // - tiny/linked pictures become zoom buttons, or language changes keep old handlers;
 // - a deep return loses its anchor, or folded dates confuse the anchor search.
 import assert from "node:assert/strict";
-import { createRequire } from "node:module";
 import { before, after, test } from "node:test";
 import { chromium, webkit, expect, type Browser } from "@playwright/test";
 import type { ReportDetail } from "@aihot/contracts/site";
@@ -81,114 +80,18 @@ after(async()=>{
 // One engine per behaviour: WebKit for what phone readers do (iPhone Safari), Chromium for desktop-only
 // pointer behaviour such as hover and mouse presses. The router and caches are the same code in both.
 test('SSR list and visited query variants return offline without another read',async()=>{
-  // Temporary diagnostics: protocol traffic is restricted to this local-fixture test process.
-  const debug=createRequire(import.meta.url)('playwright-core/lib/utilsBundle').debug;
-  let previousDebug:string|undefined;
-  let heartbeat:ReturnType<typeof setInterval>|undefined;
-  const nodeGaps:{at:number;gap:number}[]=[];
-  let timelineSession:any;
-  let timelineStarted:number|undefined;
-  const stopTimeline=async()=>{
-    const session=timelineSession;
-    if(!session)return;
-    timelineSession=undefined;
-    const stopRequested=Date.now();
-    try{
-      await session.send('Timeline.stop');
-      await session.send('Timeline.disable');
-      console.error('NAVIGATION_TIMELINE_CAPTURE',JSON.stringify({started:timelineStarted,stopRequested,stopped:Date.now()}));
-    }catch(error){console.error('NAVIGATION_TIMELINE_ERROR',String(error));}
-  };
   const context=await safari.newContext({viewport:{width:390,height:844}});
-  const phases:{phase:string;at:number}[]=[];
-  const mark=(phase:string)=>phases.push({phase,at:Date.now()});
-  mark('test-start');
-  if(process.env.NAVIGATION_TRACE_LEVEL==='detailed')await context.addInitScript(()=>{
-    const scope=globalThis as any;
-    const events:any[]=[];
-    scope.__navigationTiming=events;
-    const record=(event:string,extra:unknown=null)=>events.push({event,at:performance.now(),extra});
-    document.addEventListener('click',(event)=>{
-      const link=(event.target as Element)?.closest?.('a');
-      if(!link?.getAttribute('href')?.startsWith('/items/navigation-fixture'))return;
-      record('activation');
-      let previewSeen=false;
-      const observer=new MutationObserver(()=>{
-        if(!previewSeen&&document.querySelector('article[aria-busy]')){previewSeen=true;record('preview-in-dom');}
-        if(Array.from(document.querySelectorAll('p')).some(p=>p.textContent==='固定正文')){
-          record('body-in-dom');observer.disconnect();
-        }
-      });
-      observer.observe(document,{childList:true,subtree:true,characterData:true});
-    },true);
-    const doc=document as any;
-    const start=doc.startViewTransition?.bind(document);
-    record('capabilities',{viewTransition:!!start,prefetch:document.createElement('link').relList.supports('prefetch'),level:'detailed'});
-    if(!start)return;
-    doc.startViewTransition=(callback:any)=>{
-      record('start');
-      const detail=scope.__reactRouterDataRouter?.state.loaderData?.['routes/item']?.detail;
-      if(detail)detail.then(()=>record('detail-resolved'),(error:unknown)=>record('detail-rejected',String(error)));
-      const transition=start(()=>{
-        record('callback-start');
-        const result=callback();
-        Promise.resolve(result).then(()=>record('callback-resolved'),(error:unknown)=>record('callback-rejected',String(error)));
-        return result;
-      });
-      for(const event of ['updateCallbackDone','ready','finished'])transition[event].then(
-        ()=>record(event), (error:unknown)=>record(event+':rejected',String(error)),
-      );
-      return transition;
-    };
-  });
   const page=await context.newPage();
   try{
-    mark('visit-start');
     await visit(page,origin+'/');
-    mark('visit-done');
     await expect(page.getByRole('link',{name:'性能检查文章',exact:true})).toBeVisible();
-    const shadowVariant=process.env.NAVIGATION_SHADOW_VARIANT??'original';
-    assert.ok(shadowVariant==='original'||shadowVariant==='none');
-    const shadow=shadowVariant==='none'?'none':'-10px 0 28px rgba(0,0,0,0.12)';
-    // Matched diagnostic style insertion; only the push snapshot shadow differs between arms.
-    await page.addStyleTag({content:`:root[data-vt="push"]::view-transition-new(root) { box-shadow: ${shadow} !important; }`});
-    console.error('NAVIGATION_SHADOW_VARIANT',JSON.stringify({variant:shadowVariant,shadow}));
-    previousDebug=debug.disable();
-    debug.enable([previousDebug,'pw:protocol'].filter(Boolean).join(','));
-    // Temporary, version-bound in-process bridge to the existing WebKit target session.
-    try{
-      const session=(page as any)._connection.toImpl(page).delegate._session;
-      timelineStarted=Date.now();
-      await session.send('Timeline.enable');
-      await session.send('Timeline.start',{maxCallStackDepth:1});
-      timelineSession=session;
-    }catch(error){console.error('NAVIGATION_TIMELINE_ERROR',String(error));}
-    mark('click-start');
     await page.getByRole('link',{name:'性能检查文章',exact:true}).click();
-    mark('click-done');
-    mark('body-assert-start');
-    let lastBeat=Date.now();
-    heartbeat=setInterval(()=>{
-      const now=Date.now();
-      if(now-lastBeat>250&&nodeGaps.length<20)nodeGaps.push({at:now,gap:now-lastBeat});
-      lastBeat=now;
-    },100);
     await expect(page.getByText('固定正文',{exact:true})).toBeVisible();
-    mark('body-assert-passed');
-    console.error('NAVIGATION_TIMING_SUCCESS',JSON.stringify({phases,nodeGaps,state:await page.evaluate(()=>({now:performance.now(),timeOrigin:performance.timeOrigin,dateNow:Date.now(),events:(globalThis as any).__navigationTiming,resources:performance.getEntriesByType('resource').map(r=>r.toJSON())}))}));
     await context.setOffline(true);
     await page.goBack();
     await expect(page.getByRole('link',{name:'性能检查文章',exact:true})).toBeVisible({timeout:1500});
     await context.setOffline(false);
-    const serverPage=(page as any)._connection.toImpl(page);
-    serverPage.__navigationStabilityProbe=true;
-    mark('filter-click-start');
-    try{await page.getByRole('button',{name:/^筛选/}).click();}
-    finally{delete serverPage.__navigationStabilityProbe;}
-    mark('filter-click-done');
-    clearInterval(heartbeat);
-    await stopTimeline();
-    console.error('NAVIGATION_FILTER_PHASES',JSON.stringify({phases,nodeGaps}));
+    await page.getByRole('button',{name:/^筛选/}).click();
     await page.getByRole('link',{name:'AI金融',exact:true}).click();
     await expect(page.getByRole('link',{name:'分类 ai-finance',exact:true})).toBeVisible();
     await page.getByRole('button',{name:/^筛选/}).click();
@@ -198,44 +101,7 @@ test('SSR list and visited query variants return offline without another read',a
     await page.goBack();
     await expect(page.getByRole('link',{name:'分类 ai-finance',exact:true})).toBeVisible({timeout:1500});
     await expect(page.locator('link[rel=canonical]')).toHaveAttribute('href',origin+'/?category=ai-finance');
-  }catch(error){
-    clearInterval(heartbeat);
-    mark('failure-caught');
-    // Temporary failure-only diagnostics. Do not change the navigation, assertion or timing before failure.
-    const state=await page.evaluate(async()=>{
-      const router=(globalThis as any).__reactRouterDataRouter;
-      const state=router?.state;
-      const data=state?.loaderData?.['routes/item'];
-      const detail=data?.detail;
-      const promise=detail?{
-        tracked:detail._tracked,hasData:'_data' in detail,hasError:'_error' in detail,
-        itemId:detail._data?.item?.id,body:detail._data?.item?.body,error:String(detail._error),status:detail.status,
-      }:null;
-      const root=(document as any)[Object.keys(document).find(key=>key.startsWith('__reactContainer$'))??'']?.stateNode;
-      const snapshot={
-        now:performance.now(),timeOrigin:performance.timeOrigin,dateNow:Date.now(),events:(globalThis as any).__navigationTiming,
-        bodyVisible:!!Array.from(document.querySelectorAll('p')).find(p=>p.textContent==='固定正文'),
-        root:root?{pending:root.pendingLanes,suspended:root.suspendedLanes,pinged:root.pingedLanes,warm:root.warmLanes,callback:!!root.callbackNode,priority:root.callbackPriority,commitBlocked:!!root.cancelPendingCommit}:null,
-        url:location.href,navigation:state?.navigation,errors:state?.errors,
-        loaderKeys:Object.keys(state?.loaderData??{}),previewId:data?.preview?.id,promise,
-        busy:!!document.querySelector('article[aria-busy]'),visibility:document.visibilityState,
-        transitions:document.getAnimations().map(a=>({state:a.playState,time:a.currentTime,start:a.startTime,timeline:a.timeline?.currentTime,pseudo:(a.effect as KeyframeEffect)?.pseudoElement})),
-        resources:performance.getEntriesByType('resource').map(r=>r.toJSON()),
-      };
-      const resolution=detail?await Promise.race([
-        detail.then((v:any)=>({state:'resolved',itemId:v?.item?.id,body:v?.item?.body}), (e:unknown)=>({state:'rejected',error:String(e)})),
-        new Promise(resolve=>setTimeout(()=>resolve({state:'pending after failure'}),1000)),
-      ]):null;
-      return {...snapshot,resolution};
-    });
-    console.error('NAVIGATION_FAILURE_DIAGNOSTIC',JSON.stringify({phases,nodeGaps,state,hits,server: web.logs()}));
-    await stopTimeline();
-    throw error;
-  }finally{
-    clearInterval(heartbeat);
-    await stopTimeline();
-    try{await context.close();}finally{if(previousDebug!==undefined)debug.enable(previousDebug);}
-  }
+  }finally{await context.close();}
 });
 
 test('hover downloads nothing, a press fetches article data once for its click, touches that move do not, and failed prefetch does not replace the current page',async()=>{

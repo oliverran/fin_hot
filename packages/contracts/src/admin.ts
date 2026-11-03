@@ -399,3 +399,158 @@ export interface AdminSelectBenchCases {
   rows: Array<{ case_id: string; title: string; stratum: string | null; gold: "select" | "reject" | "either"; by_model: Record<string, AdminSelectBenchDecision> }>;
   strata: Array<{ stratum: string | null; n: number }>;
 }
+
+// Analytics (指标监控)
+
+/** One day of the visitor trend: page views, unique visitors and key entry clicks. */
+export interface AdminAnalyticsDay {
+  /** YYYY-MM-DD, Beijing. */
+  day: string;
+  views: number;
+  visitors: number;
+  clicks: number;
+}
+
+/** One row of a view ranking: what was opened and how many visitors did. */
+export interface AdminAnalyticsRank {
+  /** The page address, or the section's group name. */
+  key: string;
+  views: number;
+  visitors: number;
+}
+
+/** One row of the key entry clicks: the entry's label. */
+export interface AdminAnalyticsEntry {
+  key: string;
+  clicks: number;
+  visitors: number;
+}
+
+export interface AdminAnalytics {
+  /** The window the page asked for, in days (1..365). */
+  days: number;
+  /** Today so far, read live from the detail table. */
+  today: AdminAnalyticsDay;
+  /** One row per day in the window, oldest first; a day with no data still appears. */
+  trend: AdminAnalyticsDay[];
+  /** Pages by address, most viewed first. */
+  pages: AdminAnalyticsRank[];
+  /** Sections by the group computed from the address, most viewed first. */
+  modules: AdminAnalyticsRank[];
+  /** Key entries by their label, most clicked first. */
+  entries: AdminAnalyticsEntry[];
+  /** What the site itself is doing: the process, the api, the models, the queues and collection. */
+  ops: AdminAnalyticsOps;
+}
+
+// Analytics · operations
+
+/** One day of requests: how many, how many failed and how slow (p95 is estimated from latency buckets). */
+export interface AdminAnalyticsHttpDay {
+  /** YYYY-MM-DD, Beijing. */
+  day: string;
+  requests: number;
+  errors: number;
+  msAvg: number;
+  msP95: number;
+}
+
+/** One route of the slow-route ranking, by the address the router matched, over the whole window. */
+export interface AdminAnalyticsHttpRoute {
+  /** The route pattern, or "未匹配" for an address no route took. */
+  key: string;
+  requests: number;
+  errors: number;
+  msAvg: number;
+  msP95: number;
+  msMax: number;
+}
+
+export interface AdminAnalyticsHttp {
+  /** Today so far. */
+  today: Omit<AdminAnalyticsHttpDay, "day">;
+  /** One row per day in the window, oldest first. */
+  trend: AdminAnalyticsHttpDay[];
+  /** Routes by requests, most first. */
+  routes: AdminAnalyticsHttpRoute[];
+}
+
+/** The api process that answered the page (read live, not stored). */
+export interface AdminAnalyticsProcess {
+  pid: number;
+  uptimeSec: number;
+  rssMb: number;
+  heapUsedMb: number;
+  /** Percent of one core over the last sample interval. */
+  cpuPercent: number;
+  /** How late the last sample interval ran, in milliseconds. */
+  loopLagMs: number;
+  /** The host's one-minute load average. */
+  load1: number;
+}
+
+/** One day of model calls. */
+export interface AdminAnalyticsModelDay {
+  day: string;
+  calls: number;
+  failed: number;
+  cost: number;
+}
+
+/** One purpose × model row of the model ranking. */
+export interface AdminAnalyticsModelRow {
+  purpose: string;
+  model: string;
+  calls: number;
+  failed: number;
+  msP95: number;
+  cost: number;
+}
+
+export interface AdminAnalyticsModels {
+  calls: number;
+  failed: number;
+  cost: number;
+  /** The currency the actual-cost receipts were priced in, when they name one. */
+  currency: string | null;
+  tokensIn: number;
+  tokensOut: number;
+  msP95: number;
+  trend: AdminAnalyticsModelDay[];
+  rows: AdminAnalyticsModelRow[];
+}
+
+/** One queue's backlog, as pg-boss holds it now. */
+export interface AdminAnalyticsQueue {
+  name: string;
+  state: string;
+  n: number;
+  oldest: string | null;
+}
+
+export interface AdminAnalyticsJobs {
+  /** Jobs waiting, retrying or running. */
+  backlog: AdminAnalyticsQueue[];
+  trend: Array<{ day: string; runs: number; failed: number }>;
+}
+
+export interface AdminAnalyticsCollect {
+  runs: number;
+  failed: number;
+  /** Articles the fetches found. */
+  found: number;
+  /** Articles they had not seen before. */
+  fresh: number;
+  trend: Array<{ day: string; runs: number; failed: number; found: number; fresh: number }>;
+}
+
+/** What the site is doing, for the operations half of the analytics page. */
+export interface AdminAnalyticsOps {
+  /** When the page read this. */
+  checkedAt: string;
+  process: AdminAnalyticsProcess;
+  http: AdminAnalyticsHttp;
+  models: AdminAnalyticsModels;
+  jobs: AdminAnalyticsJobs;
+  collect: AdminAnalyticsCollect;
+}

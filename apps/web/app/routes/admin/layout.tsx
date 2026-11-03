@@ -45,6 +45,7 @@ const nav = (): Array<{ group: string; items: AdminNavEntry[] }> => [
       { to: "/admin/selectbench", label: "SelectBench" },
       { to: "/admin/settings", label: "设置" },
       { to: "/admin/audit", label: "审计记录" },
+      ...webModules().flatMap((m) => m.admin?.system ?? []),
     ],
   },
 ];

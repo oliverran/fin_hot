@@ -127,6 +127,8 @@ export interface WebModule {
     groups?: Array<{ group: string; items: AdminNavEntry[] }>;
     /** Entries in the 内容 group, after the engine's 信源. */
     content?: AdminNavEntry[];
+    /** Entries in the 系统 group, after the engine's. */
+    system?: AdminNavEntry[];
     /** Its part of the runs page, drawn from what its server module's admin.runs returns. */
     runs?: Part<ComponentType<{ data: unknown }>>;
     /** The page the admin opens on instead of the sources (routes/admin/index.tsx); the first module's wins. */
