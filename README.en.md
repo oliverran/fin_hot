@@ -102,7 +102,7 @@ RSS supports selected items, all items, full text, and daily / weekly / monthly 
 - **Pro data:** Tushare requires your own token and relevant data access. Sync is disabled by default. Disclosed fund holdings lag the market, sample coverage is not full-market coverage, and ETF share changes are not net capital inflows. See [Pro data](docs/pro-data.md).
 - **US market data:** the embedded app uses bundled snapshots and supports refreshes from `historyofmarket.com`. Old data may remain when the upstream is unavailable; a scheduled refresh does not prove a dataset is current.
 - **Intended use:** news reading and historical research. No trade execution, return guarantees or investment advice.
-- **Build status:** check [GitHub Actions](https://github.com/oliverran/fin_hot/actions/workflows/check.yml). In the [2026-11-02 run for `1a8b866`](https://github.com/oliverran/fin_hot/actions/runs/41436941077), typechecking, the web build, 62 web tests and Docker smoke checks passed. Backend tests passed 952/981 with 29 failures, and the main job's later smoke step was skipped. This is not a fully passing regression-tested release.
+- **Build status:** check [GitHub Actions](https://github.com/oliverran/fin_hot/actions/workflows/check.yml). The [2026-11-04 main run for `a964800`](https://github.com/oliverran/fin_hot/actions/runs/41809028790) passed typechecking, the web build, 62/62 web tests, 994/994 backend tests, and the built-site and Docker smoke checks. An [intermittent WebKit navigation timeout](docs/webkit-navigation-investigation.md) still has no confirmed root cause; this passing run does not establish that it is fixed.
 
 ## Adapt it to your research
 

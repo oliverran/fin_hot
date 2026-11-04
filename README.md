@@ -102,7 +102,7 @@ RSS 包含精选、全部动态、全文及日报 / 周报 / 月报订阅；全�
 - **Pro 数据**：Tushare 需自备 token 与相应数据权限，相关同步默认关闭。基金披露持仓有披露滞后，样本覆盖不等于全市场，ETF 份额变化不等于资金净流入。见 [Pro 数据说明](docs/pro-data.md)。
 - **美股数据**：编年史子应用使用随仓库附带的数据快照，并支持从 `historyofmarket.com` 刷新；上游不可用时可能仍显示旧数据，不能把计划刷新等同于数据已经更新。
 - **用途**：用于资讯阅读与历史研究，不提供交易执行或收益保证，也不构成投资建议。
-- **构建状态**：请以 [GitHub Actions](https://github.com/oliverran/fin_hot/actions/workflows/check.yml) 为准。2026-11-02 的 [`1a8b866` 检查](https://github.com/oliverran/fin_hot/actions/runs/41436941077)中，类型检查、网页构建、62 项网页测试和 Docker 冒烟检查通过；后端测试 952/981 通过、29 项失败，主检查的后续冒烟步骤未运行。这不是全量回归通过的发布版本。
+- **构建状态**：请以 [GitHub Actions](https://github.com/oliverran/fin_hot/actions/workflows/check.yml) 为准。2026-11-04 的 [`a964800` 主分支检查](https://github.com/oliverran/fin_hot/actions/runs/41809028790)中，类型检查、网页构建、62/62 项网页测试、994/994 项后端测试、站点与 Docker 冒烟检查全部通过。WebKit 导航测试仍有[根因未确认的间歇性超时](docs/webkit-navigation-investigation.md)；这次通过不代表该问题已修复。
 
 ## 按你的研究范围调整
 
