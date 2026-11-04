@@ -12,6 +12,8 @@ export default defineModule({
     { path: "chronicle/sectors-live", file: "web/pages/sectors-live.tsx" },
     { path: "chronicle/compare", file: "web/pages/compare.tsx" },
     { path: "chronicle", file: "web/pages/home.tsx" },
+    { path: "chronicle/charts", file: "web/pages/charts.tsx" },
+    { path: "chronicle/timeline", file: "web/pages/timeline.tsx" },
     { path: "chronicle/methodology", file: "web/pages/methodology.tsx" },
     { path: "chronicle/api", file: "web/pages/api-doc.tsx" },
     { path: "chronicle/us-market", file: "web/pages/us-market.tsx" },

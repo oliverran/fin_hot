@@ -22,8 +22,8 @@ export interface QuoteBar {
   volume: number;
 }
 
-/** 要抓的指数代码。 */
-export const QUOTE_CODES: readonly string[] = [...new Set(LIVE_CHARTS.map((chart) => chart.code))];
+/** 要抓的指数代码：派生图算自的指数（含相对强弱的分母）一并抓下来。 */
+export const QUOTE_CODES: readonly string[] = [...new Set(LIVE_CHARTS.flatMap((chart) => (chart.code2 ? [chart.code, chart.code2] : [chart.code])))];
 
 /** 一天前，用来把翻页的区间往前挪。 */
 function dayBefore(date: string): string {

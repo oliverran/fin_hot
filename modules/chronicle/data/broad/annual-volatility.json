@@ -1,0 +1,46 @@
+{
+  "meta": {
+    "id": "annual-volatility",
+    "name": "沪深300 逐年已实现波动率",
+    "type": "line",
+    "description": "逐年已实现波动率"
+  },
+  "series": [
+    {
+      "date": "2010",
+      "value": 16.65
+    },
+    {
+      "date": "2011",
+      "value": 18.11
+    },
+    {
+      "date": "2012",
+      "value": 17.17
+    },
+    {
+      "date": "2013",
+      "value": 20.53
+    },
+    {
+      "date": "2014",
+      "value": 25.44
+    },
+    {
+      "date": "2015",
+      "value": 27.41
+    },
+    {
+      "date": "2016",
+      "value": 30.13
+    },
+    {
+      "date": "2017",
+      "value": 37.57
+    },
+    {
+      "date": "2018",
+      "value": 41.72
+    }
+  ]
+}

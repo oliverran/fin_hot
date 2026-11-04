@@ -64,8 +64,8 @@ export const GROUPS: readonly GroupInfo[] = [
     heroLead: "我们以核心宽基指数为锚，观测市场的长期形状。无论是草莽时代的暴涨暴跌，还是机构化时代的存量博弈，估值钟摆的规律始终在起作用。",
     sections: [
       { n: "1", title: "核心指数 (Core Indices)", slugs: ["shanghai-composite", "shenzhen-component", "hs300", "chinext", "star50", "csi500"] },
-      { n: "2", title: "透视与拆解 (Anatomy & Turbulence)", slugs: ["distribution", "davis-decomposition", "intrayear-turbulence", "volatility", "sector-evolution", "roe-anchor"] },
-      { n: "3", title: "周期与形貌 (Cycles & Shape)", slugs: ["annual", "drawdown", "eras"] },
+      { n: "2", title: "透视与拆解 (Anatomy & Turbulence)", slugs: ["distribution", "davis-decomposition", "intrayear-turbulence", "volatility", "annual-volatility", "sector-evolution", "roe-anchor"] },
+      { n: "3", title: "周期与形貌 (Cycles & Shape)", slugs: ["annual", "rolling-year", "drawdown", "eras"] },
       { n: "4", title: "估值与风格 (Valuation & Style)", slugs: ["valuation", "style-ratios", "seasonality"] },
     ],
   },
@@ -249,6 +249,16 @@ export const PAGES: readonly ChartPage[] = [
     chartNote: "日常中枢在 15% 左右，一旦突破 30% 则意味着系统性风险正在定价。",
   },
   {
+    slug: "annual-volatility",
+    group: "broad",
+    cardTitle: "波动年表",
+    cardBlurb: "逐年已实现波动率，标出市场最动荡的年份。",
+    heroTitle: "逐年波动率",
+    heroLead: "每一年市场的剧烈程度并不相同。把每个自然年内部的日收益波动年化之后，就得到一张「动荡年表」——它不描述方向，只记录那一年市场被情绪搅动得有多厉害。",
+    chartTitle: "沪深300 逐年已实现波动率",
+    chartNote: "当年全部日收益的年化标准差；覆盖交易日过少的年份不画。",
+  },
+  {
     slug: "sector-evolution",
     group: "broad",
     cardTitle: "结构变迁",
@@ -277,6 +287,16 @@ export const PAGES: readonly ChartPage[] = [
     heroLead: "我们总是倾向于高估一年的变化，而低估十年的变化。以自然年为切片，看看时间究竟是朋友，还是敌人。",
     chartTitle: "沪深 300 历年绝对收益",
     chartNote: "红绿交织间，是牛熊周期的无声往复。",
+  },
+  {
+    slug: "rolling-year",
+    group: "broad",
+    cardTitle: "滚动年化",
+    cardBlurb: "持有满一年的滚动年化回报，看长期收益的中枢与起伏。",
+    heroTitle: "滚动年化收益",
+    heroLead: "把每一天都当成起点，往前看满一年：如果在那一天买入、持有一年卖出，年化回报会是多少？把这条曲线连起来，看到的就不再是单点的涨跌，而是一个时代给长期持有者的真实报价。",
+    chartTitle: "沪深300 滚动一年年化收益",
+    chartNote: "每个交易日对应过去 250 个交易日的年化回报；窗口不足一年的起点不画。",
   },
   {
     slug: "drawdown",
@@ -523,27 +543,8 @@ export const PAGES: readonly ChartPage[] = [
   },
 ];
 
-/** 首页三章：每章一组，列出要点进去的几张图。 */
-export const HOME_SECTIONS: ReadonlyArray<{ group: GroupKey; lead: string; slugs: string[] }> = [
-  {
-    group: "broad",
-    lead: "市场是一个复杂的非线性系统，但拉长周期，依然能看到清晰的估值钟摆与时代分幕。本章通过各大宽基指数及历史回撤数据，刻画 A 股的总体形貌。",
-    slugs: ["shanghai-composite", "hs300", "eras", "drawdown"],
-  },
-  {
-    group: "sectors",
-    lead: "存量博弈下，资金在不同产业间如同潮汐般涌动。本章追踪白酒、新能源、半导体等七大核心赛道的周期起伏。",
-    slugs: ["baijiu", "new-energy", "rotation"],
-  },
-  {
-    group: "clusters",
-    lead: "每一次大牛市的背后，都有一套逻辑自洽的宏大叙事。本章记录历代抱团资产的聚变与裂变。",
-    slugs: ["liquor-club", "ning-combo", "special-valuation", "ai-compute"],
-  },
-];
-
 /** 真实行情图的算法：直接从指数日线画，或由日线现算的派生量。 */
-export type LiveKind = "index" | "drawdown" | "annual" | "turbulence" | "volatility" | "seasonality" | "distribution";
+export type LiveKind = "index" | "drawdown" | "annual" | "rolling" | "turbulence" | "volatility" | "annual-vol" | "seasonality" | "distribution" | "relative";
 
 export interface LiveChart {
   group: GroupKey;
@@ -551,6 +552,8 @@ export interface LiveChart {
   kind: LiveKind;
   /** 行情代码（腾讯的写法：sh000300）；派生图填它算自的那只指数。 */
   code: string;
+  /** 相对强弱（relative）填分母那只指数：比值是 code ÷ code2。 */
+  code2?: string;
   /** 这只指数的中文名，用来写数据来源。 */
   indexName: string;
 }
@@ -568,10 +571,13 @@ export const LIVE_CHARTS: readonly LiveChart[] = [
   { group: "broad", slug: "csi500", kind: "index", code: "sh000905", indexName: "中证 500" },
   { group: "broad", slug: "drawdown", kind: "drawdown", code: "sh000300", indexName: "沪深 300" },
   { group: "broad", slug: "annual", kind: "annual", code: "sh000300", indexName: "沪深 300" },
+  { group: "broad", slug: "rolling-year", kind: "rolling", code: "sh000300", indexName: "沪深 300" },
   { group: "broad", slug: "intrayear-turbulence", kind: "turbulence", code: "sh000300", indexName: "沪深 300" },
   { group: "broad", slug: "volatility", kind: "volatility", code: "sh000300", indexName: "沪深 300" },
+  { group: "broad", slug: "annual-volatility", kind: "annual-vol", code: "sh000300", indexName: "沪深 300" },
   { group: "broad", slug: "seasonality", kind: "seasonality", code: "sh000300", indexName: "沪深 300" },
   { group: "broad", slug: "distribution", kind: "distribution", code: "sh000300", indexName: "沪深 300" },
+  { group: "broad", slug: "style-ratios", kind: "relative", code: "sh000300", code2: "sh000852", indexName: "沪深 300 / 中证 1000" },
 ];
 
 /** 精选页第一屏那张实时图跟的两只指数（腾讯写法，与 LIVE_CHARTS 里的代码一致）。 */
@@ -592,12 +598,6 @@ export function liveChart(group: string, slug: string): LiveChart | undefined {
   return LIVE_BY_KEY.get(`${group}/${slug}`);
 }
 
-/** 页面与接口上写出来的数据来源。 */
-export function dataSourceOf(group: string, slug: string): string {
-  const chart = liveChart(group, slug);
-  return chart ? `${LIVE_SOURCE}，每日收盘后更新` : "示例数据（随机生成）";
-}
-
 /** 一张图的全部文案；地址里的分组与 slug 不认得时返回 undefined。 */
 export function pageOf(group: string, slug: string): ChartPage | undefined {
   return BY_KEY.get(`${group}/${slug}`);
@@ -611,6 +611,10 @@ export function groupOf(key: string): GroupInfo | undefined {
 /** 这个模块的地址：目录页、详情页、方法与接口说明页，以及美股编年史。 */
 export const ROUTES = {
   home: "/chronicle",
+  /** 全部图表的检索入口：按卷筛选、按关键词搜索后跳到某一张。 */
+  charts: "/chronicle/charts",
+  /** 按年代编排的转折、大事记与代表个股。 */
+  timeline: "/chronicle/timeline",
   group: (key: GroupKey) => `/chronicle/${key}`,
   page: (group: GroupKey, slug: string) => `/chronicle/${group}/${slug}`,
   methodology: "/chronicle/methodology",

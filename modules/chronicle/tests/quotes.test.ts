@@ -225,6 +225,52 @@ test("波动率、季节性与收益分布出各自的形状", async () => {
   assert.equal(bars.counts[6], 1); // 2023 的 +25% 落在 20~30%
 });
 
+test("滚动年化按 250 日窗口逐日滚动，逐年波动率按自然年切", async () => {
+  const daily = (start: number, n: number) => Array.from({ length: n }, (_, i) => new Date(start + i * 86_400_000).toISOString().slice(0, 10));
+
+  // 每天固定涨 0.1%：滚动一年的年化回报应当是一条常数线，前 250 天不出点。
+  const rollingDates = daily(Date.UTC(2020, 0, 1), 300);
+  await seed(barsOf(rollingDates, (i) => 100 * 1.001 ** i));
+  const rolling = await liveChartJson(chart("rolling-year", "rolling"));
+  assert.equal(rolling?.meta.type, "line");
+  const line = rolling!.series as Array<{ date: string; value: number }>;
+  assert.equal(line.length, 300 - 250);
+  assert.equal(line[0]!.date, rollingDates[250]);
+  assert.ok(Math.abs(line[0]!.value - ((1.001 ** 250) ** (252 / 250) - 1) * 100) < 0.02);
+
+  // 逐年波动率：两个完整自然年各出一个点；交易日不足 20 天的年份不出点。
+  const wobble = (i: number) => 100 + 10 * Math.sin(i / 3);
+  await seed([
+    ...barsOf(daily(Date.UTC(2023, 0, 1), 250), wobble),
+    ...barsOf(daily(Date.UTC(2024, 0, 1), 250), wobble),
+    ...barsOf(daily(Date.UTC(2025, 0, 1), 5), wobble),
+  ]);
+  const vol = await liveChartJson(chart("annual-volatility", "annual-vol"));
+  assert.equal(vol?.meta.type, "line");
+  const years = vol!.series as Array<{ date: string; value: number }>;
+  assert.deepEqual(years.map((row) => row.date), ["2023", "2024"]);
+  assert.ok(years.every((row) => Number.isFinite(row.value) && row.value > 0));
+});
+
+test("相对强弱：两条指数按交易日对齐后相除，并配一条 250 日均线", async () => {
+  const A = `sh${T}num`, B = `sh${T}den`;
+  await sql`DELETE FROM chronicle_quotes WHERE code = ${A} OR code = ${B}`;
+  const days = 300;
+  const start = Date.UTC(2020, 0, 1);
+  const dates = Array.from({ length: days }, (_, i) => new Date(start + i * 86_400_000).toISOString().slice(0, 10));
+  await refreshCode(A, async () => barsOf(dates, (i) => 100 + i)); // 分子从 100 涨到 399
+  await refreshCode(B, async () => barsOf(dates, () => 100)); // 分母恒为 100
+  const json = await liveChartJson({ group: "broad", slug: "style-ratios", kind: "relative", code: A, code2: B, indexName: "测试 / 基准" });
+  assert.equal(json?.meta.type, "multi-line");
+  const series = json!.series as { dates: string[]; seriesData: Record<string, Array<number | null>> };
+  assert.equal(series.dates.length, days);
+  assert.equal(series.seriesData["相对强弱"]![0], 1);
+  assert.equal(series.seriesData["相对强弱"]!.at(-1), 3.99);
+  // 均线在凑满 250 个交易日之前留空。
+  assert.equal(series.seriesData["250 日均线"]![248], null);
+  assert.ok(Number.isFinite(series.seriesData["250 日均线"]![249]));
+});
+
 test("库里还没有这只指数的行情时返回 null", async () => {
   await sql`DELETE FROM chronicle_quotes WHERE code = ${CODE}`;
   assert.equal(await liveChartJson(chart("hs300", "index")), null);

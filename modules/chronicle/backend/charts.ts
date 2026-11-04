@@ -38,9 +38,9 @@ function byYear(bars: readonly QuoteBar[]): Array<{ year: string; closes: number
   return [...groups].map(([year, closes]) => ({ year, closes }));
 }
 
-/** 一张图的 meta.type 与 series。 */
-function build(kind: LiveChart["kind"], bars: readonly QuoteBar[]): [string, unknown] {
-  switch (kind) {
+/** 一张图的 meta.type 与 series；`other` 是相对强弱的分母指数日线。 */
+function build(chart: LiveChart, bars: readonly QuoteBar[], other: readonly QuoteBar[]): [string, unknown] {
+  switch (chart.kind) {
     case "index":
       return ["line", bars.map((bar) => ({ date: bar.date, value: bar.close }))];
     case "drawdown": {
@@ -57,6 +57,17 @@ function build(kind: LiveChart["kind"], bars: readonly QuoteBar[]): [string, unk
         const base = years[i - 1]?.closes.at(-1) ?? year.closes[0]!;
         return { date: year.year, value: round2((year.closes.at(-1)! / base - 1) * 100) };
       })];
+    }
+    case "rolling": {
+      // 滚动一年年化：每个交易日对应过去 250 个交易日的年化回报。
+      // 把起点一路往后挪，牛熊的切换就变成一条连续的收益中枢曲线，而不是孤立的年度数字。
+      const window = 250;
+      const out: Array<{ date: string; value: number }> = [];
+      for (let i = window; i < bars.length; i++) {
+        const growth = bars[i]!.close / bars[i - window]!.close;
+        out.push({ date: bars[i]!.date, value: round2((growth ** (252 / window) - 1) * 100) });
+      }
+      return ["line", out];
     }
     case "turbulence": {
       const years = byYear(bars);
@@ -79,6 +90,27 @@ function build(kind: LiveChart["kind"], bars: readonly QuoteBar[]): [string, unk
         const mean = returns.reduce((sum, r) => sum + r, 0) / returns.length;
         const variance = returns.reduce((sum, r) => sum + (r - mean) ** 2, 0) / (returns.length - 1);
         out.push({ date: bars[i]!.date, value: round2(Math.sqrt(variance * 252) * 100) });
+      }
+      return ["line", out];
+    }
+    case "annual-vol": {
+      // 逐年已实现波动率：把一个自然年里的日收益合起来算年化标准差。
+      // 和上一条 20 日滚动波动率互补——一个看情绪的瞬时脉冲，一个看整年被搅动的程度。
+      const groups = new Map<string, QuoteBar[]>();
+      for (const bar of bars) {
+        const year = bar.date.slice(0, 4);
+        const list = groups.get(year);
+        if (list) list.push(bar);
+        else groups.set(year, [bar]);
+      }
+      const out: Array<{ date: string; value: number }> = [];
+      for (const [year, list] of groups) {
+        if (list.length < 20) continue;
+        const returns: number[] = [];
+        for (let i = 1; i < list.length; i++) returns.push(Math.log(list[i]!.close / list[i - 1]!.close));
+        const mean = returns.reduce((sum, r) => sum + r, 0) / returns.length;
+        const variance = returns.reduce((sum, r) => sum + (r - mean) ** 2, 0) / (returns.length - 1);
+        out.push({ date: year, value: round2(Math.sqrt(variance * 252) * 100) });
       }
       return ["line", out];
     }
@@ -109,7 +141,35 @@ function build(kind: LiveChart["kind"], bars: readonly QuoteBar[]): [string, unk
       });
       return ["distribution-bar", { bins, counts }];
     }
+    case "relative": {
+      // 相对强弱：两只指数按交易日对齐后相除（分子 ÷ 分母），再配一条均线看趋势。
+      // 比值向上代表分子（如大盘）占优，向下代表分母（如小盘）占优。
+      const closes = new Map(other.map((bar) => [bar.date, bar.close]));
+      const dates: string[] = [];
+      const ratio: number[] = [];
+      for (const bar of bars) {
+        const denominator = closes.get(bar.date);
+        if (denominator === undefined) continue;
+        dates.push(bar.date);
+        ratio.push(round2(bar.close / denominator));
+      }
+      const window = 250;
+      const mean = ratio.map((_, i) => {
+        if (i < window - 1) return null;
+        let sum = 0;
+        for (let j = i - window + 1; j <= i; j++) sum += ratio[j]!;
+        return round2(sum / window);
+      });
+      return ["multi-line", { dates, seriesData: { "相对强弱": ratio, "250 日均线": mean } }];
+    }
   }
+}
+
+/** 一只指数的日线：优先用行情提供方（Tushare）的那份，没有就从库里读。 */
+async function barsFor(code: string, snapshot: Awaited<ReturnType<typeof readProvider>>): Promise<QuoteBar[]> {
+  const providerCode = code.slice(2) + "." + code.slice(0, 2).toUpperCase();
+  const provider = snapshot?.indices.find((x) => x.code === providerCode);
+  return provider?.bars.map((b) => ({ ...b, open: b.close, high: b.close, low: b.close, volume: 0 })) ?? await loadBars(code);
 }
 
 /**
@@ -118,12 +178,13 @@ function build(kind: LiveChart["kind"], bars: readonly QuoteBar[]): [string, unk
  */
 export async function liveChartJson(chart: LiveChart): Promise<ChartJson | null> {
   const snapshot = await readProvider();
-  const code=chart.code.slice(2)+'.'+chart.code.slice(0,2).toUpperCase();
-  const provider=snapshot?.indices.find(x=>x.code===code);
-  const bars = provider?.bars.map(b=>({...b,open:b.close,high:b.close,low:b.close,volume:0})) ?? await loadBars(chart.code);
+  const provider = snapshot?.indices.find((x) => x.code === chart.code.slice(2) + "." + chart.code.slice(0, 2).toUpperCase());
+  const bars = await barsFor(chart.code, snapshot);
   if (bars.length === 0) return null;
+  const other = chart.code2 ? await barsFor(chart.code2, snapshot) : [];
+  if (chart.code2 && other.length === 0) return null;
   const page = pageOf(chart.group, chart.slug);
-  const [type, series] = build(chart.kind, bars);
+  const [type, series] = build(chart, bars, other);
   return {
     meta: {
       id: chart.slug,
