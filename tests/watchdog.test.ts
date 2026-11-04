@@ -120,3 +120,52 @@ test("the alert webhook keeps within the custom bot's limits: 20 KB a request, 1
   assert.ok(hooked.join("").endsWith(`系统日报\n${lines.join("\n")}`), "the pieces are the whole text, in order");
   for (let i = 1; i < hookedAt.length; i++) assert.ok(hookedAt[i]! - hookedAt[i - 1]! >= 590, "at most 100 a minute");
 });
+
+test("queued alert webhooks stay spaced after a slow failed send and a late timer", async (t) => {
+  const webhook = `https://open.feishu.cn/open-apis/bot/v2/hook/test-${T}`;
+  process.env.FEISHU_ALERT_WEBHOOK_URL = webhook;
+  // Keep the virtual clock and queue private to this test instead of changing later alerts' deadlines.
+  const { sendAlert: sendQueuedAlert } = await import(
+    new URL("../packages/backend/src/notify/feishu.ts?watchdog-pacing", import.meta.url).href
+  ) as typeof import("@aihot/backend/notify/feishu");
+  let now = Math.ceil(performance.now());
+  t.mock.method(performance, "now", () => now);
+  t.mock.timers.enable({ apis: ["setTimeout"] });
+  const sentAt: number[] = [];
+  let release!: () => void;
+  const firstReply = new Promise<void>((resolve) => { release = resolve; });
+  t.mock.method(globalThis, "fetch", async (input: string | URL | Request) => {
+    assert.equal(input instanceof Request ? input.url : String(input), webhook);
+    sentAt.push(now);
+    if (sentAt.length === 1) {
+      await firstReply;
+      throw new Error("synthetic transport failure");
+    }
+    return new Response(JSON.stringify({ code: 0 }));
+  });
+  const settle = () => new Promise<void>((resolve) => setImmediate(resolve));
+  const advance = async (ms: number) => {
+    now += ms;
+    t.mock.timers.tick(ms);
+    await settle();
+  };
+  const results = Promise.allSettled([
+    sendQueuedAlert("first", []), sendQueuedAlert("second", []), sendQueuedAlert("third", []),
+  ]);
+  await settle();
+  assert.equal(sentAt.length, 1);
+  await advance(10_000);
+  assert.equal(sentAt.length, 1, "an unfinished request holds the next queued send");
+  release();
+  await settle();
+  await advance(10_000);
+  assert.equal(sentAt.length, 2, "an overdue timer releases only the next send");
+  await advance(599);
+  assert.equal(sentAt.length, 2, "the following send waits a fresh gap after the late send");
+  await advance(1);
+  assert.equal(sentAt.length, 3);
+  assert.equal(sentAt[2]! - sentAt[1]!, 600);
+  const outcomes = await results;
+  assert.equal(outcomes[0]!.status, "rejected", "the failed attempt still rejects its caller");
+  assert.deepEqual(outcomes.slice(1).map((outcome) => outcome.status), ["fulfilled", "fulfilled"]);
+});

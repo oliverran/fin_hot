@@ -122,8 +122,7 @@ export async function sendAlert(title: string, lines: string[]): Promise<"sent" 
   const webhook = credential("integrations", "FEISHU_ALERT_WEBHOOK_URL");
   if (webhook) {
     for (const piece of webhookPieces(text)) {
-      await webhookTurn();
-      const result = await sendWebhook(webhook, { msg_type: "text", content: { text: piece } });
+      const result = await sendAlertWebhook(webhook, piece);
       if (result.status !== "sent") throw new Error(`feishu alert webhook ${result.status}: ${result.body}`);
     }
     return "sent";
@@ -139,11 +138,25 @@ export async function sendAlert(title: string, lines: string[]): Promise<"sent" 
 const WEBHOOK_GAP_MS = 600;
 const WEBHOOK_TEXT_BYTES = 18_000;
 let webhookNext = 0;
+let webhookTail: Promise<void> = Promise.resolve();
 
-async function webhookTurn(): Promise<void> {
-  const wait = webhookNext - performance.now();
-  webhookNext = Math.max(webhookNext, performance.now()) + WEBHOOK_GAP_MS;
-  if (wait > 0) await new Promise((resolve) => setTimeout(resolve, wait));
+function sendAlertWebhook(webhook: string, text: string) {
+  const send = webhookTail.then(async () => {
+    let wait = webhookNext - performance.now();
+    while (wait > 0) {
+      await new Promise<void>((resolve) => setTimeout(resolve, Math.ceil(wait)));
+      wait = webhookNext - performance.now();
+    }
+    try {
+      return await sendWebhook(webhook, { msg_type: "text", content: { text } });
+    } finally {
+      // Start the next gap after the attempt settles, so late timers cannot bunch up queued sends.
+      webhookNext = performance.now() + WEBHOOK_GAP_MS;
+    }
+  });
+  // A failed attempt still rejects its caller, but must not block later alerts.
+  webhookTail = send.then(() => {}, () => {});
+  return send;
 }
 
 /** Bytes the text takes in the request body, where quotes, backslashes and line breaks are escaped. */
