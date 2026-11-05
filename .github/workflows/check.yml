@@ -70,7 +70,9 @@ jobs:
       - name: Browser test engines
         run: npx playwright install --with-deps chromium webkit
       - name: Web tests
-        run: node --test apps/web/tests/*.test.ts
+        # Browser-heavy test files otherwise compete for the runner's CPUs and software renderer.
+        # Keep every test and its original deadlines; isolate files instead of retrying timeouts.
+        run: node --test --test-concurrency=1 apps/web/tests/*.test.ts
 
       # Each test file runs on its own copy of aihot_ci (tests/databases.ts), which the run migrates and
       # leaves empty; the smoke check then reads that empty database.
