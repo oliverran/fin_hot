@@ -82,16 +82,33 @@ after(async()=>{
 test('SSR list and visited query variants return offline without another read',async()=>{
   const context=await safari.newContext({viewport:{width:390,height:844}});
   const page=await context.newPage();
+  // Temporary diagnostic bridge, enabled only by the comparison workflow.
+  const events:{receivedAt:number;record:any}[]=[];
+  const phases:{phase:string;at:number}[]=[];
+  let session:any;
+  const mark=(phase:string)=>phases.push({phase,at:Date.now()});
   try{
     await visit(page,origin+'/');
     await expect(page.getByRole('link',{name:'性能检查文章',exact:true})).toBeVisible();
+    if(process.env.WEBKIT_OS_DIAGNOSTICS==='1'){
+      session=(page as any)._connection.toImpl(page).delegate._session;
+      session.on('Timeline.eventRecorded',(event:any)=>events.push({receivedAt:Date.now(),record:event.record}));
+      await session.send('Timeline.enable');
+      await session.send('Timeline.start',{maxCallStackDepth:1});
+    }
+    mark('article-click-start');
     await page.getByRole('link',{name:'性能检查文章',exact:true}).click();
+    mark('article-click-done');
+    mark('article-body-assert-start');
     await expect(page.getByText('固定正文',{exact:true})).toBeVisible();
+    mark('article-body-assert-passed');
     await context.setOffline(true);
     await page.goBack();
     await expect(page.getByRole('link',{name:'性能检查文章',exact:true})).toBeVisible({timeout:1500});
     await context.setOffline(false);
+    mark('filter-click-start');
     await page.getByRole('button',{name:/^筛选/}).click();
+    mark('filter-click-done');
     await page.getByRole('link',{name:'AI金融',exact:true}).click();
     await expect(page.getByRole('link',{name:'分类 ai-finance',exact:true})).toBeVisible();
     await page.getByRole('button',{name:/^筛选/}).click();
@@ -101,7 +118,15 @@ test('SSR list and visited query variants return offline without another read',a
     await page.goBack();
     await expect(page.getByRole('link',{name:'分类 ai-finance',exact:true})).toBeVisible({timeout:1500});
     await expect(page.locator('link[rel=canonical]')).toHaveAttribute('href',origin+'/?category=ai-finance');
-  }finally{await context.close();}
+  }finally{
+    mark('test-finally');
+    if(session){
+      try{await session.send('Timeline.stop');await session.send('Timeline.disable');}
+      catch(error){console.error('WEBKIT_OS_TIMELINE_ERROR',String(error));}
+      finally{console.error('WEBKIT_OS_TIMELINE',JSON.stringify({pid:process.pid,phases,events}));}
+    }
+    await context.close();
+  }
 });
 
 test('hover downloads nothing, a press fetches article data once for its click, touches that move do not, and failed prefetch does not replace the current page',async()=>{
