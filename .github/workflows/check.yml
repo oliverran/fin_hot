@@ -18,8 +18,12 @@ concurrency:
 
 jobs:
   check:
+    strategy:
+      fail-fast: false
+      matrix:
+        browser-mode: [default, serial]
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 25
     services:
       postgres:
         image: postgres:17-alpine
@@ -72,26 +76,23 @@ jobs:
       - name: Compare browser scheduling (temporary diagnostics)
         env:
           WEBKIT_OS_DIAGNOSTICS: "1"
+          BROWSER_MODE: ${{ matrix.browser-mode }}
         run: |
-          failed=0
           mkdir -p "$RUNNER_TEMP/webkit-os"
-          # Each invocation starts fresh browser processes. Alternate the order on the same runner.
-          for sample in default-1 serial-1 serial-2 default-2 default-3 serial-3; do
-            echo "::group::Cold full web suite $sample"
-            args=()
-            if [[ "$sample" == serial-* ]]; then args+=(--test-concurrency=1); fi
-            log="$RUNNER_TEMP/webkit-os/$sample.log"
-            node scripts/sample-webkit-processes.ts "$RUNNER_TEMP/webkit-os/$sample.jsonl" \
-              --test "${args[@]}" apps/web/tests/*.test.ts > "$log" 2>&1 || failed=1
-            grep -v 'WEBKIT_OS_TIMELINE' "$log" || true
-            echo "::endgroup::"
-          done
-          exit "$failed"
+          # One full suite per fresh runner prevents an earlier arm from warming its caches.
+          args=()
+          if [[ "$BROWSER_MODE" == serial ]]; then args+=(--test-concurrency=1); fi
+          log="$RUNNER_TEMP/webkit-os/$BROWSER_MODE-cold.log"
+          result=0
+          node scripts/sample-webkit-processes.ts "$RUNNER_TEMP/webkit-os/$BROWSER_MODE-cold.jsonl" \
+            --test "${args[@]}" apps/web/tests/*.test.ts > "$log" 2>&1 || result=$?
+          grep -v 'WEBKIT_OS_TIMELINE' "$log" || true
+          exit "$result"
       - name: Preserve browser scheduling diagnostics
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: webkit-os-comparison
+          name: webkit-os-cold-${{ matrix.browser-mode }}
           path: ${{ runner.temp }}/webkit-os/*
           if-no-files-found: error
           retention-days: 7
