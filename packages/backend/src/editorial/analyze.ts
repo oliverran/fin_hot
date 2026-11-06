@@ -15,6 +15,8 @@ import { z } from "zod";
 import { CATEGORY_KEYS } from "@aihot/contracts/taxonomy";
 import { CATEGORIES } from "@aihot/industry/taxonomy";
 import { SELECTION } from "@aihot/industry/selection";
+import { SCORE_CALLS, tierThreshold, scoreSum, shownScore, scoresSelect } from "./selection-scores.ts";
+export { SCORE_CALLS, tierThreshold, shownScore, scoresSelect } from "./selection-scores.ts";
 import { ITEM_COPY } from "@aihot/site";
 import { sql } from "../db.ts";
 import { chatJson, MODELS, type ContentPart } from "../providers/llm.ts";
@@ -49,17 +51,6 @@ export const SELECTION_PROMPT_VERSION = [PROMPT_VERSIONS.prefilter, PROMPT_VERSI
 export const ANALYZE_PROMPT_VERSION = Object.values(PROMPT_VERSIONS).join("+");
 
 // Scoring
-
-/** Independent score calls per article; their sum decides, their mean (floored) is shown. */
-export const SCORE_CALLS = 2;
-
-/**
- * The thresholds on the mean score, per source tier (industry/selection.ts): selected when
- * score1 + score2 >= 2 × threshold. Tiers without a threshold are not scored for 精选.
- */
-export function tierThreshold(tier: string): number | null {
-  return SELECTION.thresholds[tier] ?? null;
-}
 
 /** Unselected items above this mean are written like selected ones. */
 export const UNDERSTAND_FLOOR = SELECTION.understandFloor;
@@ -452,26 +443,6 @@ async function runSummarize(a: AnalyzeInputArticle, opts: StepOpts): Promise<Non
 /** Only a title, and no displayable original post: nothing to judge until a material revision arrives. */
 export function awaitsMaterial(a: AnalyzeInputArticle): boolean {
   return missingEvidence(a) && !originalPostCopy(a.xPost, a.url);
-}
-
-/** The two scores' sum; null when the scoring was refused or is incomplete. */
-function scoreSum(scores: AnalysisRun["scores"]): number | null {
-  return scores && !scores.refused && scores.values.length === SCORE_CALLS ? scores.values.reduce((total, v) => total + v, 0) : null;
-}
-
-/** The score shown: the two scores' mean, floored (it never decides a half point on its own). */
-export function shownScore(scores: AnalysisRun["scores"]): number | null {
-  const sum = scoreSum(scores);
-  return sum === null ? null : Math.floor(sum / SCORE_CALLS);
-}
-
-/**
- * The selection rule on the scores: they add up to twice the source tier's threshold (or `threshold`,
- * when an evaluation sweeps it). The item must also pass relevance (normalizeAnalysis).
- */
-export function scoresSelect(scores: AnalysisRun["scores"], threshold = scores?.threshold ?? null): boolean {
-  const sum = scoreSum(scores);
-  return sum !== null && threshold !== null && sum >= threshold * SCORE_CALLS;
 }
 
 /** Runs the steps on the material as it is (or reuses their receipts) without writing business results. */
