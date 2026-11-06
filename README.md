@@ -14,7 +14,7 @@
 
 <p align="center">
   <b>简体中文</b> · <a href="README.en.md">English</a><br>
-  <a href="#快速开始">快速开始</a> · <a href="#接入你的-agent-或阅读器">Agent / RSS</a> · <a href="docs/deploy.md">部署文档</a> · <a href="#数据边界与当前状态">数据与状态</a>
+  <a href="#五分钟交互教程无密钥">交互教程</a> · <a href="#快速开始">快速开始</a> · <a href="#接入你的-agent-或阅读器">Agent / RSS</a> · <a href="docs/deploy.md">部署文档</a> · <a href="#数据边界与当前状态">数据与状态</a>
 </p>
 
 基于数字生命卡兹克（Khazix）的 [AIHOT](https://github.com/KKKKhazix/AIHOT) 开源框架，面向金融行业配置了信源、评分标准与写作提示词，并扩展了编年史模块。[项目来源与许可 ↓](#项目来源与许可)
@@ -45,6 +45,18 @@
 | **运营后台** | 信源试抓与管理、评分诊断、精选评测、分步骤模型配置、付费请求上限、运行记录与告警 |
 
 评分与写作提示词在 [`industry/prompts/`](industry/prompts/)。精选规则、去重与校准方法见[精选与校准](docs/selection.md)，事件归组见[归组与关系评测](docs/grouping.md)。
+
+## 五分钟交互教程（无密钥）
+
+先体验信息流程，不必先搭数据库或付费调用模型。仅需 **Node.js 24.22.1+**，在仓库根目录运行：
+
+```bash
+node examples/selection-lab/server.ts
+```
+
+打开 <http://127.0.0.1:4173>，按“原始材料 → 评分实验 → 归组与出处 → 简报样例”操作。拖动两次评分、切换信源分级或模拟评分缺失，看生产代码的候选门槛如何变化，还可下载合成 JSON 样例。
+
+**材料、分数、归组关系和简报都是教学预设，不是真实新闻、实时行情或模型输出。** 只有评分门槛计算复用生产规则；教程不运行采集、模型、归组、发布或日报编排，不读取 `.env`，不写入业务数据。够分不等于已发布。完整步骤与边界见[交互教程说明](examples/selection-lab/README.md)。
 
 ## 快速开始
 

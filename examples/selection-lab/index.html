@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>FinHOT · 从资料到简报</title><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head>
+<body>
+<header><a href="/" class="brand">FinHOT <span>LEARNING LAB</span></a><span class="badge">离线合成样例 · 不是真实新闻</span></header>
+<main>
+  <section class="intro"><p class="eyebrow">05 MINUTES / 一个可追溯的信息流程</p><h1>一条资讯，<br>为什么值得读？</h1><p>动手改变两次评分，观察门槛判断；再沿着一段原文，看清归组与简报的出处。</p><p class="quiet">不需要密钥、数据库或 npm install。不采集、不调用模型，不提供行情或投资建议。</p></section>
+  <nav aria-label="教程步骤"><button data-step="0" aria-current="step">01 原始材料</button><button data-step="1">02 评分实验</button><button data-step="2">03 归组与出处</button><button data-step="3">04 简报样例</button></nav>
+  <p id="data-error" role="alert" hidden></p>
+  <p id="error" role="alert" hidden></p>
+  <section class="panel" data-panel="0" aria-labelledby="source-heading">
+    <p class="eyebrow">INPUT / 手写教学材料</p><h2 id="source-heading">先有证据，再做判断</h2><h3 id="title"></h3>
+    <p id="source" class="quiet"></p><blockquote id="material"></blockquote>
+    <dl><dt>原文标识</dt><dd id="source-url"></dd><dt>材料边界</dt><dd>.example 是保留的示例域名，不是真实网站；日期、机构、规则和分数均为虚构。</dd></dl>
+    <aside>生产环境先采集、去重并检查材料。只有标题时不会凭空补写事实。本教程从一份已经完整的教学材料开始。</aside>
+  </section>
+  <section class="panel" data-panel="1" aria-labelledby="scores-heading" hidden>
+    <p class="eyebrow">TRY IT / 调整评分，规则即时计算</p><h2 id="scores-heading">够分 ≠ 已发布</h2><p>分数是你设定的模拟输入，不是模型对上面材料的真实评价。计算复用 worker 的同一份评分函数。</p>
+    <div class="presets" aria-label="试试这些场景"><button data-preset="boundary" disabled>官方来源：刚好够分</button><button data-preset="below" disabled>媒体来源：差半分</button><button data-preset="missing" disabled>缺一次评分</button></div>
+    <div class="lab-grid"><form id="scores"><fieldset id="inputs" disabled>
+      <div class="field"><label for="tier">信源分级</label><select id="tier" name="tier"><option value="T1">T1 官方一手</option><option value="T1_5">T1.5 准官方</option><option value="T2">T2 媒体与个人</option><option value="EXCLUDE_MP">EXCLUDE_MP 不参与精选</option></select></div>
+      <div class="field"><output id="first-value" aria-hidden="true">59</output><label for="first-score">第一次评分</label><input id="first-score" name="first" type="range" min="0" max="100" value="59"></div>
+      <div class="field"><output id="second-value" aria-hidden="true">61</output><label for="second-score">第二次评分</label><input id="second-score" name="second" type="range" min="0" max="100" value="61"></div>
+      <div class="field"><label for="score-status">评分状态</label><select id="score-status" name="status"><option value="complete">两次都完成</option><option value="missing">只得到第一次</option><option value="refused">评分被拒绝</option></select></div>
+    </fieldset></form>
+    <div class="result" aria-live="polite" aria-atomic="true"><p class="eyebrow">真实规则计算 · 模拟输入</p><h3 id="decision">正在加载样例…</h3><p id="equation"></p><p id="shown"></p><p id="result-note"></p></div></div>
+    <aside>练习：把媒体来源的第二次评分从 76 调到 77。总分从 151 变成 152，才达到 2 × 76。门槛来自 industry/selection.ts；这里不修改站点配置。</aside>
+  </section>
+  <section class="panel" data-panel="2" aria-labelledby="evidence-heading" hidden>
+    <p class="eyebrow">TRACE / 归组是另一道关</p><h2 id="evidence-heading">同一条新闻，不重复当成新进展</h2><div class="evidence-grid"><article><h3>公告原文</h3><p>示例交易所公布披露时间表。</p><p class="quiet">教学预设：一手来源</p></article><article><h3>引用报道</h3><p>示例媒体转述同一公告，没有新增事实。</p><p class="quiet">教学预设：同一新闻</p></article></div><p id="grouping"></p><details><summary>展开：摘要对应哪一句原文？</summary><blockquote id="evidence"></blockquote><p>关键条件是“示例板块”、生效日期和“15 个工作日”，不能扩写成全部上市公司或 15 个自然日。</p></details><aside>生产环境还会判断相关性、新闻身份与新增价值；网页版可折叠同一新闻的报道，API / RSS 用代表报道出面。教程不模拟完整发布规则，也不把分数够门槛当作已入选。</aside>
+  </section>
+  <section class="panel" data-panel="3" aria-labelledby="brief-heading" hidden>
+    <p class="eyebrow">OUTPUT / 手写排版样例</p><h2 id="brief-heading">让每句话都有来处</h2><article class="brief"><p class="badge">固定教学样例 · 非实际日报产物</p><h3 id="brief-title"></h3><p id="brief-summary"></p><p class="quiet">来源：示例交易所（虚构） · 2026-01-15</p></article><p>这是固定手写样例，不随评分实验变化。真正日报由已有公开内容按窗口、去重、代表报道及条目规则编排；不是把评分达标的每一条直接塞进日报。</p><button id="download">下载合成样例 JSON</button><aside>下一步：阅读 docs/selection.md 与 docs/grouping.md。需要实站时再按 README 配置，先关闭采集与模型调用开关，确认费用后再启用。</aside>
+  </section>
+  <footer class="controls"><button id="previous" disabled>上一步</button><span id="progress">1 / 4</span><button id="next">下一步</button><button id="reset" disabled class="text-button">重置教程</button></footer>
+</main>
+<footer class="page-footer">FinHOT · 教学计算不会写入数据库，也不会改变你的站点。完整生产行为以源码和文档为准。</footer>
+</body></html>

@@ -46,6 +46,18 @@ Collect → Deduplicate and pre-screen → Score twice → Write summaries → G
 
 Prompts live in [`industry/prompts/`](industry/prompts/). See [selection and calibration](docs/selection.md) and [event grouping](docs/grouping.md) for the rules and evaluation workflow.
 
+## Five-minute interactive tutorial (no keys)
+
+With **Node.js 24.22.1+**, run this from the repository root:
+
+```bash
+node examples/selection-lab/server.ts
+```
+
+Open <http://127.0.0.1:4173>. The Chinese-language lab walks through source material, adjustable scores, grouping/provenance and a briefing example. Change both scores, the source tier or a missing/refused result and download the synthetic example as JSON. No npm install, database, Docker or API key is needed.
+
+**The material, scores, grouping and briefing are hand-authored teaching fixtures, not real news, live quotes or model output.** Only the score-gate calculation reuses production rules. No collection, model calls, grouping, publication or report pipeline runs; the tutorial does not read `.env` or write business data. Passing the gate does not mean publication. See the [tutorial guide](examples/selection-lab/README.md).
+
 ## Quick start
 
 You need **Docker Compose**, **Node.js 24.22.1 or newer**, and an API key for an OpenAI-compatible model service. Docker starts PostgreSQL 17, the API, the worker and the web app.
