@@ -17,7 +17,12 @@
   <section class="panel" data-panel="1" aria-labelledby="scores-heading" hidden>
     <p class="eyebrow">TRY IT / 调整评分，规则即时计算</p><h2 id="scores-heading">够分 ≠ 已发布</h2><p>分数是你设定的模拟输入，不是模型对上面材料的真实评价。计算复用 worker 的同一份评分函数。</p>
     <div class="presets" aria-label="试试这些场景"><button data-preset="boundary" disabled>官方来源：刚好够分</button><button data-preset="below" disabled>媒体来源：差半分</button><button data-preset="missing" disabled>缺一次评分</button></div>
-    <div class="lab-grid"><form id="scores"><fieldset id="inputs" disabled><label>信源分级<select name="tier"><option value="T1">T1 官方一手</option><option value="T1_5">T1.5 准官方</option><option value="T2">T2 媒体与个人</option><option value="EXCLUDE_MP">EXCLUDE_MP 不参与精选</option></select></label><label>第一次评分 <output id="first-value">59</output><input name="first" type="range" min="0" max="100" value="59"></label><label>第二次评分 <output id="second-value">61</output><input name="second" type="range" min="0" max="100" value="61"></label><label>评分状态<select name="status"><option value="complete">两次都完成</option><option value="missing">只得到第一次</option><option value="refused">评分被拒绝</option></select></label></fieldset></form>
+    <div class="lab-grid"><form id="scores"><fieldset id="inputs" disabled>
+      <div class="field"><label for="tier">信源分级</label><select id="tier" name="tier"><option value="T1">T1 官方一手</option><option value="T1_5">T1.5 准官方</option><option value="T2">T2 媒体与个人</option><option value="EXCLUDE_MP">EXCLUDE_MP 不参与精选</option></select></div>
+      <div class="field"><output id="first-value" aria-hidden="true">59</output><label for="first-score">第一次评分</label><input id="first-score" name="first" type="range" min="0" max="100" value="59"></div>
+      <div class="field"><output id="second-value" aria-hidden="true">61</output><label for="second-score">第二次评分</label><input id="second-score" name="second" type="range" min="0" max="100" value="61"></div>
+      <div class="field"><label for="score-status">评分状态</label><select id="score-status" name="status"><option value="complete">两次都完成</option><option value="missing">只得到第一次</option><option value="refused">评分被拒绝</option></select></div>
+    </fieldset></form>
     <div class="result" aria-live="polite" aria-atomic="true"><p class="eyebrow">真实规则计算 · 模拟输入</p><h3 id="decision">正在加载样例…</h3><p id="equation"></p><p id="shown"></p><p id="result-note"></p></div></div>
     <aside>练习：把媒体来源的第二次评分从 76 调到 77。总分从 151 变成 152，才达到 2 × 76。门槛来自 industry/selection.ts；这里不修改站点配置。</aside>
   </section>

@@ -22,10 +22,10 @@ test("offline tutorial: guided flow, score changes, interrupted requests, reset 
     await page.route("**/api/example", async (route) => { await initialization; await route.continue(); });
     await page.goto(base);
     await page.getByRole("button", { name: "02 评分实验" }).click();
-    await expect(page.getByLabel("第一次评分")).toBeDisabled();
+    await expect(page.getByLabel("第一次评分", { exact: true })).toBeDisabled();
     await expect(page.getByRole("button", { name: "媒体来源：差半分" })).toBeDisabled();
     initialize();
-    await expect(page.getByLabel("第一次评分")).toBeEnabled();
+    await expect(page.getByLabel("第一次评分", { exact: true })).toBeEnabled();
     await page.getByRole("button", { name: "01 原始材料" }).click();
     await expect(page.getByRole("heading", { name: "虚构交易所公布新的信息披露时间表", exact: true })).toBeVisible();
     await page.getByRole("button", { name: "下一步", exact: true }).click();
@@ -33,13 +33,13 @@ test("offline tutorial: guided flow, score changes, interrupted requests, reset 
     await page.getByRole("button", { name: "媒体来源：差半分" }).click();
     await expect(page.locator("#decision")).toHaveText("未达到评分候选门槛");
     await expect(page.locator("#equation")).toContainText("151 < 2 × 76");
-    await page.getByLabel("第二次评分").fill("77");
+    await page.getByLabel("第二次评分", { exact: true }).fill("77");
     await expect(page.locator("#equation")).toContainText("152 ≥ 2 × 76");
     await page.getByRole("button", { name: "缺一次评分" }).click();
     await expect(page.locator("#shown")).toContainText("无");
-    await page.getByLabel("评分状态").selectOption("refused");
+    await page.getByLabel("评分状态", { exact: true }).selectOption("refused");
     await expect(page.locator("#decision")).toHaveText("未达到评分候选门槛");
-    await page.getByLabel("信源分级").selectOption("EXCLUDE_MP");
+    await page.getByLabel("信源分级", { exact: true }).selectOption("EXCLUDE_MP");
     await expect(page.locator("#equation")).toHaveText("该分级不参与精选评分。");
 
     // A slow old result must not overwrite the newest form input.
@@ -95,7 +95,7 @@ test("offline tutorial: guided flow, score changes, interrupted requests, reset 
     await page.reload();
     await expect(page.locator("#data-error")).toBeVisible();
     await page.getByRole("button", { name: "02 评分实验" }).click();
-    await expect(page.getByLabel("第一次评分")).toBeDisabled();
+    await expect(page.getByLabel("第一次评分", { exact: true })).toBeDisabled();
     await expect(page.getByRole("button", { name: "重置教程" })).toBeDisabled();
     assert.deepEqual(outside, []);
     assert.deepEqual(errors, []);
