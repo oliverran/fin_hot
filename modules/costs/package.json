@@ -4,10 +4,7 @@
   "type": "module",
   "sideEffects": false,
   "exports": {
-    ".": "./module.ts",
-    "./module": "./module.ts",
-    "./server": "./server.ts",
-    "./web": "./web.tsx"
+    "./server": "./server.ts"
   },
   "dependencies": {
     "@aihot/api": "*",

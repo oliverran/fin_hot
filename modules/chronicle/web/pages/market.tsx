@@ -1,7 +1,7 @@
 import {useEffect,useState} from 'react';
 import {Link} from 'react-router';
 import type {MarketDay} from '../../backend/market.ts';
-import {formatPercent} from '../market-card.tsx';
+const formatPercent=(n:number|null)=>n===null?'—':`${n.toFixed(2)}%`;
 export default function MarketPage(){
  const [data,setData]=useState<MarketDay|null>(null),[loaded,setLoaded]=useState(false),[failed,setFailed]=useState(false);
  useEffect(()=>{const c=new AbortController();fetch('/api/chronicle/market',{signal:c.signal}).then(r=>{if(!r.ok)throw Error();return r.json()}).then(d=>{setData(d);setLoaded(true)}).catch(()=>{if(!c.signal.aborted)setFailed(true)});return()=>c.abort();},[]);

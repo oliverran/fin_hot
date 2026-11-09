@@ -79,27 +79,46 @@ export default function ChronicleTimeline() {
         </p>
       </header>
 
-      {TIMELINE.map((era) => (
-        <section key={era.key} id={`era-${era.key}`} className="scroll-mt-24 pt-11">
-          <div className="border-b border-line pb-3">
-            <h2 className="num text-[19px] font-bold text-ink">{era.label}</h2>
-          </div>
-          <p className="mt-3 max-w-[46em] text-[13.5px] leading-[1.85] text-ink-3">{era.intro}</p>
-          {era.stocks?.length ? <StockList stocks={era.stocks} label="这个时代的代表个股" /> : null}
+      <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_190px] lg:gap-10">
+        <div className="min-w-0">
+          {TIMELINE.map((era) => (
+            <section key={era.key} id={`era-${era.key}`} className="scroll-mt-24 pt-11">
+              <div className="border-b border-line pb-3">
+                <h2 className="num text-[19px] font-bold text-ink">{era.label}</h2>
+              </div>
+              <p className="mt-3 max-w-[46em] text-[13.5px] leading-[1.85] text-ink-3">{era.intro}</p>
+              {era.stocks?.length ? <StockList stocks={era.stocks} label="这个时代的代表个股" /> : null}
 
-          <ol className="mt-6 space-y-7 border-l border-line-soft pl-5">
-            {era.events.map((event) => (
-              <li key={event.title} className="relative">
-                <span className="absolute -left-[25px] top-[7px] h-2 w-2 rounded-full bg-accent" aria-hidden="true" />
-                <p className="num text-[12px] font-bold tracking-[0.12em] text-accent">{event.date}</p>
-                <h3 className="mt-1 text-[15.5px] font-bold leading-snug text-ink">{event.title}</h3>
-                <p className="mt-1.5 max-w-[46em] text-[13.5px] leading-[1.85] text-ink-2">{event.summary}</p>
-                {event.stocks?.length ? <StockList stocks={event.stocks} label="代表个股" /> : null}
-              </li>
-            ))}
-          </ol>
-        </section>
-      ))}
+              <ol className="mt-6 space-y-7 border-l border-line-soft pl-5">
+                {era.events.map((event) => (
+                  <li key={event.title} className="relative">
+                    <span className="absolute -left-[25px] top-[7px] h-2 w-2 rounded-full bg-accent" aria-hidden="true" />
+                    <p className="num text-[12px] font-bold tracking-[0.12em] text-accent">{event.date}</p>
+                    <h3 className="mt-1 text-[15.5px] font-bold leading-snug text-ink">{event.title}</h3>
+                    <p className="mt-1.5 max-w-[46em] text-[13.5px] leading-[1.85] text-ink-2">{event.summary}</p>
+                    {event.stocks?.length ? <StockList stocks={event.stocks} label="代表个股" /> : null}
+                  </li>
+                ))}
+              </ol>
+            </section>
+          ))}
+        </div>
+
+        <nav aria-label="大事记目录" className="hidden lg:block">
+          <div className="sticky top-8">
+            <p className="text-[11.5px] font-bold tracking-[0.1em] text-ink-4">目录</p>
+            <ul className="mt-3 space-y-1.5 border-l border-line pl-3">
+              {TIMELINE.map((era) => (
+                <li key={era.key}>
+                  <a href={`#era-${era.key}`} className="block text-[12.5px] leading-snug text-ink-3 transition-colors hover:text-accent">
+                    {era.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </nav>
+      </div>
 
       <nav aria-label="继续阅读" className="mt-12 grid gap-3 sm:grid-cols-2">
         <Link viewTransition to={ROUTES.home} className="card card-hover flex flex-col gap-1 p-4">

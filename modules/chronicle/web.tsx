@@ -4,17 +4,11 @@
 import { IconChart, IconHistory } from "@aihot/web/components/icons";
 import { defineWebModule } from "@aihot/web/modules";
 import LiveCard from "./web/live-card.tsx";
-import MarketCard from "./web/market-card.tsx";
 import { ROUTES } from "./catalog.ts";
 
-/** root.Top 只接一个组件：精选页挂实时行情，日报页挂市场背景，各自按地址判断该不该显示。 */
+/** root.Top 只接一个组件：精选页挂实时行情，组件自己按地址判断该不该显示。 */
 function RootTop() {
-  return (
-    <>
-      <LiveCard />
-      <MarketCard />
-    </>
-  );
+  return <LiveCard />;
 }
 
 export default defineWebModule({

@@ -1,5 +1,6 @@
-// 后台「指标监控」页：访客指标的今日概览、每日趋势与三张排行榜，加运维的进程、接口、模型与队列。
-// 数据来自 /api/admin/analytics（server.ts 的 adminHandler 守卫），页面自身不落任何数据。
+// 后台「指标监控」页：访客指标的今日概览、每日趋势与三张排行榜，运维的进程、接口、模型与队列，
+// 以及按密钥来源分渠道的模型费用（费用读取来自 costs 模块的 /api/admin/costs）。
+// 数据来自 /api/admin/analytics 与 /api/admin/costs（server.ts 的 adminHandler 守卫），页面自身不落任何数据。
 // 模块的后台页没有 +types 产物，props 自己声明。
 import { SITE } from "@aihot/site";
 import type {
@@ -9,40 +10,58 @@ import type {
   AdminAnalyticsModelRow,
   AdminAnalyticsQueue,
   AdminAnalyticsRank,
+  AdminCostChannel,
+  AdminCostModel,
+  AdminCosts,
 } from "@aihot/contracts/admin";
 import { adminGet } from "@aihot/web/lib/admin.server";
 import { bj, money, num } from "@aihot/web/features/admin/format";
 import { AdminPage, Badge, Card, DataTable, FilterChips, Stat, Time, type Column } from "@aihot/web/features/admin/ui";
 import type { ReactNode } from "react";
 
-export async function loader({ request }: { request: Request }): Promise<AdminAnalytics> {
+export async function loader({ request }: { request: Request }): Promise<{ analytics: AdminAnalytics; costs: AdminCosts }> {
   const days = new URL(request.url).searchParams.get("days") ?? "30";
-  return adminGet<AdminAnalytics>(request, `/api/admin/analytics?days=${encodeURIComponent(days)}`);
+  const [analytics, costs] = await Promise.all([
+    adminGet<AdminAnalytics>(request, `/api/admin/analytics?days=${encodeURIComponent(days)}`),
+    adminGet<AdminCosts>(request, `/api/admin/costs?days=${encodeURIComponent(days)}`),
+  ]);
+  return { analytics, costs };
 }
 
 export const meta = () => [{ title: `指标监控 · ${SITE.name} 后台` }];
 
-/** 一排柱子：高度按当天的数值取，悬停看当天的详情。 */
-function Bars<T extends { day: string }>({ days, value, title, label, height = "h-20" }: {
+/** 一排柱子：高度按当天的数值取，悬停浮出当天的具体数字。 */
+function Bars<T extends { day: string }>({ days, value, title, label, peak, height = "h-20" }: {
   days: T[];
   value: (day: T) => number;
   title: (day: T) => string;
   label: string;
+  /** 图注里「峰值」怎么写；默认按计数，费用这类带单位的单独给。 */
+  peak?: (max: number) => ReactNode;
   height?: string;
 }) {
-  const max = Math.max(1, ...days.map(value));
+  const max = Math.max(1e-9, ...days.map(value));
   return (
     <figure>
       <div className={`flex items-stretch gap-[3px] ${height}`} role="img" aria-label={label}>
-        {days.map((day) => (
-          <div key={day.day} className="group flex h-full min-w-0 flex-1 flex-col justify-end" title={title(day)}>
-            <div className="w-full rounded-mark bg-accent/70 transition-colors group-hover:bg-accent" style={{ height: `${(value(day) / max) * 100}%` }} />
-          </div>
-        ))}
+        {days.map((day) => {
+          const h = (value(day) / max) * 100;
+          return (
+            <div key={day.day} className="group relative flex h-full min-w-0 flex-1 flex-col justify-end">
+              <div className="w-full rounded-mark bg-accent/70 transition-colors group-hover:bg-accent" style={{ height: `${h}%` }} />
+              <div
+                className="pointer-events-none absolute left-1/2 z-10 hidden -translate-x-1/2 whitespace-nowrap rounded-control border border-line bg-raised px-2 py-1 text-[11.5px] leading-tight text-ink shadow-lg group-hover:block"
+                style={{ bottom: `calc(${h}% + 6px)` }}
+              >
+                {title(day)}
+              </div>
+            </div>
+          );
+        })}
       </div>
       <figcaption className="mt-1.5 flex items-center justify-between gap-2 text-[11.5px] text-ink-4">
         <span className="num">{days[0]?.day}</span>
-        <span>峰值 {num(max)}</span>
+        <span>峰值 {peak ? peak(max) : num(max)}</span>
         <span className="num">{days.at(-1)?.day}</span>
       </figcaption>
     </figure>
@@ -103,11 +122,45 @@ const queueColumns: Array<Column<AdminAnalyticsQueue>> = [
   { key: "oldest", label: "最早", align: "right", render: (r) => <Time at={r.oldest} /> },
 ];
 
-export default function AdminAnalytics({ loaderData }: { loaderData: AdminAnalytics }) {
-  const data = loaderData;
+export default function AdminAnalytics({ loaderData }: { loaderData: { analytics: AdminAnalytics; costs: AdminCosts } }) {
+  const data = loaderData.analytics;
+  const costs = loaderData.costs;
   const ops = data.ops;
   const currency = ops.models.currency ?? "CNY";
+  const costCurrency = costs.totals.currency ?? "CNY";
   const windowViews = data.trend.reduce((sum, d) => sum + d.views, 0);
+
+  const channelColumns: Array<Column<AdminCostChannel>> = [
+    {
+      key: "service",
+      label: "渠道",
+      render: (r) => (
+        <div className="min-w-0">
+          <div className="font-mono text-[12.5px] text-ink">{r.service}</div>
+          {r.apiKeyEnv && <div className="mt-0.5 text-[11.5px] text-ink-4">密钥 {r.apiKeyEnv}</div>}
+        </div>
+      ),
+    },
+    { key: "calls", label: "调用", align: "right", render: (r) => num(r.calls) },
+    { key: "failed", label: "失败", align: "right", render: (r) => (r.failed ? <span className="text-hot">{num(r.failed)}</span> : num(0)) },
+    { key: "tokensIn", label: "入 token", align: "right", render: (r) => num(r.tokensIn) },
+    { key: "tokensOut", label: "出 token", align: "right", render: (r) => num(r.tokensOut) },
+    { key: "tokensCached", label: "命中缓存", align: "right", render: (r) => num(r.tokensCached) },
+    { key: "unpriced", label: "未定价", align: "right", render: (r) => (r.unpriced ? <span className="text-hot" title="这些调用没有单价，金额未计入">{num(r.unpriced)}</span> : num(0)) },
+    { key: "cost", label: "花费", align: "right", render: (r) => money(r.cost, r.currency ?? costCurrency) },
+  ];
+
+  const costModelColumns: Array<Column<AdminCostModel>> = [
+    { key: "service", label: "渠道", render: (r) => <span className="font-mono text-[12.5px] text-ink">{r.service}</span> },
+    { key: "model", label: "模型", render: (r) => <span className="break-all font-mono text-[12.5px]">{r.model}</span> },
+    { key: "calls", label: "调用", align: "right", render: (r) => num(r.calls) },
+    { key: "failed", label: "失败", align: "right", render: (r) => (r.failed ? <span className="text-hot">{num(r.failed)}</span> : num(0)) },
+    { key: "tokensIn", label: "入 token", align: "right", render: (r) => num(r.tokensIn) },
+    { key: "tokensOut", label: "出 token", align: "right", render: (r) => num(r.tokensOut) },
+    { key: "tokensCached", label: "命中缓存", align: "right", render: (r) => num(r.tokensCached) },
+    { key: "unpriced", label: "未定价", align: "right", render: (r) => (r.unpriced ? <span className="text-hot" title="这些调用没有单价，金额未计入">{num(r.unpriced)}</span> : num(0)) },
+    { key: "cost", label: "花费", align: "right", render: (r) => money(r.cost, r.currency ?? costCurrency) },
+  ];
 
   const modelColumns: Array<Column<AdminAnalyticsModelRow>> = [
     { key: "purpose", label: "用途", render: (r) => <span className="text-ink">{r.purpose}</span> },
@@ -121,7 +174,7 @@ export default function AdminAnalytics({ loaderData }: { loaderData: AdminAnalyt
   return (
     <AdminPage
       title="指标监控"
-      subtitle="公开页的匿名统计：每次页面浏览与关键入口点击各记一条，只存随机访客号，不含 IP、账号或用户代理；下半页是站自己的运行指标。"
+      subtitle="公开页的匿名统计：每次页面浏览与关键入口点击各记一条，只存随机访客号，不含 IP、账号或用户代理；下半页是站自己的运行指标，末段是按密钥来源分渠道的模型费用。"
       actions={<FilterChips param="days" options={[{ value: "14", label: "近 14 天" }, { value: "30", label: "近 30 天" }, { value: "90", label: "近 90 天" }]} />}
     >
       <h2 className="text-[16px] font-semibold text-ink">访客</h2>
@@ -238,6 +291,37 @@ export default function AdminAnalytics({ loaderData }: { loaderData: AdminAnalyt
           <DataTable rows={ops.jobs.backlog} columns={queueColumns} rowKey={(r) => `${r.name}/${r.state}`} empty="队列里没有等待的任务" />
         </Card>
       </div>
+
+      <div className="mt-8 flex items-baseline justify-between gap-3">
+        <h2 className="text-[16px] font-semibold text-ink">费用</h2>
+        <span className="text-[12px] text-ink-4">按密钥来源分渠道 · 近 {data.days} 天</span>
+      </div>
+
+      <div className="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <Stat label="花费" value={money(costs.totals.cost, costCurrency)} hint={`近 ${data.days} 天`} />
+        <Stat label="调用" value={num(costs.totals.calls)} />
+        <Stat label="失败" value={num(costs.totals.failed)} tone={costs.totals.failed ? "bad" : undefined} />
+        <Stat label="Token" value={`${num(costs.totals.tokensIn)} / ${num(costs.totals.tokensOut)}`} hint="入 / 出" />
+      </div>
+
+      <Card title="每日花费趋势" right={`近 ${data.days} 天`} className="mt-4">
+        <Bars
+          days={costs.trend}
+          height="h-28"
+          label={`近 ${data.days} 天每日花费`}
+          value={(d) => d.cost}
+          peak={(max) => money(max, costCurrency)}
+          title={(d) => `${d.day}：${money(d.cost, costCurrency)}，调用 ${num(d.calls)}，失败 ${num(d.failed)}`}
+        />
+      </Card>
+
+      <Card title="按渠道（密钥来源）" right={`近 ${data.days} 天，按花费排序`} className="mt-4" pad={false}>
+        <DataTable rows={costs.channels} columns={channelColumns} rowKey={(r) => r.service} empty="这段时间没有模型调用" />
+      </Card>
+
+      <Card title="按渠道与模型" right={`近 ${data.days} 天，按花费排序`} className="mt-4" pad={false}>
+        <DataTable rows={costs.models} columns={costModelColumns} rowKey={(r) => `${r.service}/${r.model}`} empty="这段时间没有模型调用" />
+      </Card>
     </AdminPage>
   );
 }
