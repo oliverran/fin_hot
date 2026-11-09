@@ -273,20 +273,21 @@ export function dueDaily(now = new Date()): string {
   return beijingTime(now) >= EDITION_TIMES.daily ? today : addDays(today, -1);
 }
 
-/** The newest weekly due by `now`: the last complete ISO week from its edition time on Monday, the one before until then. */
+/**
+ * The newest weekly due by `now`: the last complete ISO week, due from the very start of its Monday.
+ * That is hours before the week is published (publication/reports.ts latestVisibleKey), so the writer's
+ * model call falls in the provider's cheaper window at night.
+ */
 export function dueWeekly(now = new Date()): string {
   const today = beijingDate(now);
   const dow = (new Date(`${today}T00:00:00Z`).getUTCDay() + 6) % 7;
-  const due = dow > 0 || beijingTime(now) >= EDITION_TIMES.weekly;
-  return isoWeekLabel(addDays(today, -dow - (due ? 7 : 14)));
+  return isoWeekLabel(addDays(today, -dow - 7));
 }
 
-/** The newest monthly due by `now`: the last complete month from its edition time on the 1st, the one before until then. */
+/** The newest monthly due by `now`: the last complete month, due from the very start of its 1st (see dueWeekly). */
 export function dueMonthly(now = new Date()): string {
-  const [y, m, d] = beijingDate(now).split("-").map(Number) as [number, number, number];
-  const due = d > 1 || beijingTime(now) >= EDITION_TIMES.monthly;
-  const back = due ? 1 : 2;
-  const month = (y * 12 + (m - 1) - back);
+  const [y, m] = beijingDate(now).split("-").map(Number) as [number, number, number];
+  const month = y * 12 + (m - 1) - 1;
   return `${Math.floor(month / 12)}-${String((month % 12) + 1).padStart(2, "0")}`;
 }
 

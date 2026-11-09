@@ -8,7 +8,7 @@ import { after, before, test } from "node:test";
 import { closeDb, sql } from "@aihot/backend/db";
 import { upsertMaterial } from "@aihot/backend/content/materials";
 import { groupArticle } from "@aihot/backend/events/group";
-import { queueProcessing, settleNonEditorial } from "@aihot/backend/jobs/content";
+import { offPeakRetryAt, queueProcessing, settleNonEditorial } from "@aihot/backend/jobs/content";
 import { stopBoss } from "@aihot/backend/jobs/queue";
 import { publishArticle } from "@aihot/backend/publication/publish";
 
@@ -98,6 +98,14 @@ test("history waits behind live work and founds no event; a new source's post fr
   assert.equal((await job(fresh))?.priority, 0);
   assert.notEqual((await groupArticle(fresh)).verdict, "historical");
   assert.equal((await sql`SELECT 1 FROM fact_articles WHERE article_id = ${fresh}`).length, 1);
+});
+
+test("history's analysis waits for the provider's cheaper window", () => {
+  // 22:00–08:00 Beijing is the cheaper window; its two ends belong to peak and off-peak respectively.
+  assert.equal(offPeakRetryAt(new Date("2026-10-05T06:00:00Z"))?.toISOString(), "2026-10-05T14:00:00.000Z", "14:00 Beijing waits for 22:00");
+  assert.equal(offPeakRetryAt(new Date("2026-10-05T00:00:00Z"))?.toISOString(), "2026-10-05T14:00:00.000Z", "08:00 Beijing is already peak");
+  assert.equal(offPeakRetryAt(new Date("2026-10-05T14:00:00Z")), null, "22:00 Beijing is in the window");
+  assert.equal(offPeakRetryAt(new Date("2026-10-05T23:30:00Z")), null, "07:30 Beijing is still in the window");
 });
 
 test("a discussion post that quotes a post not yet collected joins its story when the original arrives", async () => {

@@ -5,7 +5,9 @@
 // an article wait and retry with backoff; only a permanent refusal or exhausted retries end in
 // "failed", which the admin re-queues in bulk.
 import type { PgBoss } from "pg-boss";
+import { beijingAt, beijingDate, beijingTime } from "@aihot/contracts/time";
 import { sql, type Db } from "../db.ts";
+import { config } from "../config.ts";
 import { extractArticleBody, pageFetchable } from "../content/extract.ts";
 import { analyzeArticle } from "../editorial/analyze.ts";
 import { isHistorical } from "../content/materials.ts";
@@ -21,6 +23,19 @@ const MAX_OUTPUT_FAILURES = 3;
 const MAX_EXTRACT_FAILURES = 3;
 /** An article queued this long ago is queued again, in case its job was lost. */
 const QUEUED_STALE = "30 minutes";
+
+/**
+ * The provider's cheaper window (Alibaba Bailian: 22:00 to 08:00 in Beijing). History is not
+ * time-sensitive, so with OFFPEAK_DEFER_ENABLED its analysis waits for this window instead of paying
+ * peak rates; live work, extraction (which calls no model) and explicit re-evaluations never wait.
+ */
+const OFF_PEAK = { start: "22:00", end: "08:00" } as const;
+
+/** The instant to try a deferred analysis again, or null while the cheaper window is already open. */
+export function offPeakRetryAt(now: Date): Date | null {
+  const time = beijingTime(now);
+  return time >= OFF_PEAK.start || time < OFF_PEAK.end ? null : beijingAt(beijingDate(now), OFF_PEAK.start);
+}
 
 type Step = "extract" | "analyze";
 
@@ -68,6 +83,8 @@ export function groupingPriority(a: { signal: boolean; historical: boolean }): n
  * The one way to hand an article to processing. `attemptTag` makes an explicit re-evaluation a new
  * (paid) request; the same tag reuses its receipt. With `db`, the job commits with the caller's write.
  * Posts of non-editorial sources skip the analysis queue: they only need recording and grouping.
+ * Returns the job id, or null when nothing was queued — history waiting for the cheaper window is
+ * queued by the sweep instead.
  */
 export async function queueProcessing(articleId: string, opts: { step?: Step; attemptTag?: string; db?: Db } = {}): Promise<string | null> {
   const db = opts.db ?? sql;
@@ -85,6 +102,14 @@ export async function queueProcessing(articleId: string, opts: { step?: Step; at
     return enqueue(QUEUES.group, { articleId, signalOnly: true }, { singletonKey: articleId, priority: groupingPriority(r) }, opts.db);
   }
   const tagged = !!attemptTag;
+  // History waits for the cheaper window; the sweep queues it when the time comes (processing_retry_at),
+  // so no paid job sits in the queue holding this article's singleton key until then.
+  const offPeak = r.historical && !tagged && config.offPeakDeferEnabled ? offPeakRetryAt(new Date()) : null;
+  if (offPeak) {
+    await db`UPDATE articles SET processing_state = 'new', processing_retry_at = ${offPeak}, processing_queued_at = NULL
+              WHERE id = ${articleId}`;
+    return null;
+  }
   return enqueue(QUEUES.analyze, tagged ? { articleId, attemptTag } : { articleId },
     { singletonKey: tagged ? `manual:analyze:${articleId}:${attemptTag}` : articleId, priority: r.historical ? PRIORITY.history : PRIORITY.live }, opts.db);
 }

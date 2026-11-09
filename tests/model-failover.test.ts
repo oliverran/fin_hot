@@ -178,7 +178,7 @@ test("an analysis left on the default model reaches its evaluated backup when th
           : { itemType: "product_launch", authorRole: "principal", tags: ["产品更新"], editorialJudgment: "有明确的规模提升", titleZh: `备用模型的标题 ${T}`, summaryZh: "由备用模型写成的摘要。第二句。" };
     return { id: "stub-backup", choices: [{ message: { content: JSON.stringify(content) } }], usage: { prompt_tokens: 1, completion_tokens: 1 } };
   });
-  const assigned = { LLM_BASE_URL: `${primary.url}/v1`, LLM_API_KEY: "test-key", LLM_MODEL: "one-model", MAAS_BASE_URL: `${answering.url}/v1`, MAAS_API_KEY: "test-key" };
+  const assigned = { LLM_BASE_URL: `${primary.url}/v1`, LLM_API_KEY: "test-key", LLM_MODEL: "one-model", MINIMAX_BASE_URL: `${answering.url}/v1`, MINIMAX_API_KEY: "test-key" };
   const saved = Object.entries(assigned).map(([key, value]) => [key, process.env[key], value] as const);
   const steps = (Object.values(CAPABILITIES) as Capability[]).map((c) => [c.env, process.env[c.env], c.default === "default" ? "" : "default"] as const);
   const source = `test-failover-analyze-${T}`;
@@ -192,7 +192,7 @@ test("an analysis left on the default model reaches its evaluated backup when th
     const res = await analyzeArticle(articleId);
     assert.equal(res?.output?.selected, true);
     assert.equal(res?.output?.titleZh, `备用模型的标题 ${T}`);
-    const answered = await sql<{ n: number }[]>`SELECT count(*)::int AS n FROM receipts WHERE subject LIKE ${`article:${articleId}%`} AND service = 'maas'`;
+    const answered = await sql<{ n: number }[]>`SELECT count(*)::int AS n FROM receipts WHERE subject LIKE ${`article:${articleId}%`} AND service = 'minimax'`;
     assert.equal(answered[0]!.n, 5, "every step of the analysis was attempted at the default provider and answered by its evaluated backup");
   } finally {
     for (const [key, value] of [...saved, ...steps]) {

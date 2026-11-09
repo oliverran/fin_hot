@@ -32,6 +32,11 @@ interface Availability {
   publishedAt: Date | null;
 }
 
+/**
+ * What may be read in public right now: the newest issue of a kind whose edition time has come. This is
+ * deliberately later than when the issue is written (reports/compose.ts dueWeekly/dueMonthly): a week and
+ * a month are written at night in the provider's cheaper window and published at their edition time.
+ */
 function latestVisibleKey(kind: ReportKind, now = new Date()): string {
   if (kind === "daily") {
     const today = beijingDate(now);
@@ -547,8 +552,11 @@ export interface FeedIssue {
 /**
  * The newest issues of a kind for its RSS feed: headline, lead paragraph (a weekly's or monthly's
  * overview) and each section's entry titles with their links on this site, withdrawn ones left out.
+ * Only issues whose edition time has come: an issue written ahead of time (a night-run week or month)
+ * is not published here either.
  */
 export async function feedIssues(kind: ReportKind, limit: number): Promise<FeedIssue[]> {
+  const visibleThrough = latestVisibleKey(kind);
   const rows = kind === "daily"
     ? await sql<{ key: string; generated_at: Date; content: Record<string, any> }[]>`
       SELECT key, generated_at, jsonb_build_object(
@@ -557,7 +565,7 @@ export async function feedIssues(kind: ReportKind, limit: number): Promise<FeedI
           (SELECT coalesce(jsonb_agg(jsonb_build_object('itemId', i->'itemId', 'title', i->'title') ORDER BY ord), '[]'::jsonb)
            FROM jsonb_array_elements(coalesce(s->'items', '[]'::jsonb)) WITH ORDINALITY AS e(i, ord))) ORDER BY sord), '[]'::jsonb)
           FROM jsonb_array_elements(coalesce(content->'sections', '[]'::jsonb)) WITH ORDINALITY AS x(s, sord))) AS content
-      FROM reports WHERE kind = 'daily' ORDER BY key DESC LIMIT ${limit}`
+      FROM reports WHERE kind = 'daily' AND key <= ${visibleThrough} ORDER BY key DESC LIMIT ${limit}`
     : await sql<{ key: string; generated_at: Date; content: Record<string, any> }[]>`
       SELECT key, generated_at, jsonb_build_object(
         'headline', content->'headline', 'title', content->'title', 'overview', content->'overview',
@@ -566,7 +574,7 @@ export async function feedIssues(kind: ReportKind, limit: number): Promise<FeedI
           (SELECT coalesce(jsonb_agg(jsonb_build_object('itemId', i->'itemId', 'title', i->'title') ORDER BY ord), '[]'::jsonb)
            FROM jsonb_array_elements(coalesce(t->'storyRefs', '[]'::jsonb)) WITH ORDINALITY AS e(i, ord))) ORDER BY tord), '[]'::jsonb)
           FROM jsonb_array_elements(coalesce(content->'themes', '[]'::jsonb)) WITH ORDINALITY AS x(t, tord))) AS content
-      FROM reports WHERE kind = ${kind} ORDER BY key DESC LIMIT ${limit}`;
+      FROM reports WHERE kind = ${kind} AND key <= ${visibleThrough} ORDER BY key DESC LIMIT ${limit}`;
   const shape = kind === "daily" ? "daily" : "periodic";
   const gone = await unavailableIds(rows.flatMap((r) => entriesOf(r.content, shape).map((i) => i.itemId)));
   const leads = kind === "daily" ? await dailyLeads(rows, gone) : null;

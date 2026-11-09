@@ -8,7 +8,7 @@ import { closeDb, sql } from "@aihot/backend/db";
 import { upsertMaterial } from "@aihot/backend/content/materials";
 import { stopBoss } from "@aihot/backend/jobs/queue";
 import { publishArticle } from "@aihot/backend/publication/publish";
-import { listReports, loadReport, v1Daily } from "@aihot/backend/publication/reports";
+import { listReports, loadReport, v1Daily, feedIssues } from "@aihot/backend/publication/reports";
 import { composeDaily, dueDaily, dueMonthly, dueWeekly } from "@aihot/backend/reports/compose";
 import { SITE } from "@aihot/site";
 
@@ -24,10 +24,10 @@ test("a late run writes the issue that was due, not today's", () => {
   assert.equal(dueDaily(editionAt("daily", "2026-09-29", 6)), "2026-09-29");
   assert.equal(dueDaily(editionAt("daily", "2026-09-30", -60)), "2026-09-29", "the 29th's run delayed until just before the next issue");
   assert.equal(dueWeekly(editionAt("weekly", "2026-09-28")), "2026-W39");
-  assert.equal(dueWeekly(editionAt("weekly", "2026-10-05", -60)), "2026-W39", "Monday before its edition time: the next week is not due yet");
+  assert.equal(dueWeekly(editionAt("weekly", "2026-10-05", -60)), "2026-W40", "the week that just ended is due from Monday's start");
   assert.equal(dueWeekly(editionAt("weekly", "2026-10-05", 60)), "2026-W40");
   assert.equal(dueMonthly(editionAt("monthly", "2026-10-01")), "2026-09");
-  assert.equal(dueMonthly(editionAt("monthly", "2026-10-01", -60)), "2026-08");
+  assert.equal(dueMonthly(editionAt("monthly", "2026-10-01", -60)), "2026-09", "the month that just ended is due from the 1st's start");
   assert.equal(dueMonthly(editionAt("monthly", "2027-01-15")), "2026-12");
 });
 
@@ -38,15 +38,20 @@ test("a daily with nothing judged in its window is refused, not published as a q
   assert.equal(row, undefined);
 });
 
-test("public daily reads hide a future issue even if one was written by mistake", async () => {
+test("public reads hide an issue written ahead of its edition time", async () => {
   const date = "2100-01-01";
-  await sql`DELETE FROM reports WHERE kind = 'daily' AND key = ${date}`;
+  const week = "2100-W01";
+  await sql`DELETE FROM reports WHERE (kind = 'daily' AND key = ${date}) OR (kind = 'weekly' AND key = ${week})`;
   await sql`INSERT INTO reports (kind, key, window_start, window_end, content, generated_at, origin)
             VALUES ('daily', ${date}, now(), now(), ${sql.json({ date } as never)}, now(), 'imported')`;
+  await sql`INSERT INTO reports (kind, key, window_start, window_end, content, generated_at, origin)
+            VALUES ('weekly', ${week}, now(), now(), ${sql.json({ kind: "weekly", title: "周报" } as never)}, now(), 'imported')`;
   assert.equal(await loadReport("daily", date), null);
   assert.equal(await v1Daily(date), null);
   assert.equal(await v1Daily("latest"), null);
   assert.ok(!(await listReports("daily")).some((r) => r.key === date));
+  assert.equal(await loadReport("weekly", week), null, "a week written at night is not published before its edition time");
+  assert.ok(!(await feedIssues("weekly", 30)).some((r) => r.key === week), "nor does the feed leak it");
 });
 
 test("a weekly that froze no summaries shows the articles' public summaries", async () => {

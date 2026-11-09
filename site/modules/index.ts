@@ -4,5 +4,6 @@
 import type { ModuleDeclaration } from "@aihot/contracts/modules";
 import chronicle from "@aihot/chronicle/module";
 import analytics from "@aihot/analytics/module";
+import costs from "@aihot/costs/module";
 
-export const MODULES: readonly ModuleDeclaration[] = [chronicle, analytics];
+export const MODULES: readonly ModuleDeclaration[] = [chronicle, analytics, costs];

@@ -554,3 +554,70 @@ export interface AdminAnalyticsOps {
   jobs: AdminAnalyticsJobs;
   collect: AdminAnalyticsCollect;
 }
+
+// Costs (费用看板)
+
+/** One day of spending, in Beijing days: what each channel was asked and what it cost. */
+export interface AdminCostDay {
+  /** YYYY-MM-DD, Beijing. */
+  day: string;
+  calls: number;
+  failed: number;
+  tokensIn: number;
+  tokensOut: number;
+  tokensCached: number;
+  cost: number;
+}
+
+/**
+ * One channel: where a paid request's key came from, as the receipt's `service` records it
+ * ("llm" for the deployment's own LLM_*, "deepseek", "dashscope", …). The key is read from
+ * `apiKeyEnv`, so two keys of the same provider show as two channels.
+ */
+export interface AdminCostChannel {
+  service: string;
+  /** The environment variable the channel's key is read from, when a registered model names one. */
+  apiKeyEnv: string | null;
+  baseUrlEnv: string | null;
+  calls: number;
+  ok: number;
+  failed: number;
+  unknown: number;
+  tokensIn: number;
+  tokensOut: number;
+  tokensCached: number;
+  /** Calls the provider did not price and no row of service_prices covers. */
+  unpriced: number;
+  /** What was recorded or estimated for the channel, in `currency`. */
+  cost: number;
+  currency: string | null;
+}
+
+/** One model of a channel, for the drill-down under it. */
+export interface AdminCostModel {
+  service: string;
+  model: string;
+  calls: number;
+  ok: number;
+  failed: number;
+  unknown: number;
+  tokensIn: number;
+  tokensOut: number;
+  tokensCached: number;
+  unpriced: number;
+  cost: number;
+  currency: string | null;
+}
+
+export interface AdminCosts {
+  /** The window the page asked for, in days (1..365). */
+  days: number;
+  /** Whether every paid request in the window has a price (recorded or from service_prices). */
+  totals: { calls: number; failed: number; tokensIn: number; tokensOut: number; tokensCached: number; unpriced: number; cost: number; currency: string | null };
+  /** One row per day in the window, oldest first; a day with no data still appears. */
+  trend: AdminCostDay[];
+  /** Channels by cost, dearest first. */
+  channels: AdminCostChannel[];
+  /** Service × model rows by cost, dearest first. */
+  models: AdminCostModel[];
+}

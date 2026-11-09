@@ -2,5 +2,6 @@
 import type { WebModule } from "@aihot/web/modules";
 import chronicle from "@aihot/chronicle/web";
 import analytics from "@aihot/analytics/web";
+import costs from "@aihot/costs/web";
 
-export const WEB_MODULES: readonly WebModule[] = [chronicle, analytics];
+export const WEB_MODULES: readonly WebModule[] = [chronicle, analytics, costs];

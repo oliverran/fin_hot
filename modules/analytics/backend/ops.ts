@@ -1,14 +1,12 @@
 // 运维指标：本进程的资源占用（每钟采一次样，只留最近一次），以及模型调用、任务队列与采集
-// 在窗口里的数字和每日趋势。三张引擎表按北京时间分天：偏移取自 contracts/time 的换算，
-// 日期在 SQL 里按 UTC 墙钟取，不随手机会话的时区变。窗口与访客指标同一个 days。
+// 在窗口里的数字和每日趋势。三张引擎表按北京时间分天：时区取自 contracts/time，SQL 里用
+// AT TIME ZONE 换算，不随手机会话的时区变。窗口与访客指标同一个 days。
 import { loadavg } from "node:os";
 import { sql } from "@aihot/backend/db";
-import { addDays, beijingDate, beijingMidnight } from "@aihot/contracts/time";
+import { addDays, beijingDate, beijingMidnight, BEIJING_TIMEZONE } from "@aihot/contracts/time";
 import type { AdminAnalyticsCollect, AdminAnalyticsJobs, AdminAnalyticsModels, AdminAnalyticsOps, AdminAnalyticsProcess } from "@aihot/contracts/admin";
 import { httpReport } from "./http.ts";
 
-/** 北京时间与 UTC 的固定差，取自 contracts/time 的换算，不在这里手写。 */
-const BEIJING_OFFSET = `${(beijingMidnight("2000-01-01").getTime() - Date.UTC(2000, 0, 1)) / 3_600_000} hours`;
 /** 采样周期，与 server.ts 里的定时器一致。 */
 export const SAMPLE_MS = 60_000;
 /** 排行取多少行。 */
@@ -75,7 +73,7 @@ export async function opsReport(days: number, now = new Date()): Promise<AdminAn
         FROM receipt_attempts a
        WHERE a.started_at >= ${start} AND a.origin = 'live' AND a.model IS NOT NULL`,
     sql<{ day: string; calls: number; failed: number; cost: number }[]>`
-      SELECT ((started_at AT TIME ZONE 'UTC') + ${BEIJING_OFFSET}::interval)::date::text AS day,
+      SELECT (started_at AT TIME ZONE ${BEIJING_TIMEZONE})::date::text AS day,
              count(*)::int AS calls,
              count(*) FILTER (WHERE status = 'failed')::int AS failed,
              coalesce(sum(cost) FILTER (WHERE cost_basis = 'actual'), 0)::float8 AS cost
@@ -94,11 +92,11 @@ export async function opsReport(days: number, now = new Date()): Promise<AdminAn
       SELECT name, state, count(*)::int AS n, min(created_on) AS oldest FROM pgboss.job
        WHERE state IN ('created', 'retry', 'active') GROUP BY 1, 2 ORDER BY 1, 2`,
     sql<{ day: string; runs: number; failed: number }[]>`
-      SELECT ((started_at AT TIME ZONE 'UTC') + ${BEIJING_OFFSET}::interval)::date::text AS day,
+      SELECT (started_at AT TIME ZONE ${BEIJING_TIMEZONE})::date::text AS day,
              count(*)::int AS runs, count(*) FILTER (WHERE status = 'failed')::int AS failed
         FROM job_runs WHERE started_at >= ${start} GROUP BY 1 ORDER BY 1`,
     sql<{ day: string; runs: number; failed: number; found: number; fresh: number }[]>`
-      SELECT ((started_at AT TIME ZONE 'UTC') + ${BEIJING_OFFSET}::interval)::date::text AS day,
+      SELECT (started_at AT TIME ZONE ${BEIJING_TIMEZONE})::date::text AS day,
              count(*)::int AS runs, count(*) FILTER (WHERE status = 'failed')::int AS failed,
              coalesce(sum(found_count), 0)::int AS found, coalesce(sum(new_count), 0)::int AS fresh
         FROM fetch_runs WHERE started_at >= ${start} GROUP BY 1 ORDER BY 1`,

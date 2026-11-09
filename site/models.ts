@@ -19,16 +19,16 @@ export const PRESETS: Record<string, ModelPreset> = {
     scoreCall: { temperature: 1, maxTokens: 65_536, timeoutMs: 180_000 },
   },
   // DeepSeek Flash reasons by default; structured tasks switch it off. deepseek-flash-think keeps it on,
-  // with room in the output for the reasoning. 这里的 fallbackFor 让它接在 deepseek-v4.1-flash（网关）之后，
+  // with room in the output for the reasoning. 这里的 fallbackFor 让它接在 minimax-m3.1-flash 之后，
   // 成为默认模型的第三道备用。
   "deepseek-flash": {
     service: "deepseek", model: "deepseek-flash", baseUrlEnv: "DEEPSEEK_BASE_URL", apiKeyEnv: "DEEPSEEK_API_KEY",
     extra: { thinking: { type: "disabled" } }, jsonMode: true,
     fallbackFor: {
-      prefilter: "deepseek-v4.1-flash", score: "deepseek-v4.1-flash", understand: "deepseek-v4.1-flash",
-      summarize: "deepseek-v4.1-flash", wording: "deepseek-v4.1-flash", structure: "deepseek-v4.1-flash",
-      group: "deepseek-v4.1-flash", groupReview: "deepseek-v4.1-flash", digest: "deepseek-v4.1-flash",
-      report: "deepseek-v4.1-flash", translate: "deepseek-v4.1-flash",
+      prefilter: "minimax-m3.1-flash", score: "minimax-m3.1-flash", understand: "minimax-m3.1-flash",
+      summarize: "minimax-m3.1-flash", wording: "minimax-m3.1-flash", structure: "minimax-m3.1-flash",
+      group: "minimax-m3.1-flash", groupReview: "minimax-m3.1-flash", digest: "minimax-m3.1-flash",
+      report: "minimax-m3.1-flash", translate: "minimax-m3.1-flash",
     },
   },
   "deepseek-flash-think": {
@@ -50,12 +50,12 @@ export const PRESETS: Record<string, ModelPreset> = {
     service: "dashscope", model: "qwen3-vl-flash", baseUrlEnv: "DASHSCOPE_BASE_URL", apiKeyEnv: "DASHSCOPE_API_KEY",
     extra: { enable_thinking: false }, jsonMode: false, vision: true,
   },
-  // 阿里云 MaaS 网关（OpenAI 兼容）上的 deepseek-v4.1-flash，作为默认模型的第一道备用，见 docs/customize.md 第 8 节。
-  // 备用是一串：默认模型 → deepseek-v4.1-flash（网关）→ deepseek-flash（DeepSeek 官方，见上面它自己的 fallbackFor）。
-  // 默认先想再答；这里和官网的 deepseek-flash 一样，结构化任务关掉思考。
-  "deepseek-v4.1-flash": {
-    service: "maas", model: "deepseek-v4.1-flash", baseUrlEnv: "MAAS_BASE_URL", apiKeyEnv: "MAAS_API_KEY",
-    extra: { thinking: { type: "disabled" } }, jsonMode: true,
+  // MiniMax（OpenAI 兼容），作为默认模型的第一道备用：默认模型（`LLM_*` 指向的阿里云百炼网关）限流或
+  // 不可用时改用它。备用是一串：默认模型 → minimax-m3.1-flash → deepseek-flash（见上面它自己的 fallbackFor）。
+  // 它和默认模型一样先想再答，保留低强度推理，并给推理留出输出额度。
+  "minimax-m3.1-flash": {
+    service: "minimax", model: "MiniMax-M3.1-Flash", baseUrlEnv: "MINIMAX_BASE_URL", apiKeyEnv: "MINIMAX_API_KEY",
+    extra: { reasoning_effort: "low" }, reasoningTokens: 4000, jsonMode: true,
     fallbackFor: {
       prefilter: "default", score: "default", understand: "default", summarize: "default", wording: "default",
       structure: "default", group: "default", groupReview: "default", digest: "default", report: "default", translate: "default",
