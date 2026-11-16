@@ -40,7 +40,7 @@ docker compose up -d --build
 
 ### 在中国大陆的服务器上
 
-- 构建时 npm 走国内镜像：`docker compose build --build-arg NPM_REGISTRY=https://registry.npmmirror.com`，然后 `docker compose up -d`。镜像同时预装了量化引擎要用的 Python 依赖（akshare/pandas 等），同一台机器上再加 `--build-arg PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple` 让 pip 也走国内源。
+- 构建时 npm 走国内镜像：`docker compose build --build-arg NPM_REGISTRY=https://registry.npmmirror.com`，然后 `docker compose up -d`。只有 `worker` 那个镜像预装了量化引擎要用的 Python 依赖（akshare/pandas 等），`api`/`web`/`setup` 用不含 Python 的精简镜像；同一台机器上再加 `--build-arg PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple` 让 pip 也走国内源。
 - 拉取 Docker 镜像慢，先给 Docker 配置镜像加速。
 - 海外信源抓不到时，在 `.env` 里设置 `EGRESS_PROXY_URL`：抓信源和图片时走这个代理，调用模型接口不走。
 - 对外提供网站服务需要先完成 ICP 备案，备案号填在 `site/site.ts` 的 `icp`。

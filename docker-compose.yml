@@ -2,8 +2,13 @@
 # docker compose --profile https up -d --build   → HTTPS for SITE_DOMAIN through Caddy
 name: aihot
 
+# api, web and setup never run the quant engine, so they build the app-slim target (no Python): a
+# smaller image means less to page in on a host whose RAM is already tight. Only the worker needs
+# app-full (see below).
 x-app: &app
-  build: .
+  build:
+    context: .
+    target: app-slim
   image: aihot-app
   restart: unless-stopped
   # The host has about 1.8 GB of RAM and no other guard: rotate each role's logs (the json-file
@@ -79,9 +84,14 @@ services:
 
   worker:
     <<: *backend
-    # Headroom for the quant engine's subprocess (Python + akshare/pandas): a backtest over a few
-    # hundred stocks can hold several hundred MB at once. Run scans off-peak so it never competes
-    # with collection and the model pipeline.
+    # The worker runs the quant engine (Python + akshare/pandas) as a subprocess, so it is the only
+    # role that builds app-full. Headroom for a backtest over a few hundred stocks, which can hold
+    # several hundred MB at once. Run scans off-peak so it never competes with collection and the
+    # model pipeline.
+    build:
+      context: .
+      target: app-full
+    image: aihot-app-full
     mem_limit: 896m
     command: ["node", "apps/worker/src/main.ts"]
     healthcheck:
