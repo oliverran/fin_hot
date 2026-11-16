@@ -5,6 +5,7 @@ import path from "node:path";
 import { config } from "../config.ts";
 import { sql } from "../db.ts";
 import { expireFeedbackBans, pruneFeedbackSubmissionState, screenshotsForwarded } from "./feedback.ts";
+import { pruneReceipts } from "../providers/receipts.ts";
 import { serverModules } from "../modules.ts";
 
 /** Removes files under `dir` last written more than `maxAgeMs` ago. */
@@ -36,8 +37,11 @@ export async function dailyRetention(now = new Date()) {
   const leases = await sql`DELETE FROM delivery_leases WHERE expires_at < ${now}`;
   const expiredFeedbackBans = await sql.begin(tx => expireFeedbackBans(tx, now));
   const expiredFeedbackState = await pruneFeedbackSubmissionState(now);
-  // Scheduled-task history: 30 days (failures 90) is enough for the runs view.
-  const runs = await sql`DELETE FROM job_runs WHERE started_at < ${new Date(now.getTime() - 30 * 86400_000)} AND (status IS DISTINCT FROM 'failed' OR started_at < ${new Date(now.getTime() - 90 * 86400_000)})`;
+  // Scheduled-task history: 14 days (failures 90) is enough for the runs view.
+  const runs = await sql`DELETE FROM job_runs WHERE started_at < ${new Date(now.getTime() - 14 * 86400_000)} AND (status IS DISTINCT FROM 'failed' OR started_at < ${new Date(now.getTime() - 90 * 86400_000)})`;
+  // Paid-request receipts, with their attempts (receipt_attempts cascades) and any grouping receipt
+  // reference on an article (ON DELETE SET NULL); the owner holds the period.
+  const deletedReceipts = await pruneReceipts(now);
   const monthMs = 30 * 86400_000;
   // Feedback screenshots that only wait to be forwarded (the database then keeps just the Feishu image
   // key). The forwarding sweep gives up after a week; anything older is removed, whether or not
@@ -51,6 +55,7 @@ export async function dailyRetention(now = new Date()) {
     expiredFeedbackBans,
     expiredFeedbackState,
     deletedJobRuns: runs.count,
+    deletedReceipts,
     deletedScreenshots,
     prunedCache,
   };

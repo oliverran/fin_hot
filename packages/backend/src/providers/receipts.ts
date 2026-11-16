@@ -404,3 +404,13 @@ export async function completeReceipt(db: Db, receiptId: number): Promise<void> 
 export async function rejectReceivedResponse(receiptId: number, reason: string): Promise<void> {
   await sql`UPDATE receipts SET status = 'failed', error = ${reason.slice(0, 2000)}, updated_at = now() WHERE id = ${receiptId}`;
 }
+
+/** How long paid-request records are kept: the cost view reads back 90 days (modules/costs), and a
+ * receipt still unknown after that long was never released. Deleting the receipt cascades to its
+ * receipt_attempts and clears any article's grouping_receipt_id (ON DELETE SET NULL). */
+const RECEIPT_RETENTION_MS = 90 * 86400_000;
+
+export async function pruneReceipts(now = new Date()): Promise<number> {
+  const deleted = await sql`DELETE FROM receipts WHERE created_at < ${new Date(now.getTime() - RECEIPT_RETENTION_MS)}`;
+  return deleted.count;
+}

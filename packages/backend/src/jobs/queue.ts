@@ -42,18 +42,22 @@ export const QUEUES = {
 
 export type QueueOptions = NonNullable<Parameters<PgBoss["createQueue"]>[1]>;
 
+/** Completed jobs are kept this long for the runs view; the default (7 days) leaves far more history
+ * than anyone reads, and the job table grows with every scheduled and per-article job. */
+export const DONE_JOB_SECONDS = 3 * 86400;
+
 /** Queue definitions in one place; created on first use by any process. */
 const QUEUE_OPTIONS: Record<QueueName, QueueOptions> = {
-  [QUEUES.analyze]: { policy: "short", retryLimit: 4, retryDelay: 30, retryBackoff: true, expireInSeconds: 600 },
-  [QUEUES.extractBody]: { policy: "short", retryLimit: 2, retryDelay: 120, expireInSeconds: 300 },
-  [QUEUES.group]: { policy: "short", retryLimit: 4, retryDelay: 20, retryBackoff: true, expireInSeconds: 600 },
-  [QUEUES.digest]: { policy: "short", retryLimit: 3, retryDelay: 60, retryBackoff: true, expireInSeconds: 900 },
-  [QUEUES.fetchSource]: { policy: "short", retryLimit: 0, expireInSeconds: 600 },
-  [QUEUES.fetchXShard]: { policy: "short", retryLimit: 0, expireInSeconds: 900 },
-  [QUEUES.mpCheck]: { policy: "short", retryLimit: 3, retryDelay: 60, retryBackoff: true, expireInSeconds: 600 },
-  [QUEUES.notifySelected]: { policy: "short", retryLimit: 0, expireInSeconds: 300 },
-  [QUEUES.republishSource]: { policy: "short", retryLimit: 2, retryDelay: 60, expireInSeconds: 3600 },
-  [QUEUES.prepareMedia]: { policy: "short", retryLimit: 1, retryDelay: 120, expireInSeconds: 600 },
+  [QUEUES.analyze]: { policy: "short", retryLimit: 4, retryDelay: 30, retryBackoff: true, expireInSeconds: 600, deleteAfterSeconds: DONE_JOB_SECONDS },
+  [QUEUES.extractBody]: { policy: "short", retryLimit: 2, retryDelay: 120, expireInSeconds: 300, deleteAfterSeconds: DONE_JOB_SECONDS },
+  [QUEUES.group]: { policy: "short", retryLimit: 4, retryDelay: 20, retryBackoff: true, expireInSeconds: 600, deleteAfterSeconds: DONE_JOB_SECONDS },
+  [QUEUES.digest]: { policy: "short", retryLimit: 3, retryDelay: 60, retryBackoff: true, expireInSeconds: 900, deleteAfterSeconds: DONE_JOB_SECONDS },
+  [QUEUES.fetchSource]: { policy: "short", retryLimit: 0, expireInSeconds: 600, deleteAfterSeconds: DONE_JOB_SECONDS },
+  [QUEUES.fetchXShard]: { policy: "short", retryLimit: 0, expireInSeconds: 900, deleteAfterSeconds: DONE_JOB_SECONDS },
+  [QUEUES.mpCheck]: { policy: "short", retryLimit: 3, retryDelay: 60, retryBackoff: true, expireInSeconds: 600, deleteAfterSeconds: DONE_JOB_SECONDS },
+  [QUEUES.notifySelected]: { policy: "short", retryLimit: 0, expireInSeconds: 300, deleteAfterSeconds: DONE_JOB_SECONDS },
+  [QUEUES.republishSource]: { policy: "short", retryLimit: 2, retryDelay: 60, expireInSeconds: 3600, deleteAfterSeconds: DONE_JOB_SECONDS },
+  [QUEUES.prepareMedia]: { policy: "short", retryLimit: 1, retryDelay: 120, expireInSeconds: 600, deleteAfterSeconds: DONE_JOB_SECONDS },
 };
 
 const ensured = new Set<string>();
@@ -121,6 +125,9 @@ export async function ensureQueue(name: string, options: QueueOptions = QUEUE_OP
   const b = await getBoss();
   const existing = await b.getQueue(name);
   if (!existing) await b.createQueue(name, options);
+  // createQueue leaves an existing queue as it is, so a retention change would only reach fresh
+  // databases. Reconcile just that one option; policy cannot be changed after creation.
+  else if (options.deleteAfterSeconds !== undefined) await b.updateQueue(name, { deleteAfterSeconds: options.deleteAfterSeconds });
   ensured.add(name);
 }
 

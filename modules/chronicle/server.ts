@@ -189,7 +189,13 @@ export default defineServerModule({
   // 交易日收盘后刷新：把当天的日线写进 chronicle_quotes，页面上的图第二天就是新的。
   schedules: [
     { name: "chronicle.market", cron: "20 9 * * 1-5", missed: "once", when: () => process.env.TUSHARE_SYNC_ENABLED === "true", run: () => refreshMarket() },
-    { name: "chronicle.funds", cron: "*/30 * * * *", missed: "once", when: () => process.env.TUSHARE_FUND_SYNC_ENABLED === "true", run: () => refreshFunds() },
+    // The run's bookkeeping row keeps only a summary: the snapshot itself (every fund's holdings,
+    // ~10 MB) is saved by refreshFunds under funds/funds-<period>, and returning it here wrote it into
+    // job_runs.detail every half hour.
+    { name: "chronicle.funds", cron: "*/30 * * * *", missed: "once", when: () => process.env.TUSHARE_FUND_SYNC_ENABLED === "true", run: async () => {
+      const { period, members, observations } = await refreshFunds();
+      return { period, members: members.length, observations: observations.length };
+    } },
     { name: "chronicle.provider", cron: "30 19 * * 1-5", missed: "once", when: () => process.env.TUSHARE_SYNC_ENABLED === "true" && !!process.env.TUSHARE_TOKEN, run: async () => { await refreshProvider(); await refreshCompanies(); return refreshMarket(); } },
     {
       name: "chronicle.quotes",
