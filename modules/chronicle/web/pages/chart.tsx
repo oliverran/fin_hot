@@ -91,7 +91,7 @@ export default function ChronicleChartPage() {
       <RelatedCharts pages={related} className="pt-10" />
 
       <p className="mt-10 border-t border-line pt-5 text-[12.5px] leading-[1.75] text-ink-4">
-        实际数据来源与覆盖日期以图表状态为准；示例仅用于演示。只作历史复盘与学习用途，不构成任何投资建议。
+        实际数据来源与覆盖日期以图表状态为准。只作历史复盘与学习用途，不构成任何投资建议。
         <Link viewTransition to={ROUTES.methodology} className="ml-1 text-accent hover:underline">
           数据口径与免责
         </Link>

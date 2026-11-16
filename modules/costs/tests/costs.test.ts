@@ -103,3 +103,28 @@ test("后台接口：未登录回 401", async () => {
   const denied = await app.inject({ method: "GET", url: "/api/admin/costs" });
   assert.equal(denied.statusCode, 401);
 });
+
+// 上一整天（北京时间）的估算花费超过阈值报一条；阈值设 0 关掉，没超标不报。
+test("模型费用告警：昨天超阈值报一条，关掉阈值或未超标不报", async () => {
+  await sql`DELETE FROM receipts`;
+  await sql`DELETE FROM service_prices`;
+  // 北京时间 5-09 一笔实付 0.30；now 取 5-10 正午，昨天即 5-09。
+  await attempt({ service: "minimax", model: "MiniMax-M3.1-Flash", status: "received", startedAt: "2026-05-09T04:00:00Z",
+    usage: { prompt_tokens: 10 }, cost: 0.3 });
+  const now = Date.parse("2026-05-10T04:00:00Z");
+  const before = process.env.ALERT_MODEL_SPEND_CNY;
+  try {
+    process.env.ALERT_MODEL_SPEND_CNY = "0.2";
+    const findings = await costs.alerts!(now);
+    assert.equal(findings.length, 1);
+    assert.equal(findings[0]!.key, "costs.model.spend.2026-05-09");
+    assert.equal(findings[0]!.level, "today");
+    process.env.ALERT_MODEL_SPEND_CNY = "0";
+    assert.deepEqual(await costs.alerts!(now), [], "阈值设 0 关掉");
+    process.env.ALERT_MODEL_SPEND_CNY = "1";
+    assert.deepEqual(await costs.alerts!(now), [], "未超标不报");
+  } finally {
+    if (before === undefined) delete process.env.ALERT_MODEL_SPEND_CNY;
+    else process.env.ALERT_MODEL_SPEND_CNY = before;
+  }
+});

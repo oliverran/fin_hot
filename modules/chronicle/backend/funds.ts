@@ -26,6 +26,8 @@ export async function refreshFunds(request:DataRequest=requestData, now=new Date
      group:productGroup(String(row.name),String(row.management)),found:row.found_date?providerDate(row.found_date):null})).filter(x=>!x.found||x.found.replaceAll('-','')<=period).sort((a,b)=>a.code.localeCompare(b.code));
    if(!members.length)throw Error('No eligible funds returned');catalogAt=today;
  }
+ // 供应商跨页重复返回同一只基金，按代码去重，total、处理进度和逐只检查都只算一次。
+ members=[...new Map(members.map(m=>[m.code,m])).values()];
  const observations=new Map((old?.observations??[]).map(o=>[o.code,o]));
  const due=members.filter(m=>!observations.has(m.code)||Date.parse(today)-Date.parse(observations.get(m.code)!.checkedAt)>86400000*7)
    .sort((a,b)=>(observations.get(a.code)?.checkedAt??'').localeCompare(observations.get(b.code)?.checkedAt??'')).slice(0,batch);

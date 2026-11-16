@@ -10,15 +10,15 @@ import { readFundSummary, refreshFunds } from "./backend/funds.ts";
 import { readProvider, refreshProvider } from "./backend/provider.ts";
 import { compareBars } from "./backend/compare.ts";
 import { loadLive, type LiveKind } from "./backend/live.ts";
-import { loadBars } from "./backend/quotes.ts";
 import { chronicleNews } from "@aihot/backend/publication/chronicle";
 import { REPO_ROOT } from "@aihot/backend/config";
 import { sendFile } from "@aihot/api/routes/static";
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { readFile, stat } from "node:fs/promises";
 import { defineServerModule } from "@aihot/backend/modules";
+import type { Finding } from "@aihot/backend/notify/feishu";
 import { LIVE_CHARTS, LIVE_INDICES, LIVE_SOURCE, GROUPS, liveChart, pageOf, type LiveIndex } from "./catalog.ts";
-import { liveChartJson } from "./backend/charts.ts";
+import { barsFor, liveChartJson } from "./backend/charts.ts";
 import { quotesFetchedAt, refreshQuotes } from "./backend/quotes.ts";
 import { refreshUsMarket, usFreshRoot } from "./backend/us-market.ts";
 // 主题 → 图表的对应表在 topic-map.ts，网页侧也读它（借类型）。
@@ -59,6 +59,44 @@ function sendUs(req: FastifyRequest, reply: FastifyReply, base: string, rel: str
   const file = under(base, rel);
   if (!file) return reply.code(404).type("text/plain; charset=utf-8").send("Not found");
   return sendFile(req, reply, file, { type: US_TYPES[path.extname(file)], cacheControl: US_STABLE.test(file) ? US_CACHE : "no-cache" });
+}
+
+/** 一次成功同步在多久内算“还在更新”；定时同步是每个交易日晚上一次，给足两天。 */
+const PROVIDER_STALE_MS = 36 * 3600_000;
+
+/**
+ * 付费数据服务（Tushare）的告警：token 被拒（过期、无效、无权限）是最常见、也最该被通知的一种——数据会悄悄停在
+ * 最后一次成功同步，页面看不出异常。只在开启定时同步时报，别的失败归到“同步连续失败”里由人去看运行记录。
+ */
+async function tushareFindings(now: number): Promise<Finding[]> {
+  if (process.env.TUSHARE_SYNC_ENABLED !== "true") return [];
+  const snapshot = await readProvider();
+  if (!snapshot) return [];
+  if (snapshot.authError) {
+    return [{
+      key: "chronicle.tushare.auth",
+      level: "today",
+      title: "Tushare 数据服务拒绝了凭证，编年史数据停止更新",
+      impact: "指数与行业走势停在最后一次成功同步，编年史的图不再更新",
+      heals: "不会自己恢复；要续期或更换 token",
+      action: "去服务方后台确认 token 是否过期、额度是否用尽；换好后更新 TUSHARE_TOKEN，再跑一次定时同步",
+      detail: `供应商返回：${snapshot.authError}`,
+    }];
+  }
+  const indices = snapshot.indices ?? [];
+  const fresh = indices.filter((i) => i.syncedAt && now - Date.parse(i.syncedAt) <= PROVIDER_STALE_MS);
+  if (indices.length && !fresh.length) {
+    return [{
+      key: "chronicle.tushare.sync",
+      level: "later",
+      title: "编年史的行情同步连续失败",
+      impact: "指数与行业走势停在最后一次成功同步",
+      heals: "要看成因；网络或供应商恢复后会自己接上",
+      action: "看后台「运行」里 chronicle.provider 的记录，确认为什么每次都没拿到行情",
+      detail: (snapshot.errors ?? []).slice(0, 5).join("；") || "没有更多说明",
+    }];
+  }
+  return [];
 }
 
 export default defineServerModule({
@@ -102,12 +140,7 @@ export default defineServerModule({
       const charts = codes.map(code => LIVE_CHARTS.find(c => c.code === code && c.kind === "index"));
       if (!valid(start) || !valid(end) || start > end || codes.length > 6 || charts.some(c => !c)) return reply.code(400).send({error:"Invalid comparison"});
       const snapshot = await readProvider();
-      const inputs = await Promise.all(charts.map(async c => {
-        const code=c!.code.slice(2)+'.'+c!.code.slice(0,2).toUpperCase();
-        const provider=snapshot?.indices.find(x=>x.code===code);
-        const bars=provider?.bars.map(b=>({...b,open:b.close,high:b.close,low:b.close,volume:0})) ?? await loadBars(c!.code);
-        return {name:c!.indexName,bars};
-      }));
+      const inputs = await Promise.all(charts.map(async c => ({ name: c!.indexName, bars: (await barsFor(c!.code, snapshot)).bars })));
       return reply.header("Cache-Control","no-store").send({ ...compareBars(inputs,start,end), events:await chronicleNews(start,end), missing:inputs.filter(x=>!x.bars.length).map(x=>x.name) });
     });
     // 精选页那张实时图：分时或日K，服务端抓东财（失败回退腾讯）并缓存 15 秒。
@@ -138,16 +171,19 @@ export default defineServerModule({
       const { group, file } = req.params as { group: string; file: string };
       if (!file.endsWith(".json")) return reply.code(404).type("text/plain; charset=utf-8").send("Not found");
       const slug = file.slice(0, -".json".length);
-      if (!pageOf(group, slug)) return reply.code(404).type("text/plain; charset=utf-8").send("Not found");
+      const page = pageOf(group, slug);
+      if (!page) return reply.code(404).type("text/plain; charset=utf-8").send("Not found");
       const chart = liveChart(group, slug);
-      // 库里还没有这只指数的日线时（第一次刷新还没跑）退回随包的示例文件。
-      const live = chart ? await liveChartJson(chart) : null;
-      if (live) return reply.header("cache-control", LIVE_CACHE).type("application/json; charset=utf-8").send(live);
-      if ((req.query as { demo?: string }).demo === "1") {
-        const demo=JSON.parse(await readFile(path.join(DATA,group,`${slug}.json`),'utf8'));
-        return reply.header('Cache-Control','no-store').send({...demo,meta:{...demo.meta,status:'demo',source:'随机生成的演示数据'}});
+      // 接上实时行情的图：从库里现算。库里还没有这只指数（第一次刷新还没跑）时显示缺失，
+      // 不用随包的旧数据顶替——那会让读者以为它也是实时的。
+      if (chart) {
+        const live = await liveChartJson(chart);
+        if (live) return reply.header("cache-control", LIVE_CACHE).type("application/json; charset=utf-8").send(live);
+        return reply.header("cache-control", "no-store").send({ meta: { id: slug, name: page.chartTitle, type: "line", status: "missing", source: LIVE_SOURCE }, series: [] });
       }
-      return reply.header("cache-control", "no-store").send({ meta: { id: slug, name: pageOf(group, slug)!.chartTitle, type: "line", status: "missing", source: chart ? LIVE_SOURCE : null }, series: [] });
+      // 其余的图发随包的真实快照（源项目口径）：内容不变，放长缓存。
+      const snapshot = await readFile(path.join(DATA, group, `${slug}.json`), "utf8");
+      return reply.header("cache-control", CACHE).type("application/json; charset=utf-8").send(snapshot);
     });
   },
   // 交易日收盘后刷新：把当天的日线写进 chronicle_quotes，页面上的图第二天就是新的。
@@ -171,6 +207,8 @@ export default defineServerModule({
       run: () => refreshUsMarket(),
     },
   ],
+  // 付费数据服务的告警（token 过期/无效等），交给运维检查每 10 分钟收一次。
+  alerts: tushareFindings,
   // 这一块只讲“这个主题该看哪几张图”，与主题下的条目无关，所以 recheck 是空的。
   topics: {
     page: {

@@ -79,7 +79,10 @@ services:
 
   worker:
     <<: *backend
-    mem_limit: 512m
+    # Headroom for the quant engine's subprocess (Python + akshare/pandas): a backtest over a few
+    # hundred stocks can hold several hundred MB at once. Run scans off-peak so it never competes
+    # with collection and the model pipeline.
+    mem_limit: 896m
     command: ["node", "apps/worker/src/main.ts"]
     healthcheck:
       test: ["CMD", "node", "scripts/worker-health.ts"]
@@ -137,6 +140,22 @@ services:
     volumes:
       - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy:/data
+    depends_on:
+      - web
+
+  # 免备案对外：cloudflared 从服务器出站连到 Cloudflare，公网域名由 Cloudflare 解析，回源经隧道打到 web。
+  # 不占入站 80/443，也就不经过云厂商对未备案域名的拦截。用法见 docs/deploy.md。
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    profiles: ["cdn"]
+    restart: unless-stopped
+    mem_limit: 128m
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    command: ["tunnel", "--no-autoupdate", "run", "--token", "${CLOUDFLARE_TUNNEL_TOKEN:-}"]
     depends_on:
       - web
 

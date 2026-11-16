@@ -67,7 +67,7 @@ export const SITE = {
   /** 关于页底部的一行小字（选填）。 */
   footerNote: "由 AIHOT 开源框架驱动",
   /** 中国大陆网站的 ICP 备案号（选填），填了就显示在侧栏底部和“我的”页底部，并链接到工信部备案系统。 */
-  icp: null as string | null,
+  icp: "京ICP备2026077698号" as string | null,
   /** 中国大陆网站的公安备案信息（选填），填了显示在侧栏底部和“我的”页底部。 */
   psb: null as string | null,
   /** 源码的 GitHub 仓库地址（选填），填了就在侧栏底部和“我的”页底部显示“GitHub 开源”。 */
@@ -221,6 +221,8 @@ export const REPORTS = {
 export const ALERTS = {
   /** 多少分钟没有收录新文章就告警“网站停止收录新内容”（最多一天）；环境变量 ALERT_QUIET_MINUTES 优先。 */
   quietMinutes: 360,
+  /** 模型调用一天（北京时间）估算费用超过多少元就告警；设 0 关掉；环境变量 ALERT_MODEL_SPEND_CNY 优先。 */
+  modelSpendCnyPerDay: 80,
   /** 同一条告警里，“没有”后面补一句平时的收录量；null 就不写。 */
   usualFlow: null as string | null,
   /** worker 停了的告警里，怎么看它的日志。 */

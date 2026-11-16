@@ -2,6 +2,20 @@ import { credential } from '@aihot/backend/config';
 export type DataRow = Record<string, unknown>;
 export type DataRequest = (api: string, params: Record<string, unknown>) => Promise<DataRow[]>;
 
+/** The provider refuses the credentials (expired, wrong or lacking permission): told apart from ordinary fetch failures so an alert can say so. */
+export class ProviderAuthError extends Error {
+  readonly detail: string;
+  constructor(detail: string) {
+    super(`Provider rejected the credentials: ${detail}`);
+    this.name = 'ProviderAuthError';
+    this.detail = detail;
+  }
+}
+
+/** Codes the Tushare-compatible gateway uses for credential problems; the message is the fallback hint. */
+const AUTH_CODES = new Set([-2001, -2002, -2003]);
+const AUTH_HINT = /(token|权限|授权|无效|过期|expired|invalid|unauthor|forbidden)/i;
+
 export const requestData: DataRequest = async (api_name, params) => {
   const token = credential('collectors', 'TUSHARE_TOKEN');
   if (!token) throw new Error('TUSHARE_TOKEN is required');
@@ -9,9 +23,17 @@ export const requestData: DataRequest = async (api_name, params) => {
     method: 'POST', headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ api_name, token, params }), signal: AbortSignal.timeout(30_000),
   });
-  if (!response.ok) throw new Error(`Provider HTTP ${response.status} (${api_name})`);
-  const body = await response.json() as { code: number; data?: { fields: string[]; items: unknown[][] } };
-  if (body.code !== 0 || !Array.isArray(body.data?.fields) || !Array.isArray(body.data?.items)) throw new Error(`Invalid provider response (${api_name})`);
+  if (!response.ok) {
+    if (response.status === 401 || response.status === 403) throw new ProviderAuthError(`HTTP ${response.status} (${api_name})`);
+    throw new Error(`Provider HTTP ${response.status} (${api_name})`);
+  }
+  const body = await response.json() as { code: number; msg?: string; data?: { fields: string[]; items: unknown[][] } };
+  const msg = String(body.msg ?? '').trim();
+  if (body.code !== 0) {
+    if (AUTH_CODES.has(body.code) || AUTH_HINT.test(msg)) throw new ProviderAuthError(msg || `code ${body.code} (${api_name})`);
+    throw new Error(`Invalid provider response (${api_name})${msg ? `: ${msg}` : ''}`);
+  }
+  if (!Array.isArray(body.data?.fields) || !Array.isArray(body.data?.items)) throw new Error(`Invalid provider response (${api_name})`);
   return body.data.items.map(row => Object.fromEntries(body.data!.fields.map((key, i) => [key, row[i]])));
 };
 

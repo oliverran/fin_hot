@@ -15,6 +15,7 @@
   "dependencies": {
     "@aihot/analytics": "*",
     "@aihot/chronicle": "*",
-    "@aihot/costs": "*"
+    "@aihot/costs": "*",
+    "@aihot/quant": "*"
   }
 }

@@ -117,7 +117,7 @@ export default function ChronicleVolume() {
       </nav>
 
       <p className="mt-10 border-t border-line pt-5 text-[12.5px] leading-[1.75] text-ink-4">
-        标「日线」的图表来自公开行情接口，每个交易日收盘后自动更新；缺失数据不展示曲线；随机示例仅在独立演示入口展示。只作历史复盘与学习用途，不构成任何投资建议。
+        标「日线」的图表来自公开行情接口，每个交易日收盘后自动更新；其余为源项目《A股编年史》随包快照；取不到行情时不展示曲线。只作历史复盘与学习用途，不构成任何投资建议。
         <Link viewTransition to={ROUTES.methodology} className="ml-1 text-accent hover:underline">
           数据口径与免责
         </Link>

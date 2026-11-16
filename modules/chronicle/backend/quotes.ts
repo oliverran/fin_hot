@@ -1,5 +1,5 @@
 // 编年史的行情来源：腾讯证券的公开日线接口 → chronicle_quotes 表。
-// 只抓 LIVE_CHARTS 点名的那几只宽基指数；行业、抱团等没有公开免费口径的图仍用随包的示例数据。
+// 只抓 LIVE_CHARTS 点名的那几只宽基指数；行业、抱团等没有公开免费口径的图发随包的快照。
 // 抓取走 lib/http-fetch 的 guardedFetch（SSRF 守卫、超时、字节上限），单次最多取 640 条日线，
 // 所以首次补齐要走多轮翻页，之后的每日刷新只取最近一页。
 import { sql } from "@aihot/backend/db";

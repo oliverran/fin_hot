@@ -44,7 +44,7 @@ const ENTRIES: Entry[] = PAGES.map((page) => ({
 }));
 
 type Scope = "all" | GroupKey;
-type Source = "all" | "live" | "demo";
+type Source = "all" | "live" | "snapshot";
 
 const SCOPES: Array<{ key: Scope; label: string }> = [
   { key: "all", label: "全部" },
@@ -54,7 +54,7 @@ const SCOPES: Array<{ key: Scope; label: string }> = [
 const SOURCES: Array<{ key: Source; label: string }> = [
   { key: "all", label: "全部来源" },
   { key: "live", label: "实时日线" },
-  { key: "demo", label: "示例数据" },
+  { key: "snapshot", label: "源项目快照" },
 ];
 
 function matches(entry: Entry, terms: string[]): boolean {
@@ -76,7 +76,7 @@ export default function ChronicleCharts() {
   const results = useMemo(() => ENTRIES.filter((entry) => {
     if (scope !== "all" && entry.group !== scope) return false;
     if (source === "live" && !entry.live) return false;
-    if (source === "demo" && entry.live) return false;
+    if (source === "snapshot" && entry.live) return false;
     return matches(entry, terms);
   }), [scope, source, terms]);
 

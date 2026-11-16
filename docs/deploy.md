@@ -40,7 +40,7 @@ docker compose up -d --build
 
 ### 在中国大陆的服务器上
 
-- 构建时 npm 走国内镜像：`docker compose build --build-arg NPM_REGISTRY=https://registry.npmmirror.com`，然后 `docker compose up -d`。
+- 构建时 npm 走国内镜像：`docker compose build --build-arg NPM_REGISTRY=https://registry.npmmirror.com`，然后 `docker compose up -d`。镜像同时预装了量化引擎要用的 Python 依赖（akshare/pandas 等），同一台机器上再加 `--build-arg PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple` 让 pip 也走国内源。
 - 拉取 Docker 镜像慢，先给 Docker 配置镜像加速。
 - 海外信源抓不到时，在 `.env` 里设置 `EGRESS_PROXY_URL`：抓信源和图片时走这个代理，调用模型接口不走。
 - 对外提供网站服务需要先完成 ICP 备案，备案号填在 `site/site.ts` 的 `icp`。
@@ -67,6 +67,20 @@ docker compose --profile https up -d --build
 MCP 默认接受 `SITE_URL` 的主机以及 `localhost`、`127.0.0.1`、`[::1]`。额外主机用 `MCP_ALLOWED_HOSTS` 配置，以逗号分隔，例如 `extra.example:8443,[2001:db8::1]`。主机名不区分大小写，IPv6 必须加方括号；可带 0–65535 的十进制端口，匹配时忽略端口。包含路径、用户信息或非法端口的配置不会生效。`127.1` 等别名需要明确列入；此配置只影响 Host 校验，不扩大浏览器 Origin 许可。
 
 前面有 Nginx、CDN 这类缓存时，要遵循应用返回的缓存期限（`Cache-Control`）：公开网页、导航数据、API、RSS、条目 Markdown、报告分享图、站点地图，以及接入说明 `/api/v1/agent` 和 `/openapi-v1.json`（五分钟到期后也要重新验证），都不要另加更长的缓存期，不要在到期后离线返回旧内容，也不要在转发旧响应时重新起算它的寿命；不要让代理和 CDN 叠加缓存动态内容。框架不代管自建站的 CDN，也不替它清缓存。
+
+### 免备案：用 Cloudflare Tunnel 对外
+
+域名没完成 ICP 备案时，国内 CDN 用不了，Caddy 也签不下证书（80 端口会被云厂商按未备案域名拦截，返回 403）。可以让 cloudflared 从服务器**出站**连到 Cloudflare，公网域名交给 Cloudflare 解析，回源经隧道打到 `web`：不占入站 80/443，也就不经过对未备案域名的拦截。
+
+1. 把域名加进 Cloudflare（在域名注册商处把 NS 改成 Cloudflare 给的两个地址）。
+2. 在 Cloudflare 控制台 Zero Trust → Networks → Tunnels 新建一条隧道（选 cloudflared、token 方式），复制它的 token。
+3. 给隧道加一条 Public Hostname：主机名填你的域名，Service 填 `http://web:3000`。
+4. 在 `.env` 里填 `CLOUDFLARE_TUNNEL_TOKEN`，把 `SITE_URL` 改成读者访问的域名（`https://...`），`TRUST_PROXY` 改成 `true`。
+5. 启动时带上 cdn profile：`docker compose --profile cdn up -d`。只用隧道时不必再开 `--profile https`，也不用放行 80/443。
+
+cloudflared 会在 `X-Forwarded-For` 里带上访客地址，`TRUST_PROXY=true` 后网站照常读到它，不必再配 Caddy 的 `trusted_proxies`。回源直接打到 `web`，Caddy 那几条安全响应头不会带上：在 Cloudflare 的 SSL/TLS 里打开 HSTS 与 Always Use HTTPS，需要的话再用 Transform Rule 补其余几个。
+
+缓存按上一节的要求来：公开网页、API、RSS、报告分享图、站点地图这些动态内容不要加更长的缓存期，也不要叠加缓存。子应用（美股编年史）的脚本与样式源站返回 `no-cache`（产物不带内容哈希，改版后旧分包会跟新的入口错配），Cloudflare 默认不缓存它们；想缓存 `/us-market/assets/*` 就在 Cloudflare 加一条 Cache Rule 把它们设为可缓存并覆盖 Edge TTL（用较短的期限），每次发版后 Purge 这几个路径，否则会继续发旧脚本。数据集与字体（json/woff2 等）源站已给一小时，可以放心缓存。
 
 ### 更新
 

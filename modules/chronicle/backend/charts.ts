@@ -26,20 +26,37 @@ function yearDrawdown(closes: number[]): number {
   return worst;
 }
 
-/** 一年一组的收盘价，按年份升序。 */
-function byYear(bars: readonly QuoteBar[]): Array<{ year: string; closes: number[] }> {
-  const groups = new Map<string, number[]>();
+/** 一年一组的收盘价与日期，按年份升序。 */
+function byYear(bars: readonly QuoteBar[]): Array<{ year: string; dates: string[]; closes: number[] }> {
+  const groups = new Map<string, { dates: string[]; closes: number[] }>();
   for (const bar of bars) {
     const year = bar.date.slice(0, 4);
-    const closes = groups.get(year);
-    if (closes) closes.push(bar.close);
-    else groups.set(year, [bar.close]);
+    const group = groups.get(year);
+    if (group) {
+      group.dates.push(bar.date);
+      group.closes.push(bar.close);
+    } else groups.set(year, { dates: [bar.date], closes: [bar.close] });
   }
-  return [...groups].map(([year, closes]) => ({ year, closes }));
+  return [...groups].map(([year, group]) => ({ year, ...group }));
 }
 
-/** 一张图的 meta.type 与 series；`other` 是相对强弱的分母指数日线。 */
-function build(chart: LiveChart, bars: readonly QuoteBar[], other: readonly QuoteBar[]): [string, unknown] {
+/** 某个日期（含）之前最近一条市盈率；序列按日期升序。 */
+function peAsOf(valuations: readonly { date: string; pe: number | null }[], date: string): number | null {
+  let value: number | null = null;
+  for (const item of valuations) {
+    if (item.date > date) break;
+    if (item.pe != null) value = item.pe;
+  }
+  return value;
+}
+
+/** 一张图的 meta.type 与 series；`other` 是相对强弱的分母指数日线，`valuations` 是市盈率序列（拆解图用）。 */
+function build(
+  chart: LiveChart,
+  bars: readonly QuoteBar[],
+  other: readonly QuoteBar[],
+  valuations: readonly { date: string; pe: number | null }[],
+): [string, unknown] {
   switch (chart.kind) {
     case "index":
       return ["line", bars.map((bar) => ({ date: bar.date, value: bar.close }))];
@@ -162,37 +179,69 @@ function build(chart: LiveChart, bars: readonly QuoteBar[], other: readonly Quot
       });
       return ["multi-line", { dates, seriesData: { "相对强弱": ratio, "250 日均线": mean } }];
     }
+    case "davis": {
+      // 戴维斯拆解：把每年的总回报按对数口径拆成盈利（EPS）与估值（PE）两部分：
+      // log(总回报) = log(EPS) + log(PE)。EPS 没有直接的数据，由「点位 ÷ PE」反推，
+      // 所以两端都依赖同一份市盈率序列；缺任一年末的市盈率就跳过那一年。
+      const years = byYear(bars);
+      const rows: Array<{ year: string; total: number; eps: number; pe: number }> = [];
+      for (let i = 1; i < years.length; i++) {
+        const prev = years[i - 1]!;
+        const year = years[i]!;
+        const prevPe = peAsOf(valuations, prev.dates.at(-1)!);
+        const endPe = peAsOf(valuations, year.dates.at(-1)!);
+        if (prevPe == null || endPe == null || prevPe <= 0 || endPe <= 0) continue;
+        const total = Math.log(year.closes.at(-1)! / prev.closes.at(-1)!) * 100;
+        const pe = Math.log(endPe / prevPe) * 100;
+        rows.push({ year: year.year, total: round2(total), eps: round2(total - pe), pe: round2(pe) });
+      }
+      return ["stacked-bar-dual", rows];
+    }
   }
 }
 
-/** 一只指数的日线：优先用行情提供方（Tushare）的那份，没有就从库里读。 */
-async function barsFor(code: string, snapshot: Awaited<ReturnType<typeof readProvider>>): Promise<QuoteBar[]> {
+/** 指数在提供方快照里的那条记录（代码转成 Tushare 的写法，如 sh000300 → 000300.SH）。 */
+function providerIndex(code: string, snapshot: Awaited<ReturnType<typeof readProvider>>) {
   const providerCode = code.slice(2) + "." + code.slice(0, 2).toUpperCase();
-  const provider = snapshot?.indices.find((x) => x.code === providerCode);
-  return provider?.bars.map((b) => ({ ...b, open: b.close, high: b.close, low: b.close, volume: 0 })) ?? await loadBars(code);
+  return snapshot?.indices.find((x) => x.code === providerCode);
+}
+
+/**
+ * 一只指数的日线：行情提供方（Tushare）的那份与库里的腾讯日线各取一份，哪份更新就用哪份。
+ * 提供方同步失败时会原地保留上一次成功的数据，这时库里那份（腾讯）往往已经更新到最近交易日，
+ * 用它才能让图表跟上；`fromProvider` 告诉调用方这条日线出自哪一侧，好标对来源与刷新时间。
+ */
+export async function barsFor(code: string, snapshot: Awaited<ReturnType<typeof readProvider>>): Promise<{ bars: QuoteBar[]; fromProvider: boolean }> {
+  const provider = providerIndex(code, snapshot);
+  const provided = provider?.bars.map((b) => ({ ...b, open: b.close, high: b.close, low: b.close, volume: 0 })) ?? [];
+  const stored = await loadBars(code);
+  if (stored.length && (provided.length === 0 || stored.at(-1)!.date > provided.at(-1)!.date)) return { bars: stored, fromProvider: false };
+  return { bars: provided, fromProvider: true };
 }
 
 /**
  * 一张实时图的 JSON；库里还没有这只指数的行情时返回 null，
- * 由调用方退回随包的示例文件，页面不会因为第一次刷新还没跑而空着。
+ * 由调用方显示缺失状态，页面不会用旧数据顶替。
  */
 export async function liveChartJson(chart: LiveChart): Promise<ChartJson | null> {
   const snapshot = await readProvider();
-  const provider = snapshot?.indices.find((x) => x.code === chart.code.slice(2) + "." + chart.code.slice(0, 2).toUpperCase());
-  const bars = await barsFor(chart.code, snapshot);
+  const { bars, fromProvider } = await barsFor(chart.code, snapshot);
   if (bars.length === 0) return null;
-  const other = chart.code2 ? await barsFor(chart.code2, snapshot) : [];
+  const other = chart.code2 ? (await barsFor(chart.code2, snapshot)).bars : [];
   if (chart.code2 && other.length === 0) return null;
+  // 戴维斯拆解还要市盈率序列（同样来自提供方）；拿不到就当作缺失。
+  const valuations = chart.kind === "davis" ? (providerIndex(chart.code, snapshot)?.valuations ?? []) : [];
+  if (chart.kind === "davis" && valuations.length === 0) return null;
   const page = pageOf(chart.group, chart.slug);
-  const [type, series] = build(chart, bars, other);
+  const [type, series] = build(chart, bars, other, valuations);
   return {
     meta: {
       id: chart.slug,
       name: page?.chartTitle ?? chart.indexName,
       type,
       description: page?.chartNote ?? "",
-      source: provider ? snapshot!.source : LIVE_SOURCE,
-      updatedAt: provider ? snapshot!.updatedAt : await quotesFetchedAt(chart.code),
+      source: fromProvider && snapshot ? snapshot.source : LIVE_SOURCE,
+      updatedAt: fromProvider && snapshot ? snapshot.updatedAt : await quotesFetchedAt(chart.code),
       status: snapshot?.expectedDate ? (bars.at(-1)!.date < snapshot.expectedDate ? "stale" : "observed") : "calendar-missing",
       firstDate: bars[0]!.date,
       lastDate: bars.at(-1)!.date,

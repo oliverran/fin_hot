@@ -61,14 +61,23 @@ export function Canvas({ data }: { data: ChronicleData }) {
   return <div ref={host} className="h-full w-full" />;
 }
 
+/** 图下方那行来源与覆盖：实时图给来源与区间，快照给来源，缺失给提示。 */
+function sourceLine(meta: ChronicleData["meta"]): string {
+  if (meta.status === "missing") return "尚未取得真实数据";
+  const parts: string[] = [];
+  if (meta.status === "stale") parts.push("尚未更新到应有交易日");
+  if (meta.source) parts.push(meta.source);
+  if (meta.firstDate && meta.lastDate) parts.push(`覆盖 ${meta.firstDate} 至 ${meta.lastDate}（收盘日线）`);
+  return parts.join(" · ");
+}
+
 /** 一张图：先取数，画在固定高度的画布里。 */
 export function ChronicleChart({ src, name, className = "" }: { src: string; name: string; className?: string }) {
-  const [demo, setDemo] = useState(false);
   const [state, setState] = useState<{ data: ChronicleData } | "error" | null>(null);
   useEffect(() => {
     const controller = new AbortController();
     setState(null);
-    fetch(demo ? `${src}?demo=1` : src, { headers: { accept: "application/json" }, signal: controller.signal })
+    fetch(src, { headers: { accept: "application/json" }, signal: controller.signal })
       .then((res) => (res.ok ? (res.json() as Promise<ChronicleData>) : Promise.reject(new Error(`api ${res.status}`))))
       .then((data) => {
         if (!controller.signal.aborted) setState({ data });
@@ -77,7 +86,9 @@ export function ChronicleChart({ src, name, className = "" }: { src: string; nam
         if (!controller.signal.aborted) setState("error");
       });
     return () => controller.abort();
-  }, [src, demo]);
+  }, [src]);
+  const data = state !== null && state !== "error" ? state.data : null;
+  const note = data ? sourceLine(data.meta) : "";
   return (
     <figure className={className}>
       {state === null && <div className="h-[320px] w-full animate-pulse rounded-tile bg-bg-sunk sm:h-[420px]" aria-hidden="true" />}
@@ -86,13 +97,12 @@ export function ChronicleChart({ src, name, className = "" }: { src: string; nam
           图表数据暂时取不到，刷新页面再试。
         </p>
       )}
-      {state !== null && state !== "error" && state.data.meta.status !== "missing" && (
-        <div className="h-[320px] w-full sm:h-[420px]" role="img" aria-label={state.data.meta.name}>
-          <Canvas data={state.data} />
+      {data && data.meta.status !== "missing" && (
+        <div className="h-[320px] w-full sm:h-[420px]" role="img" aria-label={data.meta.name}>
+          <Canvas data={data} />
         </div>
       )}
-      {state && state !== "error" && <p className="mt-3 text-sm text-ink-3" role="status">{demo ? "演示数据 · 随机生成，不用于历史复盘" : state.data.meta.status === "missing" ? "尚未取得真实数据" : `${state.data.meta.status === "stale" ? "尚未更新到应有交易日 · " : ""}${state.data.meta.source ?? ""} · 覆盖 ${state.data.meta.firstDate ?? "未知"} 至 ${state.data.meta.lastDate ?? "未知"}（收盘日线）`}</p>}
-      {state && state !== "error" && (demo || state.data.meta.status === "missing") && <button className="mt-3 text-sm text-accent" onClick={() => setDemo(!demo)}>{demo ? "返回真实数据" : "查看独立演示"}</button>}
+      {note && <p className="mt-3 text-sm text-ink-3" role="status">{note}</p>}
       <figcaption className="mt-2 text-[11.5px] text-ink-4">{name}</figcaption>
     </figure>
   );

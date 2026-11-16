@@ -1,6 +1,6 @@
 import { beijingDate, beijingTime } from '@aihot/contracts/time';
 import { DATA_INDICES } from '../data-indices.ts';
-import { allRows, requestData, providerDate, compactDate, positive, mergeDates, type DataRequest } from './data-client.ts';
+import { allRows, requestData, providerDate, compactDate, positive, mergeDates, ProviderAuthError, type DataRequest } from './data-client.ts';
 import { readSnapshot, saveSnapshot } from './snapshots.ts';
 export interface ProviderIndex {
   code: string; name: string; kind: string; classification?: string; peBasis?: string;
@@ -11,6 +11,8 @@ export interface ProviderIndex {
 export interface ProviderSnapshot {
   updatedAt: string; source: string; indices: ProviderIndex[];
   calendar?: string[]; calendarThrough?: string; expectedDate?: string; errors?: string[];
+  /** Set when the provider rejected the credentials (token expired, wrong or lacking permission): everything is the last good data. */
+  authError?: string;
 }
 export function expectedTradingDate(calendar: string[], now: Date): string | undefined {
   const today = beijingDate(now), afterClose = beijingTime(now) >= '19:00';
@@ -25,26 +27,33 @@ export async function refreshProvider(request: DataRequest = requestData, now = 
   const old = await readProvider();
   const today = beijingDate(now), year = Number(today.slice(0, 4));
   const errors: string[] = [];
+  // A rejected token fails every call, so we record it once and skip the rest of the (expensive) sync.
+  let authError: string | undefined;
+  const record = (label: string, err: unknown) => {
+    if (err instanceof ProviderAuthError) authError ??= err.detail;
+    errors.push(label);
+  };
   let calendar = old?.calendar ?? [], calendarThrough = old?.calendarThrough;
   try {
     const days = await allRows('trade_cal', { exchange: 'SSE', start_date: '20200101', end_date: `${year}1231` }, request);
     calendar = days.filter(row => Number(row.is_open) === 1).map(row => providerDate(row.cal_date)).sort();
     if (!calendar.length) throw new Error('Empty trading calendar');
     calendarThrough = `${year}-12-31`;
-  } catch { errors.push('交易日历同步失败，保留上次日历'); }
+  } catch (err) { record('交易日历同步失败，保留上次日历', err); }
   let sectors: Array<{ code: string; name: string; kind: string; classification: string }> = [];
   try {
     const rows = await allRows('index_classify', { level: 'L1', src: 'SW2021' }, request);
     sectors = rows.filter(row => row.level === 'L1' && row.src === 'SW2021' && Number(row.is_pub) === 1)
       .map(row => ({ code: String(row.index_code), name: String(row.industry_name), kind: 'sector', classification: 'SW2021-L1' }));
     if (!sectors.length) throw new Error('Empty industry universe');
-  } catch { errors.push('申万行业目录同步失败，保留已同步行业');
+  } catch (err) { record('申万行业目录同步失败，保留已同步行业', err);
     sectors = (old?.indices ?? []).filter(x => x.classification === 'SW2021-L1').map(x => ({ ...x, classification: 'SW2021-L1' })); }
   const definitions = [...DATA_INDICES.filter(x => x.kind === 'broad'), ...sectors];
   const indices: ProviderIndex[] = [];
   for (const definition of definitions) {
     const previous = old?.indices.find(x => x.code === definition.code);
     let index: ProviderIndex = previous ? { ...previous, ...definition } : { ...definition, bars: [], valuations: [] };
+    if (authError) { index.error = '本次同步失败，保留最后成功数据'; indices.push(index); continue; }
     const first = definition.kind === 'sector' ? '2021-01-01' : '2020-01-01';
     const start = syncStart(index, now, first);
     const bars: ProviderIndex['bars'] = [], valuations: ProviderIndex['valuations'] = [];
@@ -71,12 +80,12 @@ export async function refreshProvider(request: DataRequest = requestData, now = 
       index = { ...index, bars: mergeDates(index.bars, bars), valuations: mergeDates(index.valuations, valuations),
         peBasis: definition.kind === 'sector' ? '申万 PE（供应商口径）' : 'PE-TTM', syncedAt: now.toISOString(), error: undefined,
         lastFullSync: start === first ? today : index.lastFullSync };
-    } catch { index.error = '本次同步失败，保留最后成功数据'; errors.push(`${definition.code} 同步失败`); }
+    } catch (err) { record(`${definition.code} 同步失败`, err); index.error = '本次同步失败，保留最后成功数据'; }
     indices.push(index);
     console.log(JSON.stringify({ msg: 'chronicle index sync', code: index.code, rows: index.bars.length, ok: !index.error }));
   }
   const snapshot: ProviderSnapshot = { updatedAt: now.toISOString(), source: 'Tushare Pro（用户配置服务）', indices,
-    calendar, calendarThrough, expectedDate: calendarThrough && calendarThrough >= today ? expectedTradingDate(calendar, now) : undefined, errors };
+    calendar, calendarThrough, expectedDate: calendarThrough && calendarThrough >= today ? expectedTradingDate(calendar, now) : undefined, errors, authError };
   await saveSnapshot('provider', snapshot);
   return snapshot;
 }

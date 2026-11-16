@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { allRows,providerDate } from '../backend/data-client.ts';
-import { expectedTradingDate,syncStart,type ProviderIndex } from '../backend/provider.ts';
+import { allRows,requestData,providerDate,ProviderAuthError } from '../backend/data-client.ts';
+import { expectedTradingDate,refreshProvider,syncStart,type ProviderIndex } from '../backend/provider.ts';
 import { marketBreadth } from '../backend/market.ts';
 import { eligibleFund,productGroup,fundSummary,type FundSnapshot } from '../backend/funds.ts';
 import { percentile,periodReturn } from '../analytics.ts';
@@ -35,4 +35,28 @@ test('基金过滤被动产品，公告日隔离未来持仓，份额类别不�
  const group=productGroup('测试混合-A','基金公司');
  const data:FundSnapshot={period:'20260930',catalogAt:'2026-10-29',updatedAt:'2026-10-29',members:['a','c'].map(code=>({code,name:code,manager:'m',group,found:null})),observations:['a','c'].map(code=>({code,state:'reported',checkedAt:'2026-10-29',holdings:[{symbol:'600000.SH',announced:'2026-10-28',weight:10,value:100},{symbol:'600001.SH',announced:'2026-10-30',weight:5,value:50}]}))};
  const summary=fundSummary(data,'2026-10-29');assert.equal(summary.products,1);assert.equal(summary.leaders.length,1);assert.equal(summary.leaders[0]!.products,1);
+});
+test('凭证被拒单独归类，普通失败不误判',async()=>{
+ const original=globalThis.fetch,token=process.env.TUSHARE_TOKEN;
+ process.env.TUSHARE_TOKEN='test-token';
+ const reply=(status:number,body:unknown)=>async()=>({ok:status>=200&&status<300,status,json:async()=>body}) as unknown as Response;
+ try{
+  globalThis.fetch=reply(200,{code:-2002,msg:'抱歉，您的token不对'}) as unknown as typeof fetch;
+  await assert.rejects(()=>requestData('trade_cal',{}),(err:Error)=>err instanceof ProviderAuthError&&/token不对/.test(err.message));
+  globalThis.fetch=reply(401,{}) as unknown as typeof fetch;
+  await assert.rejects(()=>requestData('trade_cal',{}),(err:Error)=>err instanceof ProviderAuthError);
+  globalThis.fetch=reply(200,{code:-9999,msg:'系统内部错误'}) as unknown as typeof fetch;
+  await assert.rejects(()=>requestData('trade_cal',{}),(err:Error)=>!(err instanceof ProviderAuthError)&&/Invalid provider response/.test(err.message));
+  globalThis.fetch=reply(200,{code:0,data:{fields:['ts_code','close'],items:[['600000.SH',12.3]]}}) as unknown as typeof fetch;
+  assert.deepEqual(await requestData('trade_cal',{}),[{ts_code:'600000.SH',close:12.3}]);
+ }finally{
+  globalThis.fetch=original;
+  if(token===undefined)delete process.env.TUSHARE_TOKEN;else process.env.TUSHARE_TOKEN=token;
+ }
+});
+test('凭证被拒时同步提前收手，快照记下原因',async()=>{
+ let calls=0;
+ const snapshot=await refreshProvider(async()=>{calls++;throw new ProviderAuthError('token 已过期');},new Date('2026-11-13T02:00:00Z'));
+ assert.equal(snapshot.authError,'token 已过期');
+ assert.equal(calls,2,'交易日历与行业目录各试一次后即停，不再逐只指数重试');
 });

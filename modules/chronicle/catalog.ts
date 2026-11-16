@@ -1,6 +1,7 @@
 // 这个模块的地址与图表目录：分组、每组的图表面板与每张图的文案。
-// 数据文件（data/）由 server.ts 按这里的 slug 发出；网页只读这里，不读 data/。
-// 内容收录自开源项目 A股编年史（oliverran/the-history-of-a-stock），文案与图表名称沿用该项目。
+// 图表与数据收录自开源项目 A股编年史（oliverran/the-history-of-a-stock）：
+// 宽基走势与由日线现算的派生图接实时行情；其余的图（估值、行业代表组合、抱团代理等）
+// 发随包的真实快照（源项目口径，见 server.ts 与 data/）。网页只读这里，不读 data/。
 
 /** 三大分组：宽基、行业、抱团。 */
 export type GroupKey = "broad" | "sectors" | "clusters";
@@ -49,7 +50,7 @@ export interface GroupInfo {
   sections: Array<{ n: string; title: string; slugs: string[] }>;
 }
 
-/** 数据来源：页面上按它写出来，接口响应里也带上。 */
+/** 实时数据来源：页面上按它写出来，接口响应里也带上。随包快照的来源写在各自的数据文件里。 */
 export const LIVE_SOURCE = "腾讯证券公开行情接口（指数日线）";
 
 export const GROUPS: readonly GroupInfo[] = [
@@ -212,7 +213,7 @@ export const PAGES: readonly ChartPage[] = [
     heroTitle: "戴维斯拆解 (Earnings vs Multiple)",
     heroLead: "价格的变动只有两个源泉：要么公司赚了更多的钱（EPS Growth），要么市场愿意给这些钱更高的定价（PE Expansion）。拆解它们，就是透视牛熊的本质。",
     chartTitle: "沪深300年度涨跌幅归因分析",
-    chartNote: "红点为最终总回报；黑色柱体代表盈利贡献，灰色柱体代表估值贡献。",
+    chartNote: "红点为当年最终总回报；黑色柱体是盈利（EPS）贡献，灰色柱体是估值（PE）贡献。按对数口径 log(总回报)=log(EPS)+log(PE)，由沪深 300 日线与市盈率现算。",
     sections: [
       {
         n: "1",
@@ -315,8 +316,8 @@ export const PAGES: readonly ChartPage[] = [
     cardBlurb: "从庄股时代到量化时代的切片与断代史。",
     heroTitle: "六时代",
     heroLead: "A股并非线性发展，而是由一个个充满时代烙印的剧目拼接而成。从早期的庄股横行、股权分置改革，到杠杆牛、外资定价，再到如今的量化与被动时代。",
-    chartTitle: "时代分幕",
-    chartNote: "在长周期折线图上，寻找那些改变市场规则的底层逻辑转折点。",
+    chartTitle: "上证综指（断代底图）",
+    chartNote: "上证综指长期价格，作为时代分幕叙事的底图；断代的转折点在正文里标注。",
   },
   {
     slug: "valuation",
@@ -325,8 +326,8 @@ export const PAGES: readonly ChartPage[] = [
     cardBlurb: "市盈率与市净率的历史分位数与均值回归。",
     heroTitle: "估值锚点",
     heroLead: "万物皆周期，均值必回归。无论是情绪极度悲观时的破净潮，还是流动性泛滥时的市梦率，最终都会被万有引力拉回中枢。",
-    chartTitle: "PE (TTM) 走势与标准差通道",
-    chartNote: "在 +1 与 -1 标准差之间游走的估值钟摆。",
+    chartTitle: "估值锚点（沪深 300）",
+    chartNote: "沪深 300 的市盈率与其 ±1 标准差的估值通道。",
   },
   {
     slug: "style-ratios",
@@ -357,8 +358,8 @@ export const PAGES: readonly ChartPage[] = [
     cardBlurb: "长坡厚雪，量价齐升的消费图腾。",
     heroTitle: "白酒 (Liquor)",
     heroLead: "从周期品到消费品，再到社交货币与金融资产。白酒板块的估值重塑，是过去十年 A 股最宏大的一场关于确定性的叙事。",
-    chartTitle: "中证白酒超额收益走势",
-    chartNote: "相对沪深300的超额收益，记录了提价周期与外资流入的共振。",
+    chartTitle: "白酒代表组合",
+    chartNote: "等权成分股（复权收盘价）合成的代表组合，起点归一化为 100；不是中证白酒指数。",
     sections: [
       {
         n: "1",
@@ -388,8 +389,8 @@ export const PAGES: readonly ChartPage[] = [
     cardBlurb: "渗透率的S型曲线与产能过剩的残酷出清。",
     heroTitle: "新能源 (New Energy)",
     heroLead: "从光伏补贴退坡到电动车渗透率飙升，新能源赛道完美演绎了产业生命周期理论：从导入期的混沌，到成长期的狂飙，再到成熟期的残酷价格战。",
-    chartTitle: "新能源车产业链指数",
-    chartNote: "景气度投资法的极致实验场。",
+    chartTitle: "新能源代表组合",
+    chartNote: "等权代表组合（复权收盘价，起点 100）；不是新能源车产业链指数。",
   },
   {
     slug: "semi",
@@ -408,8 +409,8 @@ export const PAGES: readonly ChartPage[] = [
     cardBlurb: "宏观经济的晴雨表与高股息的避风港。",
     heroTitle: "银行 (Banks)",
     heroLead: "百业之母。在狂飙突进的年代，它们是信用的水泵；在资产荒的年代，它们是提供稳定红利与高股息的避风港。",
-    chartTitle: "中证银行走势",
-    chartNote: "极低的估值中枢与长期稳定的ROE。",
+    chartTitle: "银行代表组合",
+    chartNote: "等权代表组合（复权收盘价，起点 100）；不是中证银行指数。",
   },
   {
     slug: "property",
@@ -428,8 +429,8 @@ export const PAGES: readonly ChartPage[] = [
     cardBlurb: "算力、模型与应用的新一轮产业革命。",
     heroTitle: "人工智能 (AI)",
     heroLead: "当 ChatGPT 敲开 AGI 的大门，算力成为了新的基础设施。这里既有真实改变世界的产业革命，也有短期预期打满的泡沫炒作。",
-    chartTitle: "中证人工智能走势",
-    chartNote: "从算法、算力到应用场景的轮动炒作。",
+    chartTitle: "AI 算力代表组合",
+    chartNote: "等权代表组合（复权收盘价，起点 100）；不是中证人工智能指数。",
   },
   {
     slug: "rotation",
@@ -455,8 +456,8 @@ export const PAGES: readonly ChartPage[] = [
     cardBlurb: "各大行业 PE/PB 的横向对比与历史纵位。",
     heroTitle: "行业估值 (Sector Valuation)",
     heroLead: "买的好不如买的便宜。跨行业比较不仅需要看绝对景气度，还需要看当前价格是否已经透支了未来的预期。",
-    chartTitle: "核心行业当前 PE 历史分位数",
-    chartNote: "数值越低，代表相对其自身历史估值水平越便宜。",
+    chartTitle: "价格分位（近 5 年）",
+    chartNote: "各行业代表组合当前价格在近 5 年区间中的分位（%）；越低代表相对自身历史越便宜，按价格而非 PE 计。",
   },
 
   // ---- 抱团 ----
@@ -467,8 +468,8 @@ export const PAGES: readonly ChartPage[] = [
     cardBlurb: "外资流入与消费升级共同缔造的白马盛世。",
     heroTitle: "茅指数 (The Liquor Club)",
     heroLead: "在沪港通开通与供给侧改革的交响乐中，外资带着低利率时代的 DCF 模型杀入 A 股。以贵州茅台为首的核心资产，迎来了史诗级的估值重塑。",
-    chartTitle: "茅指数相对沪深300超额收益",
-    chartNote: "2016-2021：长坡厚雪的黄金时代。",
+    chartTitle: "茅指数",
+    chartNote: "等权成分股（收盘价）合成的代表组合，起点 100；不是官方指数。",
     sections: [
       {
         n: "1",
@@ -518,8 +519,8 @@ export const PAGES: readonly ChartPage[] = [
     cardBlurb: "市场交易拥挤度的量化刻画。",
     heroTitle: "集中度 (Concentration)",
     heroLead: "抱团的本质是资金的聚变。当全市场前 5% 的股票吸走了超过一半的流动性，这不仅是共识的巅峰，往往也是瓦解的前兆。",
-    chartTitle: "前5%个股成交额占比",
-    chartNote: "数值越高，代表交易越拥挤，虹吸效应越明显。",
+    chartTitle: "集中度（代理）",
+    chartNote: "以四大抱团主题组合的 60 日滚动相关性作为拥挤度 / 同步性代理；不是前 5% 个股成交额占比。",
   },
   {
     slug: "correlation",
@@ -538,13 +539,13 @@ export const PAGES: readonly ChartPage[] = [
     cardBlurb: "从五朵金花到煤飞色舞：更早期的抱团史。",
     heroTitle: "历史祖谱 (Predecessors)",
     heroLead: "阳光之下并无新事。茅宁之前，A股同样经历过“五朵金花”与“煤飞色舞”的狂热。每一次抱团，都刻着那个时代最鲜明的宏观烙印。",
-    chartTitle: "古早抱团史：金融地产煤炭有色",
-    chartNote: "城镇化与重工业化全速推进时代的王冠。",
+    chartTitle: "古早抱团史（代理）",
+    chartNote: "金融 / 资源 / 地产 / 消费四个主题代表组合的归一化走势（起点 100）。",
   },
 ];
 
 /** 真实行情图的算法：直接从指数日线画，或由日线现算的派生量。 */
-export type LiveKind = "index" | "drawdown" | "annual" | "rolling" | "turbulence" | "volatility" | "annual-vol" | "seasonality" | "distribution" | "relative";
+export type LiveKind = "index" | "drawdown" | "annual" | "rolling" | "turbulence" | "volatility" | "annual-vol" | "seasonality" | "distribution" | "relative" | "davis";
 
 export interface LiveChart {
   group: GroupKey;
@@ -577,6 +578,7 @@ export const LIVE_CHARTS: readonly LiveChart[] = [
   { group: "broad", slug: "annual-volatility", kind: "annual-vol", code: "sh000300", indexName: "沪深 300" },
   { group: "broad", slug: "seasonality", kind: "seasonality", code: "sh000300", indexName: "沪深 300" },
   { group: "broad", slug: "distribution", kind: "distribution", code: "sh000300", indexName: "沪深 300" },
+  { group: "broad", slug: "davis-decomposition", kind: "davis", code: "sh000300", indexName: "沪深 300" },
   { group: "broad", slug: "style-ratios", kind: "relative", code: "sh000300", code2: "sh000852", indexName: "沪深 300 / 中证 1000" },
 ];
 
