@@ -20,6 +20,7 @@ import type { Finding } from "@aihot/backend/notify/feishu";
 import { LIVE_CHARTS, LIVE_INDICES, LIVE_SOURCE, GROUPS, liveChart, pageOf, type LiveIndex } from "./catalog.ts";
 import { barsFor, liveChartJson } from "./backend/charts.ts";
 import { quotesFetchedAt, refreshQuotes } from "./backend/quotes.ts";
+import { refreshClusters } from "./backend/clusters.ts";
 import { refreshUsMarket, usFreshRoot } from "./backend/us-market.ts";
 // 主题 → 图表的对应表在 topic-map.ts，网页侧也读它（借类型）。
 import { chronicleForTopic } from "./topic-map.ts";
@@ -140,7 +141,7 @@ export default defineServerModule({
       const charts = codes.map(code => LIVE_CHARTS.find(c => c.code === code && c.kind === "index"));
       if (!valid(start) || !valid(end) || start > end || codes.length > 6 || charts.some(c => !c)) return reply.code(400).send({error:"Invalid comparison"});
       const snapshot = await readProvider();
-      const inputs = await Promise.all(charts.map(async c => ({ name: c!.indexName, bars: (await barsFor(c!.code, snapshot)).bars })));
+      const inputs = await Promise.all(charts.map(async c => ({ name: c!.indexName, bars: (await barsFor(c!.code!, snapshot)).bars })));
       return reply.header("Cache-Control","no-store").send({ ...compareBars(inputs,start,end), events:await chronicleNews(start,end), missing:inputs.filter(x=>!x.bars.length).map(x=>x.name) });
     });
     // 精选页那张实时图：分时或日K，服务端抓东财（失败回退腾讯）并缓存 15 秒。
@@ -203,6 +204,18 @@ export default defineServerModule({
       missed: "once",
       when: () => process.env.COLLECT_ENABLED === "true",
       run: () => refreshQuotes(),
+    },
+    // 抱团卷：成分股日线走腾讯（与上面同一路），沪深 300 的权重走 Tushare（在 provider 之后跑）。job_runs 只记摘要：
+    // 快照里有八条几千个点的序列，整份存进 detail 会撑爆那张表。
+    {
+      name: "chronicle.clusters",
+      cron: "50 19 * * 1-5",
+      missed: "once",
+      when: () => process.env.COLLECT_ENABLED === "true",
+      run: async () => {
+        const snapshot = await refreshClusters();
+        return { series: snapshot.series.length, concentration: snapshot.concentration.dates.length, errors: snapshot.errors.length };
+      },
     },
     // 美股子应用的数据集从上游回源：上游清早生成，晚上抓一次，只搬 manifest 上哈希变了的那些。
     {

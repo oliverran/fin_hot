@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { ToggleChip } from "@aihot/web/components/ui/Controls";
 import type { Screen } from "@aihot/web/components/shell/screens";
-import { LIVE_CHARTS } from "../../catalog.ts";
+import { LIVE_CHARTS, type LiveChart } from "../../catalog.ts";
 import { Canvas } from "../chart.tsx";
 import { DataTable, Notice, SectionHead, StatGrid, ToolShell } from "../tool-ui.tsx";
 
@@ -17,7 +17,9 @@ type Result = {
   events: Array<{ id: string; title: string; date: string; url: string }>;
 };
 
-const CHOICES = LIVE_CHARTS.filter((chart) => chart.kind === "index" && chart.group === "broad");
+const CHOICES = LIVE_CHARTS.filter(
+  (chart): chart is LiveChart & { code: string } => chart.kind === "index" && chart.group === "broad" && !!chart.code,
+);
 const pct = (value: number | null) => (value === null ? "—" : value.toFixed(2) + "%");
 const dateInput = "h-11 rounded-full border border-line-strong bg-surface px-3.5 text-[16px] text-ink-2 outline-none transition-colors hover:border-ink-4 focus:border-accent lg:h-8 lg:text-[12.5px]";
 

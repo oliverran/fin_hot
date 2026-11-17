@@ -22,8 +22,9 @@ export interface QuoteBar {
   volume: number;
 }
 
-/** 要抓的指数代码：派生图算自的指数（含相对强弱的分母）一并抓下来；带点的提供方式代码（行业指数）腾讯抓不到，跳过。 */
-export const QUOTE_CODES: readonly string[] = [...new Set(LIVE_CHARTS.flatMap((chart) => (chart.code2 ? [chart.code, chart.code2] : [chart.code])))].filter((code) => !code.includes("."));
+/** 要抓的指数代码：派生图算自的指数（含相对强弱的分母）一并抓下来；带点的提供方式代码（行业指数）腾讯抓不到，跳过；抱团卷没有单一代码，留空。 */
+export const QUOTE_CODES: readonly string[] = [...new Set(LIVE_CHARTS.flatMap((chart) => [chart.code, chart.code2]))]
+  .filter((code): code is string => !!code && !code.includes("."));
 
 /** 一天前，用来把翻页的区间往前挪。 */
 function dayBefore(date: string): string {

@@ -7,6 +7,8 @@ import { closeDb, sql } from "@aihot/backend/db";
 import { Reply, stub, tag } from "../../../tests/setup.ts";
 import { LIVE_SOURCE, SECTOR_TRACKS, type LiveChart } from "../catalog.ts";
 import { barsFor, liveChartJson } from "../backend/charts.ts";
+import { compositeIndex, rollingCorrelation, type ClusterSeries } from "../backend/clusters.ts";
+import { CLUSTER_COMBOS, CLUSTER_THEMES } from "../cluster-groups.ts";
 import { saveSnapshot } from "../backend/snapshots.ts";
 import type { ProviderSnapshot } from "../backend/provider.ts";
 import {
@@ -320,6 +322,78 @@ test("轮动总图与行业估值按七条赛道现算", async () => {
   const bars = valuation!.series as Array<{ date: string; value: number }>;
   assert.deepEqual(bars.map((row) => row.date), SECTOR_TRACKS.map((track) => track.name));
   assert.ok(bars.every((row) => row.value > 99.9)); // 一路上涨，最新价就是近 5 年最高价，分位到顶
+});
+
+test("等权组合指数：按当日有数据的成分股等权平均日收益，逐日累乘", () => {
+  const computed = compositeIndex([
+    [{ date: "2024-01-01", close: 100 }, { date: "2024-01-02", close: 110 }, { date: "2024-01-03", close: 121 }],
+    [{ date: "2024-01-01", close: 50 }, { date: "2024-01-02", close: 60 }, { date: "2024-01-03", close: 72 }],
+  ]);
+  assert.deepEqual(computed.dates, ["2024-01-01", "2024-01-02", "2024-01-03"]);
+  assert.deepEqual(computed.values, [100, 115, 132.25]);
+  // 起点取最早那只成分股上市的当天；还没上市的成分股在那天之前不参与。
+  const late = compositeIndex([
+    [{ date: "2024-01-01", close: 100 }, { date: "2024-01-02", close: 110 }],
+    [{ date: "2024-01-02", close: 10 }, { date: "2024-01-03", close: 12 }],
+  ]);
+  assert.deepEqual(late.dates, ["2024-01-01", "2024-01-02", "2024-01-03"]);
+  assert.deepEqual(late.values, [100, 110, 132]);
+  assert.deepEqual(compositeIndex([]), { name: "", dates: [], values: [] });
+});
+
+test("滚动平均相关系数：同步序列为 1，反向为 -1", () => {
+  const dates = Array.from({ length: 10 }, (_, i) => `2024-01-${String(i + 1).padStart(2, "0")}`);
+  const returns = [0.01, -0.01, 0.02, -0.02, 0.01, 0.005, -0.005, 0.015, 0];
+  const series = (name: string, scale: number): ClusterSeries => {
+    const values = [100];
+    for (const r of returns) values.push(values.at(-1)! * (1 + r * scale));
+    return { name, dates, values };
+  };
+  const same = rollingCorrelation([series("a", 1), series("b", 1)], 3);
+  assert.equal(same.length, dates.length - 3);
+  assert.ok(same.every((point) => Number.isFinite(point.value) && Math.abs(point.value - 1) < 1e-9));
+  const opposite = rollingCorrelation([series("a", 1), series("b", -1)], 3);
+  assert.ok(opposite.every((point) => Math.abs(point.value + 1) < 1e-9));
+});
+
+test("抱团卷：四代专题各一条等权组合，历史祖谱与相关性按快照现算", async () => {
+  const dates = Array.from({ length: 90 }, (_, i) => new Date(Date.UTC(2023, 0, 1 + i)).toISOString().slice(0, 10));
+  // 各条组合的日收益略有差别（相位不同），这样两两相关系数才有意义而不是常数序列。
+  const wiggle = (name: string, phase: number): ClusterSeries => {
+    const values = [100];
+    for (let i = 1; i < dates.length; i++) values.push(values[i - 1]! * (1 + 0.01 * Math.sin((i + phase) / 5)));
+    return { name, dates, values };
+  };
+  await saveSnapshot("clusters", {
+    updatedAt: "2024-01-03T00:00:00.000Z",
+    source: "测试快照",
+    series: [...CLUSTER_COMBOS.map((combo, i) => wiggle(combo.name, i)), ...CLUSTER_THEMES.map((theme, i) => wiggle(theme.name, i))],
+    concentration: { name: "沪深 300 前十大权重", dates: ["2024-01-31", "2024-02-29", "2024-03-29"], values: [21.5, 22.1, 22.66] },
+    errors: [],
+  });
+
+  const combo = await liveChartJson({ group: "clusters", slug: "liquor-club", kind: "cluster-combo", indexName: "茅指数" });
+  assert.equal(combo?.meta.type, "line");
+  assert.equal(combo?.meta.source, "测试快照");
+  assert.equal(combo?.meta.firstDate, dates[0]);
+  assert.equal(combo?.meta.lastDate, dates.at(-1));
+  assert.equal((combo?.series as unknown[]).length, dates.length);
+
+  const themes = await liveChartJson({ group: "clusters", slug: "predecessors", kind: "cluster-themes", indexName: "金融 / 资源 / 地产 / 消费" });
+  assert.equal(themes?.meta.type, "multi-line");
+  const shaped = themes!.series as { dates: string[]; seriesData: Record<string, number[]> };
+  assert.deepEqual(Object.keys(shaped.seriesData), CLUSTER_THEMES.map((theme) => theme.name));
+  assert.equal(shaped.dates.length, dates.length);
+
+  const correlation = await liveChartJson({ group: "clusters", slug: "correlation", kind: "cluster-correlation", indexName: "四大抱团组合" });
+  assert.equal(correlation?.meta.type, "line");
+  const points = correlation!.series as Array<{ date: string; value: number }>;
+  assert.equal(points.length, dates.length - 60);
+  assert.ok(points.every((point) => point.value >= -1 && point.value <= 1));
+
+  const concentration = await liveChartJson({ group: "clusters", slug: "concentration", kind: "cluster-concentration", indexName: "沪深 300 前十大权重" });
+  assert.equal(concentration?.meta.type, "line");
+  assert.deepEqual((concentration!.series as Array<{ value: number }>).map((row) => row.value), [21.5, 22.1, 22.66]);
 });
 
 test("库里还没有这只指数的行情时返回 null", async () => {

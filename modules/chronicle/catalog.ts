@@ -1,7 +1,8 @@
 // 这个模块的地址与图表目录：分组、每组的图表面板与每张图的文案。
 // 图表与数据收录自开源项目 A股编年史（oliverran/the-history-of-a-stock）：
 // 宽基走势、由日线现算的派生图、七个核心赛道的行业指数，以及按这七条赛道现算的轮动与估值；
-// 其余的图（宽基估值、行业权重、抱团代理等）发随包的真实快照（源项目口径，见 server.ts 与 data/）。网页只读这里，不读 data/。
+// 抱团卷按 cluster-groups.ts 的成分名单现算；其余的图（宽基估值、行业权重等）发随包的真实快照（源项目口径，见 server.ts 与 data/）。网页只读这里，不读 data/。
+import { CLUSTER_COMBOS } from "./cluster-groups.ts";
 
 /** 三大分组：宽基、行业、抱团。 */
 export type GroupKey = "broad" | "sectors" | "clusters";
@@ -489,8 +490,8 @@ export const PAGES: readonly ChartPage[] = [
     cardBlurb: "能源革命与高景气赛道的极致拔估值。",
     heroTitle: "宁组合 (The Ning Combo)",
     heroLead: "当茅指数的估值被推向高处不胜寒的位置，资金急需寻找下一个宏大叙事。碳中和的时代浪潮，将以宁德时代为首的新能源产业链推上了神坛。",
-    chartTitle: "宁组合相对沪深300超额收益",
-    chartNote: "景气度投资法的盛极而衰。",
+    chartTitle: "宁组合",
+    chartNote: "等权成分股（收盘价）合成的代表组合，起点 100；不是官方指数。",
   },
   {
     slug: "special-valuation",
@@ -499,8 +500,8 @@ export const PAGES: readonly ChartPage[] = [
     cardBlurb: "资产荒背景下的红利重估与央国企价值发现。",
     heroTitle: "中特估 (Special Valuation)",
     heroLead: "在长端利率不断下行、成长赛道集体杀估值的凛冬，“中国特色估值体系”横空出世。高股息与稳定分红成为了资金最后的避风港。",
-    chartTitle: "中特估组合相对沪深300超额收益",
-    chartNote: "从无人问津到全网追捧的价值重估。",
+    chartTitle: "中特估",
+    chartNote: "等权成分股（收盘价）合成的代表组合，起点 100；不是官方指数。",
   },
   {
     slug: "ai-compute",
@@ -509,8 +510,8 @@ export const PAGES: readonly ChartPage[] = [
     cardBlurb: "AGI 浪潮下，对卖铲人的狂热追逐。",
     heroTitle: "AI 算力 (AI Compute)",
     heroLead: "ChatGPT 的爆火点燃了 AGI 的引信。在模型层竞争尚不明朗之际，卖铲子的人——光模块、服务器与算力租赁，成为了资金最疯狂的博弈阵地。",
-    chartTitle: "AI算力组合相对沪深300超额收益",
-    chartNote: "算力即权力的时代叙事。",
+    chartTitle: "AI 算力",
+    chartNote: "等权成分股（收盘价）合成的代表组合，起点 100；不是官方指数。",
   },
   {
     slug: "concentration",
@@ -519,8 +520,8 @@ export const PAGES: readonly ChartPage[] = [
     cardBlurb: "市场交易拥挤度的量化刻画。",
     heroTitle: "集中度 (Concentration)",
     heroLead: "抱团的本质是资金的聚变。当全市场前 5% 的股票吸走了超过一半的流动性，这不仅是共识的巅峰，往往也是瓦解的前兆。",
-    chartTitle: "集中度（代理）",
-    chartNote: "以四大抱团主题组合的 60 日滚动相关性作为拥挤度 / 同步性代理；不是前 5% 个股成交额占比。",
+    chartTitle: "沪深 300 前十大权重合计",
+    chartNote: "沪深 300 前十大成分股权重合计（%），按指数公司公布的调仓月；衡量大盘头部的集中程度。",
   },
   {
     slug: "correlation",
@@ -529,8 +530,8 @@ export const PAGES: readonly ChartPage[] = [
     cardBlurb: "当万物齐涨齐跌，分散投资如何失效。",
     heroTitle: "相关性 (Correlation)",
     heroLead: "在系统性崩溃的末期，或者抱团瓦解的泥沙俱下阶段，所有资产的相关性都会急剧趋近于 1。这时候，任何基于行业分散的理论都会失效。",
-    chartTitle: "沪深300成分股平均相关系数",
-    chartNote: "相关性飙升，往往伴随着宏观流动性冲击。",
+    chartTitle: "四大抱团组合 60 日滚动平均相关系数",
+    chartNote: "茅指数、宁组合、中特估、AI 算力四个组合日收益的 60 日滚动平均两两相关系数；越接近 1，越同涨同跌。",
   },
   {
     slug: "predecessors",
@@ -539,13 +540,29 @@ export const PAGES: readonly ChartPage[] = [
     cardBlurb: "从五朵金花到煤飞色舞：更早期的抱团史。",
     heroTitle: "历史祖谱 (Predecessors)",
     heroLead: "阳光之下并无新事。茅宁之前，A股同样经历过“五朵金花”与“煤飞色舞”的狂热。每一次抱团，都刻着那个时代最鲜明的宏观烙印。",
-    chartTitle: "古早抱团史（代理）",
+    chartTitle: "古早抱团史",
     chartNote: "金融 / 资源 / 地产 / 消费四个主题代表组合的归一化走势（起点 100）。",
   },
 ];
 
-/** 真实行情图的算法：直接从指数日线画，或由日线现算的派生量。rotation 与 sector-valuation 按 SECTOR_TRACKS 这一组现算。 */
-export type LiveKind = "index" | "drawdown" | "annual" | "rolling" | "turbulence" | "volatility" | "annual-vol" | "seasonality" | "distribution" | "relative" | "davis" | "rotation" | "sector-valuation";
+/**
+ * 真实行情图的算法：直接从指数日线画，或由日线现算的派生量。rotation 与 sector-valuation 按 SECTOR_TRACKS 这一组现算；
+ * cluster-* 按 cluster-groups.ts 的成分名单现算（见 backend/clusters.ts）。
+ */
+export type LiveKind = "index" | "drawdown" | "annual" | "rolling" | "turbulence" | "volatility" | "annual-vol" | "seasonality" | "distribution" | "relative" | "davis" | "rotation" | "sector-valuation" | ClusterKind;
+
+/** 抱团卷那几张按成分名单现算的图。 */
+export type ClusterKind = "cluster-combo" | "cluster-themes" | "cluster-correlation" | "cluster-concentration";
+
+const CLUSTER_KINDS: ReadonlySet<string> = new Set<ClusterKind>(["cluster-combo", "cluster-themes", "cluster-correlation", "cluster-concentration"]);
+
+/** 这张图是不是抱团卷里按成分股现算的那一类。 */
+export function isClusterKind(kind: LiveKind): kind is ClusterKind {
+  return CLUSTER_KINDS.has(kind);
+}
+
+/** 只靠一两条指数日线就能画的那些图；另起一名，好让后端的分支判断收敛在这两种之间。 */
+export type DailyKind = Exclude<LiveKind, ClusterKind>;
 
 export interface LiveChart {
   group: GroupKey;
@@ -554,8 +571,9 @@ export interface LiveChart {
   /**
    * 行情代码；派生图填它算自的那只指数。
    * 宽基是腾讯写法（sh000300），落 chronicle_quotes；行业指数是提供方式写法（801120.SI），只从提供方快照取。
+   * 抱团卷的图由一组成分股合成，没有单一代码，这里留空。
    */
-  code: string;
+  code?: string;
   /** 相对强弱（relative）填分母那只指数：比值是 code ÷ code2。 */
   code2?: string;
   /** 这只指数的中文名，用来写数据来源。 */
@@ -577,11 +595,11 @@ export const SECTOR_TRACKS = [
 ] as const;
 
 /**
- * 实时更新的图表：宽基指数走势、只靠指数日线就能算出来的沪深 300 派生图、行业卷七个核心赛道的申万一级行业指数，
- * 以及按这七条赛道现算的轮动总图与行业估值。
- * 行业指数的日线只有付费提供方（Tushare）才有公开口径，所以代码写成提供方式（801120.SI），
- * 不去腾讯抓、也不落 chronicle_quotes（见 backend/quotes.ts 与 backend/charts.ts）。
- * 其余的图（宽基估值、行业权重、抱团等）没有公开免费口径，仍是随包的示例数据。
+ * 实时更新的图表：宽基指数走势、只靠指数日线就能算出来的沪深 300 派生图、行业卷七个核心赛道的申万一级行业指数、
+ * 按这七条赛道现算的轮动总图与行业估值，以及按 cluster-groups.ts 成分名单现算的抱团卷。
+ * 行业指数与抱团组合都没有公开的免费指数口径，前者用提供方式代码（801120.SI）、后者用成分股合成，
+ * 日线都出自 Tushare 或腾讯（见 backend/charts.ts 与 backend/clusters.ts）。
+ * 其余的图（宽基估值、行业权重等）没有公开免费口径，仍是随包的示例数据。
  */
 export const LIVE_CHARTS: readonly LiveChart[] = [
   { group: "broad", slug: "shanghai-composite", kind: "index", code: "sh000001", indexName: "上证综指" },
@@ -605,6 +623,12 @@ export const LIVE_CHARTS: readonly LiveChart[] = [
   // 轮动总图与行业估值：都按这七条赛道现算（2021 年起归一化的走势 / 近五年价格分位），见 backend/charts.ts。
   { group: "sectors", slug: "rotation", kind: "rotation", code: SECTOR_TRACKS[0].code, indexName: "七大核心赛道" },
   { group: "sectors", slug: "sector-valuation", kind: "sector-valuation", code: SECTOR_TRACKS[0].code, indexName: "七大核心赛道" },
+  // 抱团卷：四代专题各一条等权成分股组合的走势；相关性、集中度与历史祖谱也按成分名单现算（见 backend/clusters.ts）。
+  // 这几张都由一组成分股合成，没有单一代码。
+  ...CLUSTER_COMBOS.map((combo): LiveChart => ({ group: "clusters", slug: combo.slug, kind: "cluster-combo", indexName: combo.name })),
+  { group: "clusters", slug: "correlation", kind: "cluster-correlation", indexName: "四大抱团组合" },
+  { group: "clusters", slug: "concentration", kind: "cluster-concentration", indexName: "沪深 300 前十大权重" },
+  { group: "clusters", slug: "predecessors", kind: "cluster-themes", indexName: "金融 / 资源 / 地产 / 消费" },
 ];
 
 /** 精选页第一屏那张实时图跟的两只指数（腾讯写法，与 LIVE_CHARTS 里的代码一致）。 */

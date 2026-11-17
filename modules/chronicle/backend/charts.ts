@@ -4,8 +4,10 @@
 import { readProvider } from "./provider.ts";
 import { compareBars } from "./compare.ts";
 import { pricePercentile } from "../analytics.ts";
-import { LIVE_SOURCE, SECTOR_TRACKS, pageOf, type LiveChart } from "../catalog.ts";
+import { LIVE_SOURCE, SECTOR_TRACKS, isClusterKind, pageOf, type DailyKind, type LiveChart } from "../catalog.ts";
 import { loadBars, quotesFetchedAt, type QuoteBar } from "./quotes.ts";
+import { readClusters, rollingCorrelation, type ClusterSeries } from "./clusters.ts";
+import { CLUSTER_COMBOS, CLUSTER_THEMES, comboNameOf } from "../cluster-groups.ts";
 
 /** 一张图的 JSON，与随包的示例文件同构。 */
 export interface ChartJson {
@@ -58,15 +60,16 @@ function peAsOf(valuations: readonly { date: string; pe: number | null }[], date
 /**
  * 一张图的 meta.type 与 series；`other` 是相对强弱的分母指数日线，`valuations` 是市盈率序列（拆解图用），
  * `tracks` 是轮动总图与行业估值要一起算的那组行业指数日线（别的图不用）。
+ * 只接 `DailyKind`：抱团卷由成分股现算，走 clusterChartJson，不从这里过。
  */
 function build(
-  chart: LiveChart,
+  kind: DailyKind,
   bars: readonly QuoteBar[],
   other: readonly QuoteBar[],
   valuations: readonly { date: string; pe: number | null }[],
   tracks: ReadonlyArray<{ name: string; bars: readonly QuoteBar[] }> = [],
 ): [string, unknown] {
-  switch (chart.kind) {
+  switch (kind) {
     case "index":
       return ["line", bars.map((bar) => ({ date: bar.date, value: bar.close }))];
     case "drawdown": {
@@ -249,11 +252,95 @@ export async function barsFor(code: string, snapshot: Awaited<ReturnType<typeof 
   return { bars: provided, fromProvider: true };
 }
 
+/** 相关性图的滚动窗口：约一个季度的交易日。 */
+const CORRELATION_WINDOW = 60;
+
+/** 若干条组合走势对齐到共同交易日（取交集），供多线图使用。 */
+function alignSeries(series: readonly ClusterSeries[]): { dates: string[]; seriesData: Record<string, number[]> } {
+  const maps = series.map((one) => new Map(one.dates.map((date, i) => [date, one.values[i]!])));
+  const dates = [...maps[0]!.keys()].filter((date) => maps.every((map) => map.has(date))).sort();
+  const seriesData: Record<string, number[]> = {};
+  series.forEach((one, i) => { seriesData[one.name] = dates.map((date) => maps[i]!.get(date)!); });
+  return { dates, seriesData };
+}
+
+/**
+ * 抱团卷的一张图：四代专题各一条等权组合的走势，历史祖谱是四个古早主题的多线，
+ * 相关性由四条组合现算，集中度直接用沪深 300 的权重序列。数据都在 backend/clusters.ts 的快照里。
+ * 快照还没有（第一次刷新没跑过）或关键序列缺失时返回 null，由调用方显示缺失。
+ */
+async function clusterChartJson(chart: LiveChart): Promise<ChartJson | null> {
+  const snapshot = await readClusters();
+  if (!snapshot) return null;
+  const find = (name: string | undefined) => (name ? snapshot.series.find((one) => one.name === name) : undefined);
+  let type: string;
+  let series: unknown;
+  let firstDate: string | undefined;
+  let lastDate: string | undefined;
+  if (chart.kind === "cluster-combo") {
+    const combo = find(comboNameOf(chart.slug));
+    if (!combo || combo.dates.length < 2) return null;
+    type = "line";
+    series = combo.dates.map((date, i) => ({ date, value: combo.values[i]! }));
+    [firstDate, lastDate] = [combo.dates[0], combo.dates.at(-1)];
+  } else if (chart.kind === "cluster-themes") {
+    const themes: ClusterSeries[] = [];
+    for (const theme of CLUSTER_THEMES) {
+      const one = find(theme.name);
+      if (!one || one.dates.length < 2) return null;
+      themes.push(one);
+    }
+    const aligned = alignSeries(themes);
+    if (aligned.dates.length < 2) return null;
+    type = "multi-line";
+    series = aligned;
+    [firstDate, lastDate] = [aligned.dates[0], aligned.dates.at(-1)];
+  } else if (chart.kind === "cluster-correlation") {
+    const combos: ClusterSeries[] = [];
+    for (const combo of CLUSTER_COMBOS) {
+      const one = find(combo.name);
+      if (!one) return null;
+      combos.push(one);
+    }
+    const points = rollingCorrelation(combos, CORRELATION_WINDOW);
+    if (points.length < 2) return null;
+    type = "line";
+    series = points;
+    [firstDate, lastDate] = [points[0]!.date, points.at(-1)!.date];
+  } else {
+    const { concentration } = snapshot;
+    if (concentration.dates.length < 2) return null;
+    type = "line";
+    series = concentration.dates.map((date, i) => ({ date, value: concentration.values[i]! }));
+    [firstDate, lastDate] = [concentration.dates[0], concentration.dates.at(-1)];
+  }
+  const page = pageOf(chart.group, chart.slug);
+  const provider = await readProvider();
+  // 集中度的权重按月公布，本就落后于最近交易日，不按日线口径判「尚未更新到应有交易日」。
+  const expected = chart.kind === "cluster-concentration" ? undefined : provider?.expectedDate;
+  return {
+    meta: {
+      id: chart.slug,
+      name: page?.chartTitle ?? chart.indexName,
+      type,
+      description: page?.chartNote ?? "",
+      source: snapshot.source,
+      updatedAt: snapshot.updatedAt,
+      status: expected && lastDate && lastDate < expected ? "stale" : "observed",
+      firstDate,
+      lastDate,
+    },
+    series,
+  };
+}
+
 /**
  * 一张实时图的 JSON；库里还没有这只指数的行情时返回 null，
  * 由调用方显示缺失状态，页面不会用旧数据顶替。
  */
 export async function liveChartJson(chart: LiveChart): Promise<ChartJson | null> {
+  if (isClusterKind(chart.kind)) return clusterChartJson(chart);
+  if (!chart.code) return null;
   const snapshot = await readProvider();
   // 轮动总图与行业估值一起算七条赛道的日线；其余图只看自己那一条。
   const byTracks = chart.kind === "rotation" || chart.kind === "sector-valuation";
@@ -269,7 +356,7 @@ export async function liveChartJson(chart: LiveChart): Promise<ChartJson | null>
   const valuations = chart.kind === "davis" ? (providerIndex(chart.code, snapshot)?.valuations ?? []) : [];
   if (chart.kind === "davis" && valuations.length === 0) return null;
   const page = pageOf(chart.group, chart.slug);
-  const [type, series] = build(chart, bars, other, valuations, tracks);
+  const [type, series] = build(chart.kind, bars, other, valuations, tracks);
   // 多赛道的图覆盖的是各赛道的共同区间：起点取最晚的，终点取最早的。
   const firstDate = byTracks ? tracks.map((track) => track.bars[0]!.date).reduce((a, b) => (a > b ? a : b)) : bars[0]!.date;
   const lastDate = byTracks ? tracks.map((track) => track.bars.at(-1)!.date).reduce((a, b) => (a < b ? a : b)) : bars.at(-1)!.date;
