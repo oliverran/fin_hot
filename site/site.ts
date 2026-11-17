@@ -39,13 +39,13 @@ export const SITE = {
   /** 一句话介绍：搜索引擎、分享卡片、RSS、llms.txt 会用。 */
   description: `从一批金融信源里挑出值得看的动态，把同一件事的多篇报道归到一起，${EDITION_WHEN.daily} 出一份日报。`,
   /** llms.txt 里一句话介绍下面的一段详细介绍（选填）。 */
-  llmsIntro: null as string | null,
+  llmsIntro: `盯着一批金融信源：监管与交易所的公告、财经媒体和券商研究都在看，更新越勤的源看得越勤。抓到的内容先经模型预筛、评分、结构化再归并，只留下有实际信息、不是营销稿或重复转发的部分；同一件事的多篇报道归到一个事件页，并随进展更新综述。除了${EDITION_WHEN.daily}发布日报，还有周报和月报。全部内容匿名、免费、无需注册，可通过网页、RSS、公开 API 与 MCP 读取。` as string | null,
   /** 一行小字：分享图、海报下方。 */
   tagline: "值得关注的金融动态",
   /** 搜索引擎读到的关键词（首页结构化数据）。 */
   keywords: ["金融资讯", "金融新闻", "金融日报", "金融行业动态", "A股", "公募基金", "券商研报"] as string[],
   /** 网站开始收录的年份（结构化数据的时间范围，选填）。 */
-  since: null as string | null,
+  since: "2026" as string | null,
   /** 界面语言（HTML lang、og:locale）。 */
   locale: "zh-CN",
   /** 默认域名，只在没设置 SITE_URL 时使用。 */

@@ -6,7 +6,8 @@ import { config } from "@aihot/backend/config";
 import { closeDb, sql } from "@aihot/backend/db";
 import { Reply, stub, tag } from "../../../tests/setup.ts";
 import { LIVE_SOURCE, type LiveChart } from "../catalog.ts";
-import { liveChartJson } from "../backend/charts.ts";
+import { barsFor, liveChartJson } from "../backend/charts.ts";
+import type { ProviderSnapshot } from "../backend/provider.ts";
 import {
   QUOTE_CODES, backfillBars, fetchDayBars, loadBars, parseDayBars, quotesFetchedAt, refreshCode, refreshQuotes,
   type QuoteBar,
@@ -147,6 +148,24 @@ test("整体刷新：每只指数各写一份", async () => {
   const out = await refreshQuotes(async () => barsOf(["2024-12-31"]));
   assert.equal(out.length, QUOTE_CODES.length);
   assert.ok(out.every((one) => one.bars === 1));
+});
+
+test("行业指数的提供方式代码不混进腾讯抓取清单", () => {
+  assert.ok(QUOTE_CODES.every((code) => !code.includes(".")));
+  assert.ok(!QUOTE_CODES.includes("801120.SI"));
+});
+
+test("行业指数（提供方式代码）的日线只来自提供方快照", async () => {
+  const snapshot = {
+    updatedAt: "2024-01-03T00:00:00.000Z",
+    source: "测试提供方",
+    indices: [{ code: "801120.SI", name: "食品饮料", kind: "sector", bars: [{ date: "2024-01-02", close: 100 }, { date: "2024-01-03", close: 110 }], valuations: [] }],
+  } as unknown as ProviderSnapshot;
+  const { bars, fromProvider } = await barsFor("801120.SI", snapshot);
+  assert.equal(fromProvider, true);
+  assert.deepEqual(bars.map((bar) => bar.date), ["2024-01-02", "2024-01-03"]);
+  // 快照里没有这只指数时是缺失状态，不会去腾讯库里找旧数据顶替。
+  assert.deepEqual((await barsFor("801150.SI", snapshot)).bars, []);
 });
 
 // 派生图：两年、每月的月初收盘价。2023 从 100 涨到 125（+25%），2024 从 125 跌到 118.75（-5%），

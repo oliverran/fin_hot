@@ -52,7 +52,7 @@ export default function ChronicleHome() {
         </div>
         <PillTabs items={SCOPE_TABS} active="a-share" layoutId="chronicle-scope" size="sm" label="编年史范围" className="mt-6" />
         <p className="well mt-5 rounded-card px-4 py-3 text-[12.5px] leading-[1.75] text-ink-3">
-          标「日线」的图表来自公开行情接口，每个交易日收盘后自动更新；其余为源项目《A股编年史》随包快照；取不到行情时不展示曲线。只作历史复盘与学习用途，不构成任何投资建议。
+          标「日线」的图表来自行情接口，每个交易日收盘后自动更新；其余为源项目《A股编年史》随包快照；取不到行情时不展示曲线。只作历史复盘与学习用途，不构成任何投资建议。
           <Link viewTransition to={ROUTES.methodology} className="ml-1 text-accent hover:underline">
             数据口径与免责
           </Link>

@@ -1,7 +1,7 @@
 // 这个模块的地址与图表目录：分组、每组的图表面板与每张图的文案。
 // 图表与数据收录自开源项目 A股编年史（oliverran/the-history-of-a-stock）：
-// 宽基走势与由日线现算的派生图接实时行情；其余的图（估值、行业代表组合、抱团代理等）
-// 发随包的真实快照（源项目口径，见 server.ts 与 data/）。网页只读这里，不读 data/。
+// 宽基走势、由日线现算的派生图，以及七个核心赛道的行业指数接实时行情；
+// 其余的图（估值、行业轮动、抱团代理等）发随包的真实快照（源项目口径，见 server.ts 与 data/）。网页只读这里，不读 data/。
 
 /** 三大分组：宽基、行业、抱团。 */
 export type GroupKey = "broad" | "sectors" | "clusters";
@@ -358,8 +358,8 @@ export const PAGES: readonly ChartPage[] = [
     cardBlurb: "长坡厚雪，量价齐升的消费图腾。",
     heroTitle: "白酒 (Liquor)",
     heroLead: "从周期品到消费品，再到社交货币与金融资产。白酒板块的估值重塑，是过去十年 A 股最宏大的一场关于确定性的叙事。",
-    chartTitle: "白酒代表组合",
-    chartNote: "等权成分股（复权收盘价）合成的代表组合，起点归一化为 100；不是中证白酒指数。",
+    chartTitle: "申万食品饮料指数",
+    chartNote: "申万一级行业指数「食品饮料」（801120.SI）的收盘点位；白酒是该行业里权重最大的板块。",
     sections: [
       {
         n: "1",
@@ -379,8 +379,8 @@ export const PAGES: readonly ChartPage[] = [
     cardBlurb: "从仿制药到创新药的出海与集采周期。",
     heroTitle: "医药 (Pharmaceuticals)",
     heroLead: "老龄化是人类社会不可逆的趋势，而医药板块则是这一庞大需求的映射。在这里，政策的达摩克利斯之剑与创新的星辰大海反复交织。",
-    chartTitle: "中证医药历史走势",
-    chartNote: "经历过长牛，也经历过集采风暴的洗礼。",
+    chartTitle: "申万医药生物指数",
+    chartNote: "申万一级行业指数「医药生物」（801150.SI）的收盘点位；经历过长牛，也经历过集采风暴的洗礼。",
   },
   {
     slug: "new-energy",
@@ -409,8 +409,8 @@ export const PAGES: readonly ChartPage[] = [
     cardBlurb: "宏观经济的晴雨表与高股息的避风港。",
     heroTitle: "银行 (Banks)",
     heroLead: "百业之母。在狂飙突进的年代，它们是信用的水泵；在资产荒的年代，它们是提供稳定红利与高股息的避风港。",
-    chartTitle: "银行代表组合",
-    chartNote: "等权代表组合（复权收盘价，起点 100）；不是中证银行指数。",
+    chartTitle: "申万银行指数",
+    chartNote: "申万一级行业指数「银行」（801780.SI）的收盘点位；破净估值中枢与稳定股息。",
   },
   {
     slug: "property",
@@ -419,8 +419,8 @@ export const PAGES: readonly ChartPage[] = [
     cardBlurb: "旧时代的引擎与资产负债表的重构。",
     heroTitle: "地产 (Real Estate)",
     heroLead: "中国经济过去二十年最重要的加杠杆引擎。当人口结构与城镇化率跨过拐点，这个板块的走势便是一部宏大的资产负债表重构史。",
-    chartTitle: "国证地产走势",
-    chartNote: "黄金时代、白银时代与黑铁时代的切换。",
+    chartTitle: "申万房地产指数",
+    chartNote: "申万一级行业指数「房地产」（801180.SI）的收盘点位；黄金时代、白银时代与黑铁时代的切换。",
   },
   {
     slug: "ai",
@@ -429,8 +429,8 @@ export const PAGES: readonly ChartPage[] = [
     cardBlurb: "算力、模型与应用的新一轮产业革命。",
     heroTitle: "人工智能 (AI)",
     heroLead: "当 ChatGPT 敲开 AGI 的大门，算力成为了新的基础设施。这里既有真实改变世界的产业革命，也有短期预期打满的泡沫炒作。",
-    chartTitle: "AI 算力代表组合",
-    chartNote: "等权代表组合（复权收盘价，起点 100）；不是中证人工智能指数。",
+    chartTitle: "申万计算机指数",
+    chartNote: "申万一级行业指数「计算机」（801750.SI）的收盘点位；软件、IT 服务与算力设备多归在这个行业。",
   },
   {
     slug: "rotation",
@@ -551,7 +551,10 @@ export interface LiveChart {
   group: GroupKey;
   slug: string;
   kind: LiveKind;
-  /** 行情代码（腾讯的写法：sh000300）；派生图填它算自的那只指数。 */
+  /**
+   * 行情代码；派生图填它算自的那只指数。
+   * 宽基是腾讯写法（sh000300），落 chronicle_quotes；行业指数是提供方式写法（801120.SI），只从提供方快照取。
+   */
   code: string;
   /** 相对强弱（relative）填分母那只指数：比值是 code ÷ code2。 */
   code2?: string;
@@ -560,7 +563,9 @@ export interface LiveChart {
 }
 
 /**
- * 实时更新的图表：宽基指数走势，以及只靠指数日线就能算出来的沪深 300 派生图。
+ * 实时更新的图表：宽基指数走势、只靠指数日线就能算出来的沪深 300 派生图，以及行业卷七个核心赛道的申万一级行业指数。
+ * 行业指数的日线只有付费提供方（Tushare）才有公开口径，所以代码写成提供方式（801120.SI），
+ * 不去腾讯抓、也不落 chronicle_quotes（见 backend/quotes.ts 与 backend/charts.ts）。
  * 其余的图（估值、行业权重、抱团等）没有公开免费口径，仍是随包的示例数据。
  */
 export const LIVE_CHARTS: readonly LiveChart[] = [
@@ -580,6 +585,14 @@ export const LIVE_CHARTS: readonly LiveChart[] = [
   { group: "broad", slug: "distribution", kind: "distribution", code: "sh000300", indexName: "沪深 300" },
   { group: "broad", slug: "davis-decomposition", kind: "davis", code: "sh000300", indexName: "沪深 300" },
   { group: "broad", slug: "style-ratios", kind: "relative", code: "sh000300", code2: "sh000852", indexName: "沪深 300 / 中证 1000" },
+  // 行业卷：七个核心赛道用申万一级行业指数（提供方式代码，日线取自 Tushare 快照，不落 chronicle_quotes）。
+  { group: "sectors", slug: "baijiu", kind: "index", code: "801120.SI", indexName: "食品饮料（申万）" },
+  { group: "sectors", slug: "pharma", kind: "index", code: "801150.SI", indexName: "医药生物（申万）" },
+  { group: "sectors", slug: "new-energy", kind: "index", code: "801730.SI", indexName: "电力设备（申万）" },
+  { group: "sectors", slug: "semi", kind: "index", code: "801080.SI", indexName: "电子（申万）" },
+  { group: "sectors", slug: "banks", kind: "index", code: "801780.SI", indexName: "银行（申万）" },
+  { group: "sectors", slug: "property", kind: "index", code: "801180.SI", indexName: "房地产（申万）" },
+  { group: "sectors", slug: "ai", kind: "index", code: "801750.SI", indexName: "计算机（申万）" },
 ];
 
 /** 精选页第一屏那张实时图跟的两只指数（腾讯写法，与 LIVE_CHARTS 里的代码一致）。 */

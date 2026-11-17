@@ -11,7 +11,7 @@ export const handle: Screen = { tab: "chronicle", name: "数据接口" };
 export function meta() {
   return pageMeta({
     title: "数据接口",
-    description: `编年史图表的公开 JSON 接口：三组、${PAGES.length} 张图，宽基走势与由日线现算的派生图每日收盘后更新，其余为源项目随包快照；精选页的实时行情另有一个地址，都可直接取用。`,
+    description: `编年史图表的公开 JSON 接口：三组、${PAGES.length} 张图，宽基走势、由日线现算的派生图与七个核心赛道行业指数每日收盘后更新，其余为源项目随包快照；精选页的实时行情另有一个地址，都可直接取用。`,
     path: ROUTES.api,
   });
 }
@@ -58,7 +58,7 @@ export default function ChronicleApiDoc() {
           ))}
         </ul>
         <p className="mt-3 text-[12.5px] leading-[1.75] text-ink-4">
-          快照是随包的静态文件，缓存一天；行情图由后端从库里现算，缓存一刻钟；实时行情由后端从公开接口现抓，缓存 15 秒，开盘时段刷新。三者都不触发任何模型调用，也不需要密钥。
+          快照是随包的静态文件，缓存一天；行情图由后端现算，缓存一刻钟；实时行情由后端从公开接口现抓，缓存 15 秒，开盘时段刷新。三者都不触发任何模型调用，也不需要密钥。
         </p>
       </section>
 
@@ -117,7 +117,7 @@ export default function ChronicleApiDoc() {
         <Link viewTransition to={ROUTES.methodology} className="transition-colors hover:text-accent">
           数据口径
         </Link>
-        <span>宽基走势与派生图来自公开行情接口，精选页的实时行情同理（有延迟），其余为源项目《A股编年史》随包快照（源项目口径），均不构成任何投资建议。</span>
+        <span>宽基走势、派生图与七个核心赛道行业指数来自行情接口，精选页的实时行情同理（有延迟），其余为源项目《A股编年史》随包快照（源项目口径），均不构成任何投资建议。</span>
       </footer>
     </div>
   );

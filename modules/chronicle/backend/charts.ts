@@ -200,20 +200,26 @@ function build(
   }
 }
 
-/** 指数在提供方快照里的那条记录（代码转成 Tushare 的写法，如 sh000300 → 000300.SH）。 */
+/** 提供方（Tushare）快照里的代码：腾讯写法 sh000300 → 000300.SH；已经是提供方式（带点，如行业指数的 801120.SI）的原样用。 */
+function providerCode(code: string): string {
+  return code.includes(".") ? code : code.slice(2) + "." + code.slice(0, 2).toUpperCase();
+}
+
+/** 指数在提供方快照里的那条记录。 */
 function providerIndex(code: string, snapshot: Awaited<ReturnType<typeof readProvider>>) {
-  const providerCode = code.slice(2) + "." + code.slice(0, 2).toUpperCase();
-  return snapshot?.indices.find((x) => x.code === providerCode);
+  return snapshot?.indices.find((x) => x.code === providerCode(code));
 }
 
 /**
  * 一只指数的日线：行情提供方（Tushare）的那份与库里的腾讯日线各取一份，哪份更新就用哪份。
  * 提供方同步失败时会原地保留上一次成功的数据，这时库里那份（腾讯）往往已经更新到最近交易日，
  * 用它才能让图表跟上；`fromProvider` 告诉调用方这条日线出自哪一侧，好标对来源与刷新时间。
+ * 行业指数用的是提供方式代码（带点），不会落进 chronicle_quotes，只从提供方快照取。
  */
 export async function barsFor(code: string, snapshot: Awaited<ReturnType<typeof readProvider>>): Promise<{ bars: QuoteBar[]; fromProvider: boolean }> {
   const provider = providerIndex(code, snapshot);
   const provided = provider?.bars.map((b) => ({ ...b, open: b.close, high: b.close, low: b.close, volume: 0 })) ?? [];
+  if (code.includes(".")) return { bars: provided, fromProvider: true };
   const stored = await loadBars(code);
   if (stored.length && (provided.length === 0 || stored.at(-1)!.date > provided.at(-1)!.date)) return { bars: stored, fromProvider: false };
   return { bars: provided, fromProvider: true };

@@ -1,5 +1,5 @@
 // 编年史的行情来源：腾讯证券的公开日线接口 → chronicle_quotes 表。
-// 只抓 LIVE_CHARTS 点名的那几只宽基指数；行业、抱团等没有公开免费口径的图发随包的快照。
+// 只抓 LIVE_CHARTS 里腾讯写法的宽基指数；行业指数用的是提供方式代码（801120.SI），它的日线只从提供方快照取（见 charts.ts）。
 // 抓取走 lib/http-fetch 的 guardedFetch（SSRF 守卫、超时、字节上限），单次最多取 640 条日线，
 // 所以首次补齐要走多轮翻页，之后的每日刷新只取最近一页。
 import { sql } from "@aihot/backend/db";
@@ -22,8 +22,8 @@ export interface QuoteBar {
   volume: number;
 }
 
-/** 要抓的指数代码：派生图算自的指数（含相对强弱的分母）一并抓下来。 */
-export const QUOTE_CODES: readonly string[] = [...new Set(LIVE_CHARTS.flatMap((chart) => (chart.code2 ? [chart.code, chart.code2] : [chart.code])))];
+/** 要抓的指数代码：派生图算自的指数（含相对强弱的分母）一并抓下来；带点的提供方式代码（行业指数）腾讯抓不到，跳过。 */
+export const QUOTE_CODES: readonly string[] = [...new Set(LIVE_CHARTS.flatMap((chart) => (chart.code2 ? [chart.code, chart.code2] : [chart.code])))].filter((code) => !code.includes("."));
 
 /** 一天前，用来把翻页的区间往前挪。 */
 function dayBefore(date: string): string {
