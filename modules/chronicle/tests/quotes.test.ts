@@ -7,8 +7,8 @@ import { closeDb, sql } from "@aihot/backend/db";
 import { Reply, stub, tag } from "../../../tests/setup.ts";
 import { LIVE_SOURCE, SECTOR_TRACKS, type LiveChart } from "../catalog.ts";
 import { barsFor, liveChartJson } from "../backend/charts.ts";
-import { compositeIndex, rollingCorrelation, type ClusterSeries } from "../backend/clusters.ts";
-import { CLUSTER_COMBOS, CLUSTER_THEMES } from "../cluster-groups.ts";
+import { compositeIndex, refreshClusters, rollingCorrelation, syncStockBars, type ClusterSeries } from "../backend/clusters.ts";
+import { CLUSTER_CODES, CLUSTER_COMBOS, CLUSTER_GROUPS, CLUSTER_THEMES } from "../cluster-groups.ts";
 import { saveSnapshot } from "../backend/snapshots.ts";
 import type { ProviderSnapshot } from "../backend/provider.ts";
 import {
@@ -431,4 +431,62 @@ test("对比只取共同交易日并以共同起点归一", async () => {
  const result=compareBars([{name:'a',bars:barsOf(['2024-01-01','2024-01-02','2024-01-03'],i=>[100,120,90][i]!)},{name:'b',bars:barsOf(['2024-01-02','2024-01-03'],i=>[50,60][i]!)}],'2024-01-01','2024-01-03');
  assert.deepEqual(result.dates,['2024-01-02','2024-01-03']);assert.deepEqual(result.seriesData.a,[100,75]);assert.equal(result.summaries[0]!.drawdown,-25);
  assert.equal(compareBars([{name:'a',bars:[]}],'2024-01-01','2024-01-03').summaries[0]!.change,null);
+});
+
+test("成分股日线：涨跌幅累乘成前复权收盘价，增量接续时重取的那天不重复累乘", async () => {
+  const code = "000001.SZ";
+  const asked: Record<string, unknown>[] = [];
+  // 2024-01-03 是除息日：原始收盘从 100 掉到 90，但涨跌幅按前收盘价算出来是 0 —— 累乘的前复权序列在这天不塌。
+  let rows: Array<Record<string, unknown>> = [
+    { ts_code: code, trade_date: "20240104", close: 99, pre_close: 90, pct_chg: 10, vol: 30 },
+    { ts_code: code, trade_date: "20240103", close: 90, pre_close: 100, pct_chg: 0, vol: 20 },
+    { ts_code: code, trade_date: "20240102", close: 100, pre_close: 100, pct_chg: 0, vol: 10 },
+  ];
+  const request = async (api: string, params: Record<string, unknown>) => {
+    asked.push({ api, ...params });
+    return rows.map((row) => ({ ...row, ts_code: params.ts_code }));
+  };
+  const at = new Date("2024-01-05T00:00:00Z");
+  const listed = async () => (await sql<Array<{ date: string; close: number }>>`
+    SELECT to_char(trade_date, 'YYYY-MM-DD') AS date, close FROM chronicle_quotes WHERE code = ${code} ORDER BY trade_date`)
+    .map((row) => [row.date, Number(row.close)]);
+  await sql`DELETE FROM chronicle_quotes WHERE code = ${code}`;
+
+  // 首次同步：以最早一天的原始收盘价 100 为起点，往后按涨跌幅累乘。
+  await syncStockBars(request, code, at);
+  assert.equal(asked[0]!.start_date, "19900101");
+  assert.equal(asked[0]!.end_date, "20240105");
+  assert.deepEqual(await listed(), [["2024-01-02", 100], ["2024-01-03", 100], ["2024-01-04", 110]]);
+
+  // 增量：从库里最后一天重取，接续的那天保持已存值（不再乘一次），只把新的一天按涨跌幅往后接。
+  asked.length = 0;
+  rows = [
+    { ts_code: code, trade_date: "20240105", close: 108.9, pre_close: 99, pct_chg: 10, vol: 40 },
+    { ts_code: code, trade_date: "20240104", close: 99, pre_close: 90, pct_chg: 10, vol: 30 },
+  ];
+  await syncStockBars(request, code, at);
+  assert.equal(asked[0]!.start_date, "20240104");
+  assert.deepEqual(await listed(), [["2024-01-02", 100], ["2024-01-03", 100], ["2024-01-04", 110], ["2024-01-05", 121]]);
+
+  // 代码对不上的行整批拒绝，不把缺了几天或串了代码的序列接起来。
+  await assert.rejects(() => syncStockBars(async () => [{ ts_code: "600519.SH", trade_date: "20240108", close: 1, pre_close: 1, pct_chg: 0 }], code, at), /Invalid daily row/);
+});
+
+test("抱团卷：成分股日线按提供方代码取齐，现算成八个组合走势", async () => {
+  const seen = new Set<string>();
+  const request = async (api: string, params: Record<string, unknown>) => {
+    if (api === "index_weight") return [{ index_code: "000300.SH", con_code: "600519.SH", trade_date: "20240131", weight: 5 }];
+    seen.add(String(params.ts_code));
+    return [{ ts_code: params.ts_code, trade_date: "20240103", close: 10, pre_close: 9.5, pct_chg: 5.26, vol: null }];
+  };
+  const now = new Date("2024-01-04T00:00:00Z");
+  await sql`DELETE FROM chronicle_quotes WHERE code = ANY(${CLUSTER_CODES})`;
+  const snapshot = await refreshClusters({ request, now });
+
+  // 名单里的每一只都按提供方式代码取一遍日线，组合也按同一套代码去库里取回。
+  assert.deepEqual([...seen].sort(), [...CLUSTER_CODES].sort());
+  assert.deepEqual(snapshot.errors, []);
+  assert.equal(snapshot.series.length, CLUSTER_GROUPS.length);
+  assert.ok(snapshot.series.every((one) => one.dates.length === 1 && one.values[0] === 100));
+  assert.ok(snapshot.concentration.dates.includes("2024-01-31"));
 });

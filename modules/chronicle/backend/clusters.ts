@@ -1,14 +1,17 @@
-// 抱团卷的数据：把成分股的前复权日线（腾讯，落在 chronicle_quotes）现算成等权组合走势，
-// 再从 Tushare 取沪深 300 的月度权重算集中度。算完只留几条组合序列，存成一份快照。
+// 抱团卷的数据：把成分股的前复权日线（提供方，落在 chronicle_quotes）现算成等权组合走势，
+// 再从提供方取沪深 300 的月度权重算集中度。算完只留几条组合序列，存成一份快照。
 // 读取时只从快照取现成的序列，不在请求里重算——成分股加起来十几万根日线，逐次现算太重。
 import { beijingDate } from "@aihot/contracts/time";
 import { sql } from "@aihot/backend/db";
-import { allRows, requestData, providerDate, compactDate, finite, type DataRequest } from "./data-client.ts";
+import { allRows, requestData, providerDate, compactDate, finite, type DataRequest, type DataRow } from "./data-client.ts";
 import { readSnapshot, saveSnapshot } from "./snapshots.ts";
-import { refreshCode, type QuoteBar } from "./quotes.ts";
-import { CLUSTER_GROUPS, CLUSTER_CODES, tencentCode } from "../cluster-groups.ts";
+import { CLUSTER_GROUPS, CLUSTER_CODES } from "../cluster-groups.ts";
 
-const SOURCE = "腾讯前复权日线 / Tushare 沪深 300 权重";
+const SOURCE = "Tushare 前复权日线 / Tushare 沪深 300 权重";
+/** 成分股日线在库里按提供方式代码存放，source 记成这一侧，与腾讯抓的指数区分开。 */
+const STOCK_SOURCE = "tushare";
+/** 沪深两市最早的股票日线在 1990 年，首次补齐由此起（也挡住接口异常时的死循环）。 */
+const STOCK_START = "1990-01-01";
 /** 集中度用的指数与起始年份：沪深 300 的成分权重由指数公司按调仓月公布。 */
 const CONCENTRATION_INDEX = "000300.SH";
 const CONCENTRATION_START = "2015-01-01";
@@ -111,6 +114,74 @@ export function rollingCorrelation(series: readonly ClusterSeries[], window: num
   return out;
 }
 
+/** 一只成分股的一条日线：`change` 是当日涨跌幅（小数），`close` 是原始收盘价（只在首次同步时当起点用）。 */
+interface DailyBar {
+  date: string;
+  change: number;
+  close: number;
+  volume: number | null;
+}
+
+/**
+ * 提供方的个股日线（`daily`）→ 升序数组。涨跌幅按前收盘价算，而前收盘价已按除权除息调整过，
+ * 所以它本身就是「不含分红的总回报之外」的日收益口径；缺涨跌幅时用两个收盘价之比兜底。
+ * 脏行整批报错，避免把缺了几天的序列当成连续序列接起来。
+ */
+export function parseDailyRows(rows: readonly DataRow[], code: string): DailyBar[] {
+  return rows.map((row) => {
+    if (String(row.ts_code) !== code) throw new Error(`Invalid daily row for ${code}`);
+    const date = providerDate(row.trade_date);
+    const close = finite(row.close);
+    const previous = finite(row.pre_close);
+    const percent = finite(row.pct_chg);
+    const change = percent !== null ? percent / 100 : close !== null && previous ? close / previous - 1 : null;
+    if (close === null || change === null || change <= -1) throw new Error(`Invalid daily row for ${code} at ${String(row.trade_date)}`);
+    return { date, change, close, volume: finite(row.vol) };
+  }).sort((a, b) => a.date.localeCompare(b.date));
+}
+
+/** 库里这只成分股最后一条日线与它的前复权收盘价（下一次增量接续的锚点）。 */
+async function lastStoredBar(code: string): Promise<{ date: string; close: number } | null> {
+  const [row] = await sql<Array<{ date: string; close: number }>>`
+    SELECT to_char(trade_date, 'YYYY-MM-DD') AS date, close FROM chronicle_quotes
+    WHERE code = ${code} ORDER BY trade_date DESC LIMIT 1`;
+  return row ? { date: row.date, close: Number(row.close) } : null;
+}
+
+/** 写库：同一 (股票, 交易日) 只留一份，重跑或接口事后修正都以最新一次为准。 */
+async function storeStockBars(code: string, bars: ReadonlyArray<{ date: string; close: number; volume: number | null }>): Promise<number> {
+  if (bars.length === 0) return 0;
+  await sql.begin(async (tx) => {
+    for (let i = 0; i < bars.length; i += 500) {
+      const rows = bars.slice(i, i + 500).map((bar) => ({ code, trade_date: bar.date, close: bar.close, volume: bar.volume, source: STOCK_SOURCE }));
+      await tx`INSERT INTO chronicle_quotes ${tx(rows)}
+        ON CONFLICT (code, trade_date) DO UPDATE SET close = EXCLUDED.close, volume = EXCLUDED.volume, source = EXCLUDED.source, fetched_at = now()`;
+    }
+  });
+  return bars.length;
+}
+
+/**
+ * 补齐一只成分股的日线：库里没有就从最早取起，有就从上次那天起再取（含当天，重取一遍保持接续）。
+ * 落库的 close 是把当日涨跌幅逐日累乘出来的前复权口径——等权组合只用到日收益，
+ * 这样既是除权除息调整后的真实收益，又能在加大新的分红时只往后接、不必重算整段历史。
+ */
+export async function syncStockBars(request: DataRequest, code: string, now: Date): Promise<number> {
+  const previous = await lastStoredBar(code);
+  const from = previous?.date ?? STOCK_START;
+  const rows = await allRows("daily", { ts_code: code, start_date: compactDate(from), end_date: compactDate(beijingDate(now)) }, request);
+  const bars: Array<{ date: string; close: number; volume: number | null }> = [];
+  let value: number | null = previous?.close ?? null;
+  for (const bar of parseDailyRows(rows, code)) {
+    if (previous && bar.date === previous.date) value = previous.close; // 接续的那一天保持已存的前复权收盘价
+    else if (value === null) value = bar.close; // 首次同步：以最早一天的原始收盘价为起点
+    else value *= 1 + bar.change;
+    if (!(value > 0)) throw new Error(`Invalid adjusted close for ${code} at ${bar.date}`);
+    bars.push({ date: bar.date, close: value, volume: bar.volume });
+  }
+  return await storeStockBars(code, bars);
+}
+
 /** 成分股的当日收盘价：一条 SQL 取全部，按代码分好。 */
 async function loadClusterBars(codes: readonly string[]): Promise<Map<string, Array<{ date: string; close: number }>>> {
   const rows = await sql<Array<{ code: string; date: string; close: number }>>`
@@ -148,23 +219,19 @@ async function refreshConcentration(request: DataRequest, previous: ClusterSerie
 }
 
 /**
- * 刷新抱团卷：先补齐成分股日线（库里没有的从最早补起，之后每次只取最近一页），
+ * 刷新抱团卷：先补齐成分股日线（库里没有的从最早补起，之后每次只取最近一段），
  * 再把全部组合现算成等权走势，最后接上沪深 300 的权重。个股单只失败不中断整轮。
  */
-export async function refreshClusters(options: {
-  request?: DataRequest;
-  fetchBars?: (code: string, opts: { start?: string; end?: string; count: number }, endpoint?: string) => Promise<QuoteBar[]>;
-  now?: Date;
-} = {}): Promise<ClusterSnapshot> {
-  const { request = requestData, fetchBars, now = new Date() } = options;
+export async function refreshClusters(options: { request?: DataRequest; now?: Date } = {}): Promise<ClusterSnapshot> {
+  const { request = requestData, now = new Date() } = options;
   const previous = await readClusters();
   const errors: string[] = [];
   for (const code of CLUSTER_CODES) {
-    try { await refreshCode(code, fetchBars); } catch { errors.push(`${code} 日线同步失败`); }
+    try { await syncStockBars(request, code, now); } catch { errors.push(`${code} 日线同步失败`); }
   }
   const bars = await loadClusterBars(CLUSTER_CODES);
   const series = CLUSTER_GROUPS.flatMap((group) => {
-    const computed = compositeIndex(group.stocks.map((code) => bars.get(tencentCode(code)) ?? []));
+    const computed = compositeIndex(group.stocks.map((code) => bars.get(code) ?? []));
     return computed.dates.length ? [{ name: group.name, dates: computed.dates, values: computed.values }] : [];
   });
   let concentration = previous?.concentration ?? { name: "沪深 300 前十大权重", dates: [], values: [] };

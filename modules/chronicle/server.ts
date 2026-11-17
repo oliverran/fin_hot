@@ -205,13 +205,13 @@ export default defineServerModule({
       when: () => process.env.COLLECT_ENABLED === "true",
       run: () => refreshQuotes(),
     },
-    // 抱团卷：成分股日线走腾讯（与上面同一路），沪深 300 的权重走 Tushare（在 provider 之后跑）。job_runs 只记摘要：
-    // 快照里有八条几千个点的序列，整份存进 detail 会撑爆那张表。
+    // 抱团卷：成分股日线与沪深 300 权重都走提供方，所以和别的行情同步一样按同一个开关跑。
+    // job_runs 只记摘要：快照里有八条几千个点的序列，整份存进 detail 会撑爆那张表。
     {
       name: "chronicle.clusters",
       cron: "50 19 * * 1-5",
       missed: "once",
-      when: () => process.env.COLLECT_ENABLED === "true",
+      when: () => process.env.TUSHARE_SYNC_ENABLED === "true" && !!process.env.TUSHARE_TOKEN,
       run: async () => {
         const snapshot = await refreshClusters();
         return { series: snapshot.series.length, concentration: snapshot.concentration.dates.length, errors: snapshot.errors.length };

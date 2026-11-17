@@ -1,7 +1,7 @@
 // 抱团卷的固定成分名单：四代「抱团」专题，外加更早的四个主题。
 // 名单按公开认知起草、固定等权、不调仓，只用来看「当时市场的共识」大致长什么样，
 // 不是任何官方指数，也不回填今天的赢家（见 docs/chronicle-cluster-rules.md）。
-// 代码用提供方式写法（600519.SH），抓日线时再换成腾讯写法（sh600519）。
+// 代码用提供方式写法（600519.SH），取日线时也按这个代码。
 
 /** 一个主题/专题的成分股清单。 */
 export interface ClusterGroup {
@@ -97,16 +97,8 @@ export const CLUSTER_THEMES: readonly ClusterGroup[] = [
 /** 全部组合（四代专题 + 四个古早主题），合成走势用的是这一份。 */
 export const CLUSTER_GROUPS: readonly ClusterGroup[] = [...CLUSTER_COMBOS, ...CLUSTER_THEMES];
 
-/** 提供方式代码 → 腾讯写法：600519.SH → sh600519，000858.SZ → sz000858。 */
-export function tencentCode(code: string): string {
-  const [number, market] = code.split(".");
-  return `${market === "SH" ? "sh" : "sz"}${number}`;
-}
-
-/** 要抓日线的成分股（去重后的腾讯写法）。 */
-export const CLUSTER_CODES: readonly string[] = [
-  ...new Set(CLUSTER_GROUPS.flatMap((group) => group.stocks.map(tencentCode))),
-];
+/** 要取日线的成分股（去重后的提供方式代码）。 */
+export const CLUSTER_CODES: readonly string[] = [...new Set(CLUSTER_GROUPS.flatMap((group) => group.stocks))];
 
 /** 这个 slug 对应的抱团专题名；不是抱团专题时返回 undefined。 */
 export function comboNameOf(slug: string): string | undefined {
