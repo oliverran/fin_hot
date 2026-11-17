@@ -136,7 +136,9 @@ export function parseDailyRows(rows: readonly DataRow[], code: string): DailyBar
     const percent = finite(row.pct_chg);
     const change = percent !== null ? percent / 100 : close !== null && previous ? close / previous - 1 : null;
     if (close === null || change === null || change <= -1) throw new Error(`Invalid daily row for ${code} at ${String(row.trade_date)}`);
-    return { date, change, close, volume: finite(row.vol) };
+    // 成交量按「手」给，可能带小数；库里的 volume 是整数列，取整后落库（组合走势用不到它）。
+    const volume = finite(row.vol);
+    return { date, change, close, volume: volume === null ? null : Math.round(volume) };
   }).sort((a, b) => a.date.localeCompare(b.date));
 }
 

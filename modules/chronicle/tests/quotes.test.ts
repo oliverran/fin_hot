@@ -438,7 +438,7 @@ test("成分股日线：涨跌幅累乘成前复权收盘价，增量接续时�
   const asked: Record<string, unknown>[] = [];
   // 2024-01-03 是除息日：原始收盘从 100 掉到 90，但涨跌幅按前收盘价算出来是 0 —— 累乘的前复权序列在这天不塌。
   let rows: Array<Record<string, unknown>> = [
-    { ts_code: code, trade_date: "20240104", close: 99, pre_close: 90, pct_chg: 10, vol: 30 },
+    { ts_code: code, trade_date: "20240104", close: 99, pre_close: 90, pct_chg: 10, vol: 30.6 },
     { ts_code: code, trade_date: "20240103", close: 90, pre_close: 100, pct_chg: 0, vol: 20 },
     { ts_code: code, trade_date: "20240102", close: 100, pre_close: 100, pct_chg: 0, vol: 10 },
   ];
@@ -457,6 +457,10 @@ test("成分股日线：涨跌幅累乘成前复权收盘价，增量接续时�
   assert.equal(asked[0]!.start_date, "19900101");
   assert.equal(asked[0]!.end_date, "20240105");
   assert.deepEqual(await listed(), [["2024-01-02", 100], ["2024-01-03", 100], ["2024-01-04", 110]]);
+  // 成交量按「手」给、可能带小数，落库前取整（volume 列是整数）。
+  const volumes = await sql<Array<{ volume: string }>>`
+    SELECT volume FROM chronicle_quotes WHERE code = ${code} ORDER BY trade_date`;
+  assert.deepEqual(volumes.map((row) => Number(row.volume)), [10, 20, 31]);
 
   // 增量：从库里最后一天重取，接续的那天保持已存值（不再乘一次），只把新的一天按涨跌幅往后接。
   asked.length = 0;
