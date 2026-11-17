@@ -6,6 +6,13 @@ export function percentile(rows:Array<{date:string;pe:number|null;pb:number|null
  if(values.length<252||current===null||current===undefined)return null;
  return values.filter(v=>v<=current).length/values.length*100;
 }
+export function pricePercentile(bars:readonly {date:string;close:number}[],asOf:string):number|null {
+ const start=new Date(Date.parse(asOf)-5*365.25*86400000).toISOString().slice(0,10);
+ const values=bars.filter(b=>b.date>=start&&b.date<=asOf).map(b=>b.close).filter(v=>Number.isFinite(v)&&v>0);
+ const current=bars.find(b=>b.date===asOf)?.close;
+ if(values.length<252||current===undefined)return null;
+ return values.filter(v=>v<=current).length/values.length*100;
+}
 export function periodReturn(index:ProviderIndex,calendar:string[],end:string,count:number):number|null {
  const at=calendar.indexOf(end);if(at<count)return null;
  const first=index.bars.find(b=>b.date===calendar[at-count]),last=index.bars.find(b=>b.date===end);

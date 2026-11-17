@@ -17,7 +17,7 @@ type Result = {
   events: Array<{ id: string; title: string; date: string; url: string }>;
 };
 
-const CHOICES = LIVE_CHARTS.filter((chart) => chart.kind === "index");
+const CHOICES = LIVE_CHARTS.filter((chart) => chart.kind === "index" && chart.group === "broad");
 const pct = (value: number | null) => (value === null ? "—" : value.toFixed(2) + "%");
 const dateInput = "h-11 rounded-full border border-line-strong bg-surface px-3.5 text-[16px] text-ink-2 outline-none transition-colors hover:border-ink-4 focus:border-accent lg:h-8 lg:text-[12.5px]";
 

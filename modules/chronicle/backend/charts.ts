@@ -2,7 +2,9 @@
 // 读取时现算，不落库：日线一天只变一次，算一遍的量级也不值得再存一份。
 // 输出的形状跟着 web/options.ts 的 meta.type 走（那里决定 echarts 怎么画）。
 import { readProvider } from "./provider.ts";
-import { LIVE_SOURCE, pageOf, type LiveChart } from "../catalog.ts";
+import { compareBars } from "./compare.ts";
+import { pricePercentile } from "../analytics.ts";
+import { LIVE_SOURCE, SECTOR_TRACKS, pageOf, type LiveChart } from "../catalog.ts";
 import { loadBars, quotesFetchedAt, type QuoteBar } from "./quotes.ts";
 
 /** 一张图的 JSON，与随包的示例文件同构。 */
@@ -13,6 +15,9 @@ export interface ChartJson {
 
 /** 保留两位小数：指数点位换算成百分比后不必带一长串尾数。 */
 const round2 = (value: number) => Math.round(value * 100) / 100;
+
+/** 轮动总图的归一化起点：七条赛道都从 2021 年初的第一个共同交易日算作 100。 */
+const ROTATION_START = "2021-01-01";
 
 /** 一根年内最大回撤：年内收盘价相对当年（含）前高的最深跌幅，负数。 */
 function yearDrawdown(closes: number[]): number {
@@ -50,12 +55,16 @@ function peAsOf(valuations: readonly { date: string; pe: number | null }[], date
   return value;
 }
 
-/** 一张图的 meta.type 与 series；`other` 是相对强弱的分母指数日线，`valuations` 是市盈率序列（拆解图用）。 */
+/**
+ * 一张图的 meta.type 与 series；`other` 是相对强弱的分母指数日线，`valuations` 是市盈率序列（拆解图用），
+ * `tracks` 是轮动总图与行业估值要一起算的那组行业指数日线（别的图不用）。
+ */
 function build(
   chart: LiveChart,
   bars: readonly QuoteBar[],
   other: readonly QuoteBar[],
   valuations: readonly { date: string; pe: number | null }[],
+  tracks: ReadonlyArray<{ name: string; bars: readonly QuoteBar[] }> = [],
 ): [string, unknown] {
   switch (chart.kind) {
     case "index":
@@ -197,6 +206,21 @@ function build(
       }
       return ["stacked-bar-dual", rows];
     }
+    case "rotation": {
+      // 轮动总图：七条赛道对齐到共同交易日、自 2021 年起归一化到 100，叠在一张图上比相对强弱。
+      const end = tracks.reduce((min, track) => (track.bars.at(-1)!.date < min ? track.bars.at(-1)!.date : min), "9999-12-31");
+      const { dates, seriesData } = compareBars(tracks.map((track) => ({ name: track.name, bars: [...track.bars] })), ROTATION_START, end);
+      return ["multi-line", { dates, seriesData }];
+    }
+    case "sector-valuation": {
+      // 行业估值：每条赛道的最新收盘价在自身近 5 年区间里的分位（%），越低相对自身历史越便宜。
+      const rows: Array<{ date: string; value: number }> = [];
+      for (const track of tracks) {
+        const value = pricePercentile(track.bars, track.bars.at(-1)!.date);
+        if (value !== null) rows.push({ date: track.name, value: round2(value) });
+      }
+      return ["bar", rows];
+    }
   }
 }
 
@@ -231,7 +255,13 @@ export async function barsFor(code: string, snapshot: Awaited<ReturnType<typeof 
  */
 export async function liveChartJson(chart: LiveChart): Promise<ChartJson | null> {
   const snapshot = await readProvider();
-  const { bars, fromProvider } = await barsFor(chart.code, snapshot);
+  // 轮动总图与行业估值一起算七条赛道的日线；其余图只看自己那一条。
+  const byTracks = chart.kind === "rotation" || chart.kind === "sector-valuation";
+  const tracks = byTracks
+    ? await Promise.all(SECTOR_TRACKS.map(async (track) => ({ name: track.name, bars: (await barsFor(track.code, snapshot)).bars })))
+    : [];
+  if (byTracks && tracks.some((track) => track.bars.length === 0)) return null; // 缺一条就当整张缺失，免得多条线的图少一条看不出来
+  const { bars, fromProvider } = byTracks ? { bars: tracks[0]!.bars, fromProvider: true } : await barsFor(chart.code, snapshot);
   if (bars.length === 0) return null;
   const other = chart.code2 ? (await barsFor(chart.code2, snapshot)).bars : [];
   if (chart.code2 && other.length === 0) return null;
@@ -239,7 +269,10 @@ export async function liveChartJson(chart: LiveChart): Promise<ChartJson | null>
   const valuations = chart.kind === "davis" ? (providerIndex(chart.code, snapshot)?.valuations ?? []) : [];
   if (chart.kind === "davis" && valuations.length === 0) return null;
   const page = pageOf(chart.group, chart.slug);
-  const [type, series] = build(chart, bars, other, valuations);
+  const [type, series] = build(chart, bars, other, valuations, tracks);
+  // 多赛道的图覆盖的是各赛道的共同区间：起点取最晚的，终点取最早的。
+  const firstDate = byTracks ? tracks.map((track) => track.bars[0]!.date).reduce((a, b) => (a > b ? a : b)) : bars[0]!.date;
+  const lastDate = byTracks ? tracks.map((track) => track.bars.at(-1)!.date).reduce((a, b) => (a < b ? a : b)) : bars.at(-1)!.date;
   return {
     meta: {
       id: chart.slug,
@@ -248,9 +281,9 @@ export async function liveChartJson(chart: LiveChart): Promise<ChartJson | null>
       description: page?.chartNote ?? "",
       source: fromProvider && snapshot ? snapshot.source : LIVE_SOURCE,
       updatedAt: fromProvider && snapshot ? snapshot.updatedAt : await quotesFetchedAt(chart.code),
-      status: snapshot?.expectedDate ? (bars.at(-1)!.date < snapshot.expectedDate ? "stale" : "observed") : "calendar-missing",
-      firstDate: bars[0]!.date,
-      lastDate: bars.at(-1)!.date,
+      status: snapshot?.expectedDate ? (lastDate < snapshot.expectedDate ? "stale" : "observed") : "calendar-missing",
+      firstDate,
+      lastDate,
     },
     series,
   };

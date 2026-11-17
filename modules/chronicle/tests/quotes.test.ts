@@ -5,8 +5,9 @@ import { after, test } from "node:test";
 import { config } from "@aihot/backend/config";
 import { closeDb, sql } from "@aihot/backend/db";
 import { Reply, stub, tag } from "../../../tests/setup.ts";
-import { LIVE_SOURCE, type LiveChart } from "../catalog.ts";
+import { LIVE_SOURCE, SECTOR_TRACKS, type LiveChart } from "../catalog.ts";
 import { barsFor, liveChartJson } from "../backend/charts.ts";
+import { saveSnapshot } from "../backend/snapshots.ts";
 import type { ProviderSnapshot } from "../backend/provider.ts";
 import {
   QUOTE_CODES, backfillBars, fetchDayBars, loadBars, parseDayBars, quotesFetchedAt, refreshCode, refreshQuotes,
@@ -288,6 +289,37 @@ test("相对强弱：两条指数按交易日对齐后相除，并配一条 250 
   // 均线在凑满 250 个交易日之前留空。
   assert.equal(series.seriesData["250 日均线"]![248], null);
   assert.ok(Number.isFinite(series.seriesData["250 日均线"]![249]));
+});
+
+test("轮动总图与行业估值按七条赛道现算", async () => {
+  const start = Date.UTC(2021, 0, 4);
+  const dates = Array.from({ length: 300 }, (_, i) => new Date(start + i * 86_400_000).toISOString().slice(0, 10));
+  // 每条赛道涨速不同，归一化后就能比较出强弱；序列一路上涨，最新价即区间最高价。
+  await saveSnapshot("provider", {
+    updatedAt: "2024-01-03T00:00:00.000Z",
+    source: "测试提供方",
+    indices: SECTOR_TRACKS.map((track, t) => ({
+      code: track.code, name: track.name, kind: "sector", classification: "SW2021-L1",
+      bars: dates.map((date, i) => ({ date, close: 100 * (1 + 0.0005 * (t + 1)) ** i })),
+      valuations: [],
+    })),
+  } as unknown as ProviderSnapshot);
+
+  const rotation = await liveChartJson({ group: "sectors", slug: "rotation", kind: "rotation", code: SECTOR_TRACKS[0].code, indexName: "七大核心赛道" });
+  assert.equal(rotation?.meta.type, "multi-line");
+  assert.equal(rotation?.meta.source, "测试提供方");
+  const series = rotation!.series as { dates: string[]; seriesData: Record<string, number[]> };
+  assert.deepEqual(Object.keys(series.seriesData), SECTOR_TRACKS.map((track) => track.name));
+  assert.equal(series.dates.length, dates.length);
+  // 共同起点都归一化到 100，涨得快的赛道收在更高处。
+  assert.ok(Object.values(series.seriesData).every((values) => values[0] === 100));
+  assert.ok(series.seriesData["计算机"]!.at(-1)! > series.seriesData["食品饮料"]!.at(-1)!);
+
+  const valuation = await liveChartJson({ group: "sectors", slug: "sector-valuation", kind: "sector-valuation", code: SECTOR_TRACKS[0].code, indexName: "七大核心赛道" });
+  assert.equal(valuation?.meta.type, "bar");
+  const bars = valuation!.series as Array<{ date: string; value: number }>;
+  assert.deepEqual(bars.map((row) => row.date), SECTOR_TRACKS.map((track) => track.name));
+  assert.ok(bars.every((row) => row.value > 99.9)); // 一路上涨，最新价就是近 5 年最高价，分位到顶
 });
 
 test("库里还没有这只指数的行情时返回 null", async () => {

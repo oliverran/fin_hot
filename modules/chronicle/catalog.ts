@@ -1,7 +1,7 @@
 // 这个模块的地址与图表目录：分组、每组的图表面板与每张图的文案。
 // 图表与数据收录自开源项目 A股编年史（oliverran/the-history-of-a-stock）：
-// 宽基走势、由日线现算的派生图，以及七个核心赛道的行业指数接实时行情；
-// 其余的图（估值、行业轮动、抱团代理等）发随包的真实快照（源项目口径，见 server.ts 与 data/）。网页只读这里，不读 data/。
+// 宽基走势、由日线现算的派生图、七个核心赛道的行业指数，以及按这七条赛道现算的轮动与估值；
+// 其余的图（宽基估值、行业权重、抱团代理等）发随包的真实快照（源项目口径，见 server.ts 与 data/）。网页只读这里，不读 data/。
 
 /** 三大分组：宽基、行业、抱团。 */
 export type GroupKey = "broad" | "sectors" | "clusters";
@@ -440,7 +440,7 @@ export const PAGES: readonly ChartPage[] = [
     heroTitle: "轮动总图 (Rotation)",
     heroLead: "市场的资金总量是有限的，当缺乏绝对主线时，资金便会在各个板块间进行高频的博弈与切换。我们将多条行业主线置于同一坐标系中，观察这台“电风扇”的运转轨迹。",
     chartTitle: "核心赛道相对走势对比",
-    chartNote: "白酒、医药、新能源、半导体、银行的交叉往复。",
+    chartNote: "七条核心赛道（申万一级行业指数）自 2021 年起归一化至 100 的相对走势。",
     sections: [
       {
         n: "1",
@@ -453,11 +453,11 @@ export const PAGES: readonly ChartPage[] = [
     slug: "sector-valuation",
     group: "sectors",
     cardTitle: "行业估值",
-    cardBlurb: "各大行业 PE/PB 的横向对比与历史纵位。",
+    cardBlurb: "七条核心赛道相对自身历史的价格水位对比。",
     heroTitle: "行业估值 (Sector Valuation)",
     heroLead: "买的好不如买的便宜。跨行业比较不仅需要看绝对景气度，还需要看当前价格是否已经透支了未来的预期。",
     chartTitle: "价格分位（近 5 年）",
-    chartNote: "各行业代表组合当前价格在近 5 年区间中的分位（%）；越低代表相对自身历史越便宜，按价格而非 PE 计。",
+    chartNote: "七大核心赛道（申万一级行业指数）最新点位在各自近 5 年区间中的分位（%）；越低代表相对自身历史越便宜，按价格而非 PE 计。",
   },
 
   // ---- 抱团 ----
@@ -544,8 +544,8 @@ export const PAGES: readonly ChartPage[] = [
   },
 ];
 
-/** 真实行情图的算法：直接从指数日线画，或由日线现算的派生量。 */
-export type LiveKind = "index" | "drawdown" | "annual" | "rolling" | "turbulence" | "volatility" | "annual-vol" | "seasonality" | "distribution" | "relative" | "davis";
+/** 真实行情图的算法：直接从指数日线画，或由日线现算的派生量。rotation 与 sector-valuation 按 SECTOR_TRACKS 这一组现算。 */
+export type LiveKind = "index" | "drawdown" | "annual" | "rolling" | "turbulence" | "volatility" | "annual-vol" | "seasonality" | "distribution" | "relative" | "davis" | "rotation" | "sector-valuation";
 
 export interface LiveChart {
   group: GroupKey;
@@ -563,10 +563,25 @@ export interface LiveChart {
 }
 
 /**
- * 实时更新的图表：宽基指数走势、只靠指数日线就能算出来的沪深 300 派生图，以及行业卷七个核心赛道的申万一级行业指数。
+ * 行业卷的七个核心赛道（申万一级行业指数）：七张单赛道图、轮动总图与行业估值都用这一份，
+ * 免得行业代码与名字在多处对不上。
+ */
+export const SECTOR_TRACKS = [
+  { slug: "baijiu", code: "801120.SI", name: "食品饮料" },
+  { slug: "pharma", code: "801150.SI", name: "医药生物" },
+  { slug: "new-energy", code: "801730.SI", name: "电力设备" },
+  { slug: "semi", code: "801080.SI", name: "电子" },
+  { slug: "banks", code: "801780.SI", name: "银行" },
+  { slug: "property", code: "801180.SI", name: "房地产" },
+  { slug: "ai", code: "801750.SI", name: "计算机" },
+] as const;
+
+/**
+ * 实时更新的图表：宽基指数走势、只靠指数日线就能算出来的沪深 300 派生图、行业卷七个核心赛道的申万一级行业指数，
+ * 以及按这七条赛道现算的轮动总图与行业估值。
  * 行业指数的日线只有付费提供方（Tushare）才有公开口径，所以代码写成提供方式（801120.SI），
  * 不去腾讯抓、也不落 chronicle_quotes（见 backend/quotes.ts 与 backend/charts.ts）。
- * 其余的图（估值、行业权重、抱团等）没有公开免费口径，仍是随包的示例数据。
+ * 其余的图（宽基估值、行业权重、抱团等）没有公开免费口径，仍是随包的示例数据。
  */
 export const LIVE_CHARTS: readonly LiveChart[] = [
   { group: "broad", slug: "shanghai-composite", kind: "index", code: "sh000001", indexName: "上证综指" },
@@ -586,13 +601,10 @@ export const LIVE_CHARTS: readonly LiveChart[] = [
   { group: "broad", slug: "davis-decomposition", kind: "davis", code: "sh000300", indexName: "沪深 300" },
   { group: "broad", slug: "style-ratios", kind: "relative", code: "sh000300", code2: "sh000852", indexName: "沪深 300 / 中证 1000" },
   // 行业卷：七个核心赛道用申万一级行业指数（提供方式代码，日线取自 Tushare 快照，不落 chronicle_quotes）。
-  { group: "sectors", slug: "baijiu", kind: "index", code: "801120.SI", indexName: "食品饮料（申万）" },
-  { group: "sectors", slug: "pharma", kind: "index", code: "801150.SI", indexName: "医药生物（申万）" },
-  { group: "sectors", slug: "new-energy", kind: "index", code: "801730.SI", indexName: "电力设备（申万）" },
-  { group: "sectors", slug: "semi", kind: "index", code: "801080.SI", indexName: "电子（申万）" },
-  { group: "sectors", slug: "banks", kind: "index", code: "801780.SI", indexName: "银行（申万）" },
-  { group: "sectors", slug: "property", kind: "index", code: "801180.SI", indexName: "房地产（申万）" },
-  { group: "sectors", slug: "ai", kind: "index", code: "801750.SI", indexName: "计算机（申万）" },
+  ...SECTOR_TRACKS.map((track): LiveChart => ({ group: "sectors", slug: track.slug, kind: "index", code: track.code, indexName: `${track.name}（申万）` })),
+  // 轮动总图与行业估值：都按这七条赛道现算（2021 年起归一化的走势 / 近五年价格分位），见 backend/charts.ts。
+  { group: "sectors", slug: "rotation", kind: "rotation", code: SECTOR_TRACKS[0].code, indexName: "七大核心赛道" },
+  { group: "sectors", slug: "sector-valuation", kind: "sector-valuation", code: SECTOR_TRACKS[0].code, indexName: "七大核心赛道" },
 ];
 
 /** 精选页第一屏那张实时图跟的两只指数（腾讯写法，与 LIVE_CHARTS 里的代码一致）。 */
