@@ -3,20 +3,21 @@
 // test that recognises a request by its whole prompt and scores against the pack's threshold keeps
 // working when a site rewrites the prompts and recalibrates the thresholds for its own industry.
 import { MEND_SYSTEM, SCORE_SYSTEM, STRUCTURE_SYSTEM, tierThreshold } from "@aihot/backend/editorial/analyze";
-import { PREFILTER_SYSTEM, UNDERSTAND_SYSTEM } from "@aihot/backend/editorial/writing";
+import { PREFILTER_SYSTEM, SUMMARIZE_SYSTEM, UNDERSTAND_SYSTEM } from "@aihot/backend/editorial/writing";
 
 export type AnalysisStep = "prefilter" | "score" | "structure" | "understand" | "summarize" | "wording";
 
 const BY_SYSTEM = new Map<string, AnalysisStep>([
-  [PREFILTER_SYSTEM, "prefilter"], [SCORE_SYSTEM, "score"], [STRUCTURE_SYSTEM, "structure"], [UNDERSTAND_SYSTEM, "understand"], [MEND_SYSTEM, "wording"],
+  [PREFILTER_SYSTEM, "prefilter"], [SCORE_SYSTEM, "score"], [STRUCTURE_SYSTEM, "structure"], [UNDERSTAND_SYSTEM, "understand"],
+  [SUMMARIZE_SYSTEM, "summarize"], [MEND_SYSTEM, "wording"],
 ]);
 
-/** The step of a chat request, from its body as the provider receives it; the title/summary prompt comes without a system message. */
+/** The step of a chat request, from its body as the provider receives it; the title/summary prompt is
+ *  the one whose system message is the shared summarize rules (article, short and long posts alike). */
 export function analysisStep(body: string): AnalysisStep {
   const { messages } = JSON.parse(body) as { messages: Array<{ role: string; content: unknown }> };
-  if (messages[0]?.role !== "system") return "summarize";
-  const step = BY_SYSTEM.get(String(messages[0].content));
-  if (!step) throw new Error(`not a request of the article analysis: ${String(messages[0].content).slice(0, 80)}`);
+  const step = messages[0]?.role === "system" ? BY_SYSTEM.get(String(messages[0].content)) : "summarize";
+  if (!step) throw new Error(`not a request of the article analysis: ${String(messages[0]?.content ?? "").slice(0, 80)}`);
   return step;
 }
 

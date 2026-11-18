@@ -11,6 +11,9 @@ import { promptText } from "./prompts.ts";
 
 export const PREFILTER_SYSTEM = promptText("prefilter");
 export const UNDERSTAND_SYSTEM = promptText("understand");
+/** The stable rules the three title/summary prompts share, sent as the system message so a provider's
+ *  prefix cache is reused across every summarize call regardless of which variant the item takes. */
+export const SUMMARIZE_SYSTEM = promptText("summarize-system");
 
 /** A body longer than this is cut (whole bodies are sent; a few run past the context). */
 export const MAX_BODY_CHARS = 60_000;
