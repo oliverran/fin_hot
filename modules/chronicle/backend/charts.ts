@@ -358,8 +358,14 @@ export async function liveChartJson(chart: LiveChart): Promise<ChartJson | null>
   const page = pageOf(chart.group, chart.slug);
   const [type, series] = build(chart.kind, bars, other, valuations, tracks);
   // 多赛道的图覆盖的是各赛道的共同区间：起点取最晚的，终点取最早的。
-  const firstDate = byTracks ? tracks.map((track) => track.bars[0]!.date).reduce((a, b) => (a > b ? a : b)) : bars[0]!.date;
-  const lastDate = byTracks ? tracks.map((track) => track.bars.at(-1)!.date).reduce((a, b) => (a < b ? a : b)) : bars.at(-1)!.date;
+  let firstDate = byTracks ? tracks.map((track) => track.bars[0]!.date).reduce((a, b) => (a > b ? a : b)) : bars[0]!.date;
+  let lastDate = byTracks ? tracks.map((track) => track.bars.at(-1)!.date).reduce((a, b) => (a < b ? a : b)) : bars.at(-1)!.date;
+  if (chart.kind === "relative") {
+    const { dates } = series as { dates: string[] };
+    if (!dates.length) return null;
+    firstDate = dates[0]!;
+    lastDate = dates.at(-1)!;
+  }
   return {
     meta: {
       id: chart.slug,

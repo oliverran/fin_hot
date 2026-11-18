@@ -108,11 +108,39 @@ public struct ChronicleSeries: Decodable, Sendable {
         public let firstDate: String?
         public let lastDate: String?
     }
-    public struct Point: Decodable, Identifiable, Sendable {
-        public var id: String { date }
-        public let date: String
-        public let value: Double
+    private struct Point: Decodable {
+        let date: String
+        let value: Double
+    }
+    private struct MultiLine: Decodable {
+        let dates: [String]
+        let seriesData: [String: [Double?]]
+    }
+    public struct Line: Identifiable, Sendable {
+        public var id: String { name }
+        public let name: String
+        public let values: [Double?]
     }
     public let meta: Meta
-    public let series: [Point]
+    public let dates: [String]
+    public let lines: [Line]
+
+    private enum CodingKeys: String, CodingKey { case meta, series }
+    public init(from decoder: Decoder) throws {
+        let fields = try decoder.container(keyedBy: CodingKeys.self)
+        meta = try fields.decode(Meta.self, forKey: .meta)
+        if meta.type == "multi-line", !(try fields.decodeNil(forKey: .series)),
+           let multi = try? fields.decode(MultiLine.self, forKey: .series) {
+            let length = multi.dates.count
+            guard multi.seriesData.values.allSatisfy({ $0.count == length }) else {
+                throw DecodingError.dataCorruptedError(forKey: .series, in: fields, debugDescription: "Series lengths differ from dates")
+            }
+            dates = multi.dates
+            lines = multi.seriesData.sorted { $0.key < $1.key }.map { Line(name: $0.key, values: $0.value) }
+        } else {
+            let points = try fields.decode([Point].self, forKey: .series)
+            dates = points.map(\.date)
+            lines = [Line(name: meta.name, values: points.map(\.value))]
+        }
+    }
 }

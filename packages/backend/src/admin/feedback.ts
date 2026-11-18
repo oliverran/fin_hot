@@ -2,11 +2,9 @@
 // (privacy notice: feedback material is removed once handling ends or when the sender asks).
 import type { AdminFeedback, BeforeJson } from "@aihot/contracts/admin";
 import { unlink } from "node:fs/promises";
-import path from "node:path";
-import { config } from "../config.ts";
 import { sql } from "../db.ts";
 import { audit, Conflict } from "../audit.ts";
-import { feedbackEmailKey, resetFeedbackSubmissionState } from "../operations/feedback.ts";
+import { feedbackEmailKey, resetFeedbackSubmissionState, screenshotPath } from "../operations/feedback.ts";
 
 export const FEEDBACK_STATUSES = ["new", "triaged", "replied", "resolved", "spam"] as const;
 export type FeedbackStatus = (typeof FEEDBACK_STATUSES)[number];
@@ -77,12 +75,6 @@ export async function unbanSource(sourceHash: string, actor: string) {
     const rows = await tx`DELETE FROM feedback_bans WHERE source_hash = ${sourceHash} RETURNING reason`;
     if (rows.length) await audit(actor, "feedback.unban", `feedback-source:${sourceHash}`, null, { reason: rows[0]!.reason }, null, { db: tx });
   });
-}
-
-function screenshotPath(key: string | null): string | null {
-  if (!key?.startsWith("local:")) return null;
-  const name = key.slice("local:".length);
-  return /^[\w.-]+$/.test(name) ? path.join(config.dataDir, "feedback-screenshots", name) : null;
 }
 
 export async function feedbackScreenshot(id: number): Promise<string | null> {

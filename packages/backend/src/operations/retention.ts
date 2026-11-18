@@ -2,9 +2,10 @@
 // and the site's modules' own periods (their server.ts retention).
 import { readdir, stat, unlink } from "node:fs/promises";
 import path from "node:path";
+import { POLICY } from "@aihot/site";
 import { config } from "../config.ts";
 import { sql } from "../db.ts";
-import { expireFeedbackBans, pruneFeedbackSubmissionState, screenshotsForwarded } from "./feedback.ts";
+import { expireFeedbackBans, pruneFeedbackSubmissionState, screenshotPath, screenshotsForwarded } from "./feedback.ts";
 import { pruneReceipts } from "../providers/receipts.ts";
 import { serverModules } from "../modules.ts";
 
@@ -43,10 +44,19 @@ export async function dailyRetention(now = new Date()) {
   // reference on an article (ON DELETE SET NULL); the owner holds the period.
   const deletedReceipts = await pruneReceipts(now);
   const monthMs = 30 * 86400_000;
-  // Feedback screenshots that only wait to be forwarded (the database then keeps just the Feishu image
-  // key). The forwarding sweep gives up after a week; anything older is removed, whether or not
-  // forwarding ever ran for it. Without the internal chat they are the screenshots themselves and stay.
-  const deletedScreenshots = screenshotsForwarded() ? await removeOlderThan(path.join(config.dataDir, "feedback-screenshots"), 8 * 86400_000, now.getTime()) : 0;
+  const feedbackAge = POLICY.privacy.retentionDays * 86400_000;
+  const expiredFeedback = await sql.begin(async tx => {
+    const rows = await tx<{ screenshot_key: string | null }[]>`DELETE FROM feedback
+      WHERE created_at < ${new Date(now.getTime() - feedbackAge)} RETURNING screenshot_key`;
+    for (const row of rows) {
+      const file = screenshotPath(row.screenshot_key);
+      if (file) await unlink(file).catch((e: NodeJS.ErrnoException) => { if (e.code !== "ENOENT") throw e; });
+    }
+    return rows.count;
+  });
+  // Local attachments are created at submission. The directory sweep also covers orphaned files.
+  const screenshotAge = screenshotsForwarded() ? Math.min(feedbackAge, 8 * 86400_000) : feedbackAge;
+  const deletedScreenshots = await removeOlderThan(path.join(config.dataDir, "feedback-screenshots"), screenshotAge, now.getTime());
   // Derived caches (proxied images, share cards and posters) are rebuilt on demand.
   const prunedCache = (await removeOlderThan(path.join(config.dataDir, "imgcache"), monthMs, now.getTime())) + (await removeOlderThan(path.join(config.dataDir, "ogcache"), monthMs, now.getTime()));
   return {
@@ -56,6 +66,7 @@ export async function dailyRetention(now = new Date()) {
     expiredFeedbackState,
     deletedJobRuns: runs.count,
     deletedReceipts,
+    deletedFeedback: expiredFeedback,
     deletedScreenshots,
     prunedCache,
   };

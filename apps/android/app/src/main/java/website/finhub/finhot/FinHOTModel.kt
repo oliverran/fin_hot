@@ -55,6 +55,7 @@ class FinHOTModel(application: Application) : AndroidViewModel(application) {
     var feedOffset = 0
     private var previousIDs: List<String> = emptyList()
     private var fetchJob: Job? = null
+    private var restorePageCount = 0
     private var generation = 0
     val visibleItems get() = feed.items.filter { !unreadOnly || it.id !in library.readIDs }
     fun updateQuery(value: FeedQuery) {
@@ -63,6 +64,7 @@ class FinHOTModel(application: Application) : AndroidViewModel(application) {
         refresh()
     }
     fun rememberFeed(index: Int, offset: Int, ids: List<String>) {
+        if (restorePageCount > 0 && ids.isEmpty()) return
         previousIDs = ids
         feedAnchor = ids.getOrNull(index - 1)
         feedOffset = if (feedAnchor == null) 0 else offset
@@ -84,12 +86,21 @@ class FinHOTModel(application: Application) : AndroidViewModel(application) {
         feedAnchor = target; restoreVersion++
     }
     fun refresh(restoring: Boolean = false) = fetch(reset = true, restoring = restoring)
+    fun retryFeed() {
+        when {
+            restartRequired -> refresh()
+            restorePageCount > 0 -> refresh(restoring = true)
+            feed.items.isEmpty() -> refresh()
+            else -> more()
+        }
+    }
     fun more() { if (!loading && feed.hasMore) fetch(reset = false) }
     private fun fetch(reset: Boolean, restoring: Boolean = false) {
         fetchJob?.cancel()
         val token = ++generation
         val filter = query
-        val pages = if (restoring) feed.pages.coerceAtLeast(1) else 1
+        if (reset) restorePageCount = if (restoring) maxOf(1, restorePageCount, feed.pages) else 0
+        val pages = restorePageCount.coerceAtLeast(1)
         if (reset) feed = FeedWindow()
         if (reset && !restoring) { feedAnchor = null; feedOffset = 0 }
         loading = true; error = null; restartRequired = false
@@ -104,6 +115,7 @@ class FinHOTModel(application: Application) : AndroidViewModel(application) {
                 }
                 ensureActive()
                 feed = result
+                restorePageCount = 0
                 if (restoring) restorePosition() else if (reset) restoreVersion++
             } catch (cancelled: CancellationException) { throw cancelled }
             catch (failure: Exception) { error = userMessage(failure); restartRequired = failure is ApiError && failure.code == "invalid_cursor" }

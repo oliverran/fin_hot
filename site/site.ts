@@ -4,6 +4,9 @@
 
 import type { Founder } from "@aihot/contracts/site-config";
 
+// 获得 TestFlight 邀请或 App Store 链接后填入。两个平台的二维码始终使用各自的官网地址。
+export const IOS_DOWNLOAD_URL: string | null = null;
+
 /**
  * 日报、周报、月报什么时候出（北京时间，HH:mm）：日报收这个时间之前的 24 小时，周报在每个自然周之后的周一出，
  * 月报在每月 1 日出。排程、成刊时间窗口、缺期告警和所有提到时间的文案都读它（public/ 里的文件写占位
@@ -104,6 +107,7 @@ export const POLICY = {
     headers: null as null | Record<string, string>,
   },
   privacy: {
+    retentionDays: 30,
     description: "本站如何处理浏览器本地数据、反馈资料与访问日志。",
     /** llms.txt 里对这一页的一句说明（选填）。 */
     covers: null as string | null,

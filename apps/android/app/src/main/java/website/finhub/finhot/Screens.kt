@@ -9,6 +9,7 @@ import androidx.compose.foundation.selection.toggleable
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.foundation.Canvas
@@ -83,16 +84,59 @@ import java.net.URI
                         }
                     }
                 }
-                TextButton(onClick = { vm.bookmark(route.id) }) { Text(if (route.id in vm.library.bookmarks) "已收藏" else "收藏") }
-                TextButton(onClick = { context.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply { type = "text/plain"; putExtra(Intent.EXTRA_TEXT, "${vm.api.base}/items/${route.id}") }, "分享资讯")) }) { Text("分享") }
+                val bookmarkLabel = if (route.id in vm.library.bookmarks) "已收藏" else "收藏"
+                val share = {
+                    val intent = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, "${vm.api.base}/items/${route.id}")
+                    }
+                    context.startActivity(Intent.createChooser(intent, "分享资讯"))
+                }
+                if (LocalDensity.current.fontScale > 1.3f) {
+                    var actionsOpen by remember { mutableStateOf(false) }
+                    Box {
+                        IconButton(onClick = { actionsOpen = true }) { Icon(Icons.Default.MoreVert, "阅读操作") }
+                        DropdownMenu(actionsOpen, { actionsOpen = false }) {
+                            DropdownMenuItem({ Text(bookmarkLabel) }, { actionsOpen = false; vm.bookmark(route.id) })
+                            DropdownMenuItem({ Text("分享") }, { actionsOpen = false; share() })
+                        }
+                    }
+                } else {
+                    TextButton(onClick = { vm.bookmark(route.id) }) { Text(bookmarkLabel) }
+                    TextButton(onClick = share) { Text("分享") }
+                }
             } })
     }, bottomBar = {
-        if (route == null) NavigationBar { labels.forEachIndexed { index, label ->
-            NavigationBarItem(selected = vm.tab == index, onClick = { vm.tab = index }, icon = {
-                val icon = icons[index]
-                if (icon != null) Icon(icon, null) else Icon(painterResource(R.drawable.ic_timeline), null)
-            }, label = { Text(label) })
-        } }
+        if (route == null) BoxWithConstraints(Modifier.fillMaxWidth()) {
+            if (LocalDensity.current.fontScale > 1.3f && maxWidth < 480.dp) {
+                var choosingTab by remember { mutableStateOf(false) }
+                Surface(color = MaterialTheme.colorScheme.surfaceContainer) {
+                    Box(Modifier.fillMaxWidth().navigationBarsPadding()) {
+                        TextButton(onClick = { choosingTab = true }, modifier = Modifier.fillMaxWidth()) {
+                            Text("${labels[vm.tab]} · 切换栏目")
+                            Icon(Icons.Default.ArrowDropDown, null)
+                        }
+                        DropdownMenu(choosingTab, { choosingTab = false }) {
+                            labels.forEachIndexed { index, label ->
+                                DropdownMenuItem(text = { Text(label) }, onClick = {
+                                    vm.tab = index
+                                    choosingTab = false
+                                })
+                            }
+                        }
+                    }
+                }
+            } else {
+                NavigationBar {
+                    labels.forEachIndexed { index, label ->
+                        NavigationBarItem(selected = vm.tab == index, onClick = { vm.tab = index }, icon = {
+                            val icon = icons[index]
+                            if (icon != null) Icon(icon, null) else Icon(painterResource(R.drawable.ic_timeline), null)
+                        }, label = { Text(label) })
+                    }
+                }
+            }
+        }
     }) { padding ->
         Box(Modifier.fillMaxSize().padding(padding)) {
             if (route == null) when (vm.tab) {
@@ -146,8 +190,18 @@ private data class RemoteState<T>(val value: T? = null, val error: String? = nul
     val start = visible.indexOfFirst { it.id == vm.feedAnchor }.let { if (it < 0) 0 else it + 1 }
     val list = rememberLazyListState(start, vm.feedOffset)
     DisposableEffect(Unit) { onDispose { vm.rememberFeed(list.firstVisibleItemIndex, list.firstVisibleItemScrollOffset, currentIDs) } }
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+    DisposableEffect(lifecycle, list) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_PAUSE) {
+                vm.rememberFeed(list.firstVisibleItemIndex, list.firstVisibleItemScrollOffset, currentIDs)
+            }
+        }
+        lifecycle.addObserver(observer)
+        onDispose { lifecycle.removeObserver(observer) }
+    }
     LaunchedEffect(Unit) {
-        if (!vm.loading) {
+        if (!vm.loading && vm.error == null) {
             if (vm.feed.pages == 0) vm.refresh()
             else if (vm.feed.validUntil <= System.currentTimeMillis()) vm.refresh(restoring = true)
         }
@@ -193,7 +247,7 @@ private data class RemoteState<T>(val value: T? = null, val error: String? = nul
                 vm.rememberFeed(list.firstVisibleItemIndex, list.firstVisibleItemScrollOffset, currentIDs)
                 vm.open(Screen.ArticlePage(article.id))
             } }
-            if (vm.error != null) item { Text(vm.error!!); TextButton(onClick = { if (vm.restartRequired || vm.feed.items.isEmpty()) vm.refresh() else vm.more() }) { Text(if (vm.restartRequired) "刷新列表" else "重试") } }
+            if (vm.error != null) item { Text(vm.error!!); TextButton(onClick = vm::retryFeed) { Text(if (vm.restartRequired) "刷新列表" else "重试") } }
             if (!vm.loading && vm.error == null && visible.isEmpty()) item {
                 Text(if (vm.unreadOnly && vm.feed.items.isNotEmpty()) "这些资讯已经读过了，可以继续加载更早的资讯。" else "暂无资讯，试试其他分类或关键词。", Modifier.padding(vertical = 24.dp))
                 if (vm.unreadOnly) TextButton(onClick = { vm.unreadOnly = false }) { Text("查看全部已加载资讯") }
@@ -356,35 +410,59 @@ private data class RemoteState<T>(val value: T? = null, val error: String? = nul
     }
 }
 @Composable private fun ChartScreen(vm: FinHOTModel, page: ChartPage) {
-    Remote(page.slug, { wireJson.decodeFromJsonElement(ChartPayload.serializer(), vm.api.get("api/chronicle/${page.group}/${page.slug}.json").json) }) { payload ->
+    Remote(page.slug, { decodeChart(vm.api.get("api/chronicle/${page.group}/${page.slug}.json").json) }) { payload ->
         var count by remember { mutableIntStateOf(250) }
-        val points = payload.series.takeLast(count)
-        val color = MaterialTheme.colorScheme.primary
+        val dates = payload.dates.takeLast(count)
+        val lines = payload.lines.mapValues { it.value.takeLast(count) }
+        val colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.tertiary)
+        val observations = lines.values.flatten().filterNotNull()
         LazyColumn(contentPadding = PaddingValues(22.dp), verticalArrangement = Arrangement.spacedBy(18.dp)) {
             item {
-                Text(page.cardTitle, style = MaterialTheme.typography.headlineLarge); Text(page.chartNote)
+                Text(page.cardTitle, style = MaterialTheme.typography.headlineLarge)
+                Text(page.chartNote)
                 Row { listOf(250, 750, Int.MAX_VALUE).forEach { size -> TextButton(onClick = { count = size }) { Text(if (size == Int.MAX_VALUE) "全部" else "近 $size 点") } } }
             }
-            if (points.isEmpty()) item { Text("暂无可用数据，网站尚未同步这组数据。") }
+            if (observations.isEmpty()) item { Text("暂无可用数据，网站尚未同步这组数据。") }
             else item {
+                val bars = payload.meta.type == "bar"
+                val minimum = observations.min()
+                val maximum = observations.max()
                 Canvas(Modifier.fillMaxWidth().height(280.dp)) {
-                    val min = if (payload.meta.type == "bar") minOf(0.0, points.minOf { it.value }) else points.minOf { it.value }
-                    val max = if (payload.meta.type == "bar") maxOf(0.0, points.maxOf { it.value }) else points.maxOf { it.value }
-                    val span = (max - min).takeIf { it > 0 } ?: 1.0
-                    val path = Path()
-                    points.forEachIndexed { index, point ->
-                        val x = index.toFloat() / (points.size - 1).coerceAtLeast(1) * this.size.width
-                        val y = this.size.height - ((point.value - min) / span * this.size.height).toFloat()
-                        if (payload.meta.type == "bar") drawLine(color, androidx.compose.ui.geometry.Offset(x, (this.size.height - (0 - min) / span * this.size.height).toFloat()), androidx.compose.ui.geometry.Offset(x, y), strokeWidth = (this.size.width / points.size).coerceAtMost(18f))
-                        else if (index == 0) path.moveTo(x, y) else path.lineTo(x, y)
+                    val low = if (bars) minOf(0.0, minimum) else minimum
+                    val high = if (bars) maxOf(0.0, maximum) else maximum
+                    val span = (high - low).takeIf { it > 0 } ?: 1.0
+                    fun y(value: Double) = size.height * (1 - (value - low) / span).toFloat()
+                    lines.values.forEachIndexed { seriesIndex, values ->
+                        val color = colors[seriesIndex % colors.size]
+                        val path = Path()
+                        values.forEachIndexed { index, value ->
+                            if (value != null) {
+                                val x = size.width * index / (dates.size - 1).coerceAtLeast(1)
+                                if (bars) {
+                                    drawLine(color, androidx.compose.ui.geometry.Offset(x, y(0.0)), androidx.compose.ui.geometry.Offset(x, y(value)), strokeWidth = (size.width / dates.size).coerceAtMost(18f))
+                                } else if (values.getOrNull(index - 1) == null) path.moveTo(x, y(value))
+                                else path.lineTo(x, y(value))
+                            }
+                        }
+                        if (!bars) drawPath(path, color, style = androidx.compose.ui.graphics.drawscope.Stroke(3f))
                     }
-                    if (payload.meta.type != "bar") drawPath(path, color, style = androidx.compose.ui.graphics.drawscope.Stroke(3f))
                 }
-                Text("${points.first().date} — ${points.last().date}", style = MaterialTheme.typography.labelMedium)
-                Text("最新值 ${"%.2f".format(points.last().value)}", style = MaterialTheme.typography.titleLarge)
-                Text("区间数值 ${"%.2f".format(points.minOf { it.value })} — ${"%.2f".format(points.maxOf { it.value })}", style = MaterialTheme.typography.labelSmall)
+                Text("${dates.first()} — ${dates.last()} · ${dates.size} 个观测期", style = MaterialTheme.typography.labelMedium)
+                lines.entries.forEachIndexed { index, (name, values) ->
+                    Text("${if (lines.size == 1) "最新值" else name} ${values.last()?.let { "%.2f".format(it) } ?: "暂无观测"}",
+                        color = colors[index % colors.size], style = MaterialTheme.typography.titleMedium)
+                }
+                Text("区间数值 ${"%.2f".format(minimum)} — ${"%.2f".format(maximum)}", style = MaterialTheme.typography.labelSmall)
             }
-            item { Text("来源：${payload.meta.source ?: "网站未标注"}"); payload.meta.updatedAt?.let { Text("更新：$it") }; Text("仅供历史研究，不构成投资建议。", style = MaterialTheme.typography.labelSmall) }
+            item {
+                if (dates.isNotEmpty()) {
+                    Text("数据覆盖：${payload.dates.first()} — ${payload.dates.last()}")
+                    if (payload.meta.status == "stale") Text("数据延迟 · 最新观测 ${dates.last()}", color = MaterialTheme.colorScheme.error)
+                }
+                Text("来源：${payload.meta.source ?: "网站未标注"}")
+                payload.meta.updatedAt?.let { Text("数据更新时间：$it") }
+                Text("仅供历史研究，不构成投资建议。", style = MaterialTheme.typography.labelSmall)
+            }
         }
     }
 }

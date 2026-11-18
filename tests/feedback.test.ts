@@ -133,6 +133,24 @@ test("screenshots left behind are removed after a week, whether or not forwardin
   assert.ok(existsSync(recent), "a screenshot still waiting for forwarding stays");
 });
 
+test("daily retention expires old feedback and local screenshots while preserving recent submissions", async () => {
+  const now = new Date();
+  const old = new Date(now.getTime() - 31 * 86400_000);
+  const recent = new Date(now.getTime() - 29 * 86400_000);
+  const dir = path.join(config.dataDir, "feedback-screenshots");
+  mkdirSync(dir, { recursive: true });
+  const picture = path.join(dir, `old-feedback-${T}.png`);
+  writeFileSync(picture, "x");
+  // A restored attachment can be newer on disk than the feedback it belongs to.
+  const rows = await sql`INSERT INTO feedback (content, source_hash, created_at, screenshot_key)
+    VALUES ('old', ${T}, ${old}, ${"local:" + path.basename(picture)}), ('recent', ${T}, ${recent}, NULL) RETURNING id`;
+  process.env.FEISHU_INTERNAL_ENABLED = "false";
+  await dailyRetention(now);
+  assert.ok(!existsSync(picture));
+  const kept = await sql`SELECT id FROM feedback WHERE id IN (${rows[0]!.id}, ${rows[1]!.id})`;
+  assert.deepEqual(kept.map(row => row.id), [rows[1]!.id]);
+});
+
 test("imported feedback that was never forwarded is not sent now", async () => {
   const [row] = await sql<{ id: number }[]>`
     INSERT INTO feedback (content, source_hash, created_at) VALUES (${`旧反馈 ${T}`}, ${`imported:${T}`}, now() - interval '10 minutes') RETURNING id`;

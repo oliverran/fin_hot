@@ -13,6 +13,12 @@ import { audit } from "../audit.ts";
 import { serverModules } from "../modules.ts";
 import { feishuInternalEnabled, forwardFeedbackToFeishu } from "../notify/feishu.ts";
 
+export function screenshotPath(key: string | null): string | null {
+  if (!key?.startsWith("local:")) return null;
+  const name = key.slice("local:".length);
+  return /^[\w.-]+$/.test(name) ? path.join(config.dataDir, "feedback-screenshots", name) : null;
+}
+
 export class FeedbackRejected extends Error {
   readonly status: number;
   readonly code: string;

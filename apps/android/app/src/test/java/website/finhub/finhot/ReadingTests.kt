@@ -6,6 +6,14 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class ReadingTests {
+    @Test fun chartKeepsBothLinesAlignedAcrossMissingObservations() {
+        val input = """{"meta":{"name":"风格","type":"multi-line"},"series":{"dates":["a","b"],"seriesData":{"比值":[1,3],"均线":[null,2]}}}"""
+        val chart = decodeChart(wireJson.parseToJsonElement(input))
+        assertEquals(listOf("a", "b"), chart.dates)
+        assertEquals(listOf(null, 2.0), chart.lines["均线"])
+        assertEquals(listOf(1.0, 3.0), chart.lines["比值"])
+    }
+
     @Test fun bookmarksKeepSaveOrderAfterRestart() {
         val value = Library().toggleBookmark("z").toggleBookmark("a")
         val restored = wireJson.decodeFromString<Library>(wireJson.encodeToString(value))

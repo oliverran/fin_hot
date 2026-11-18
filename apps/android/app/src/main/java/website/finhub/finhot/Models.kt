@@ -2,6 +2,9 @@ package website.finhub.finhot
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.decodeFromJsonElement
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.Node
@@ -45,7 +48,20 @@ enum class ReportKind(val label: String, val collection: String, val path: Strin
 @Serializable data class ChartPage(val group: String, val slug: String, val cardTitle: String, val cardBlurb: String, val chartNote: String)
 @Serializable data class ChartMeta(val name: String, val type: String, val source: String? = null, val updatedAt: String? = null, val status: String? = null)
 @Serializable data class ChartPoint(val date: String, val value: Double)
-@Serializable data class ChartPayload(val meta: ChartMeta, val series: List<ChartPoint>)
+@Serializable private data class ChartWire(val meta: ChartMeta, val series: JsonElement)
+@Serializable private data class ChartLines(val dates: List<String>, val seriesData: Map<String, List<Double?>>)
+data class ChartPayload(val meta: ChartMeta, val dates: List<String>, val lines: Map<String, List<Double?>>)
+
+fun decodeChart(json: JsonElement): ChartPayload {
+    val wire = wireJson.decodeFromJsonElement<ChartWire>(json)
+    if (wire.meta.type == "multi-line" && wire.series is JsonObject) {
+        val data = wireJson.decodeFromJsonElement<ChartLines>(wire.series)
+        require(data.seriesData.values.all { it.size == data.dates.size })
+        return ChartPayload(wire.meta, data.dates, data.seriesData.toSortedMap())
+    }
+    val points = wireJson.decodeFromJsonElement<List<ChartPoint>>(wire.series)
+    return ChartPayload(wire.meta, points.map { it.date }, mapOf(wire.meta.name to points.map { it.value }))
+}
 @Serializable data class Topic(val slug: String, val name: String, val definition: String, val total: Int)
 @Serializable data class TopicDirectory(val topics: List<Topic>)
 @Serializable data class TopicPage(val items: List<Article>, val page: Int, val pageCount: Int)

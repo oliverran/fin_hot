@@ -280,12 +280,14 @@ test("相对强弱：两条指数按交易日对齐后相除，并配一条 250 
   const days = 300;
   const start = Date.UTC(2020, 0, 1);
   const dates = Array.from({ length: days }, (_, i) => new Date(start + i * 86_400_000).toISOString().slice(0, 10));
-  await refreshCode(A, async () => barsOf(dates, (i) => 100 + i)); // 分子从 100 涨到 399
+  await refreshCode(A, async () => [...barsOf(["2019-12-30"]), ...barsOf(dates), ...barsOf(["2021-01-01"])]);
   await refreshCode(B, async () => barsOf(dates, () => 100)); // 分母恒为 100
   const json = await liveChartJson({ group: "broad", slug: "style-ratios", kind: "relative", code: A, code2: B, indexName: "测试 / 基准" });
   assert.equal(json?.meta.type, "multi-line");
   const series = json!.series as { dates: string[]; seriesData: Record<string, Array<number | null>> };
   assert.equal(series.dates.length, days);
+  assert.equal(json!.meta.firstDate, dates[0]);
+  assert.equal(json!.meta.lastDate, dates.at(-1));
   assert.equal(series.seriesData["相对强弱"]![0], 1);
   assert.equal(series.seriesData["相对强弱"]!.at(-1), 3.99);
   // 均线在凑满 250 个交易日之前留空。

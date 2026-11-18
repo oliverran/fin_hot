@@ -1,6 +1,7 @@
 // 后台「指标监控」页的读取与每日汇总。
 // 明细按天保留（ANALYTICS_RETENTION_DAYS），长期趋势读每日汇总：当天的数现读明细，
 // 历史日优先用明细现算（明细比汇总新），超出明细保留期的日子才退回汇总。
+import { POLICY } from "@aihot/site";
 import { sql } from "@aihot/backend/db";
 import type { AdminAnalytics, AdminAnalyticsDay, AdminAnalyticsEntry, AdminAnalyticsRank } from "@aihot/contracts/admin";
 import { addDays, beijingDate } from "@aihot/contracts/time";
@@ -13,9 +14,10 @@ const RANK_LIMIT = 30;
 /** 明细至少保留多久：比 RECOMPUTE_DAYS 长，重算才读不到已删的明细。 */
 const MIN_RETENTION_DAYS = RECOMPUTE_DAYS + 2;
 
-/** 明细保留天数（ANALYTICS_RETENTION_DAYS，默认 90）。 */
+/** 部署可以缩短明细保留期，最长遵循站点的隐私说明。 */
 function retentionDays(): number {
-  return Math.max(MIN_RETENTION_DAYS, Math.floor(Number(process.env.ANALYTICS_RETENTION_DAYS) || 90));
+  const limit = POLICY.privacy.retentionDays;
+  return Math.min(limit, Math.max(MIN_RETENTION_DAYS, Math.floor(Number(process.env.ANALYTICS_RETENTION_DAYS) || limit)));
 }
 
 export async function analyticsReport(days: number, now = new Date()): Promise<AdminAnalytics> {

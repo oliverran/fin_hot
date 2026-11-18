@@ -137,7 +137,12 @@ final class StubProtocol: URLProtocol, @unchecked Sendable {
         let data = Data(#"{"meta":{"name":"沪深300","type":"line","status":"missing","source":"腾讯证券公开行情接口"},"series":[]}"#.utf8)
         let result = try JSONDecoder().decode(ChronicleSeries.self, from: data)
         expectEqual(result.meta.status, "missing")
-        expectTrue(result.series.isEmpty)
+        expectTrue(result.dates.isEmpty)
+        let multi = Data(#"{"meta":{"name":"风格","type":"multi-line"},"series":{"dates":["a","b"],"seriesData":{"均线":[null,2],"比值":[1,3]}}}"#.utf8)
+        let chart = try JSONDecoder().decode(ChronicleSeries.self, from: multi)
+        expectEqual(chart.dates, ["a", "b"])
+        expectEqual(chart.lines.first { $0.name == "均线" }?.values, [nil, 2])
+        expectEqual(chart.lines.first { $0.name == "比值" }?.values, [1, 3])
     }
     func testReadingRoundTrip() throws {
         var reading = ReadingState()

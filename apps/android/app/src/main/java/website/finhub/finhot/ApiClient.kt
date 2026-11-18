@@ -80,6 +80,7 @@ class ApiClient(val base: String = BuildConfig.SITE_URL) {
 fun userMessage(error: Exception): String = when (error) {
     is ApiError -> error.message
     is kotlinx.serialization.SerializationException -> "网站返回的数据暂时无法识别，请稍后重试。"
+    is java.net.SocketTimeoutException -> "网站响应超时，请稍后重试。"
     is java.io.IOException -> "网络连接失败，请检查网络后重试。"
     is IllegalArgumentException -> error.message ?: "请求条件不正确，请调整后重试。"
     else -> "暂时无法读取，请稍后重试。"

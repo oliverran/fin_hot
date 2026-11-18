@@ -2,6 +2,18 @@ import SwiftUI
 import FinHOTCore
 import UIKit
 
+func readingErrorMessage(_ error: Error) -> String {
+    guard let networkError = error as? URLError else { return error.localizedDescription }
+    switch networkError.code {
+    case .notConnectedToInternet, .networkConnectionLost:
+        return "网络连接已中断。恢复连接后可重试。"
+    case .timedOut:
+        return "网站响应超时，请稍后重试。"
+    default:
+        return networkError.localizedDescription
+    }
+}
+
 struct RemoteView<Value: Sendable, Content: View>: View {
     let load: () async throws -> Value
     @ViewBuilder let content: (Value) -> Content
@@ -26,7 +38,7 @@ struct RemoteView<Value: Sendable, Content: View>: View {
         error = nil
         do { let result = try await load(); try Task.checkCancellation(); value = result }
         catch is CancellationError { }
-        catch { if !Task.isCancelled { self.error = error.localizedDescription } }
+        catch { if !Task.isCancelled { self.error = readingErrorMessage(error) } }
     }
 }
 

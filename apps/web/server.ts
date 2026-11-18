@@ -33,6 +33,7 @@ const TYPES: Record<string, string> = {
   ".woff2": "font/woff2",
   ".json": "application/json",
   ".txt": "text/plain; charset=utf-8",
+  ".apk": "application/vnd.android.package-archive",
   ".ico": "image/x-icon",
   ".map": "application/json",
 };

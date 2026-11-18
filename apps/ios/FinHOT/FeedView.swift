@@ -3,6 +3,7 @@ import FinHOTCore
 
 struct FeedView: View {
     @EnvironmentObject private var app: AppState
+    @Environment(\.dynamicTypeSize) private var typeSize
     @Environment(\.scenePhase) private var phase
     @State private var path: [String] = []
     @State private var mode = "selected"
@@ -15,6 +16,7 @@ struct FeedView: View {
     @State private var loadedKey: Query?
     @State private var error: String?
     @State private var restartRequired = false
+    @State private var restorePageCount = 0
     @State private var generation = UUID()
     @State private var topID: String?
     @State private var returnAnchor: String?
@@ -31,14 +33,17 @@ struct FeedView: View {
             ScrollViewReader { proxy in
                 List {
                     Section {
-                        ViewThatFits(in: .horizontal) {
-                            HStack(spacing: 16) {
-                                Text("最近 7 天").font(.subheadline).foregroundStyle(.secondary).fixedSize()
-                                scopePicker
-                            }
-                            VStack(alignment: .leading) {
-                                Text("最近 7 天").font(.subheadline).foregroundStyle(.secondary)
-                                scopePicker
+                        Group {
+                            if typeSize.isAccessibilitySize {
+                                Picker("最近 7 天", selection: submitted.isEmpty ? $mode : .constant("all")) {
+                                    Text("精选").tag("selected")
+                                    Text("全部动态").tag("all")
+                                }.pickerStyle(.menu).disabled(!submitted.isEmpty)
+                            } else {
+                                HStack(spacing: 16) {
+                                    Text("最近 7 天").font(.subheadline).foregroundStyle(.secondary).fixedSize()
+                                    scopePicker
+                                }
                             }
                         }.id("feed-start")
                         Picker("分类", selection: $category) {
@@ -70,7 +75,7 @@ struct FeedView: View {
                     if loading { ProgressView().frame(maxWidth: .infinity) }
                     if let error {
                         Section { Text(error).foregroundStyle(.secondary)
-                            Button(restartRequired ? "刷新列表" : "重试") { Task { await fetch(reset: restartRequired || window.items.isEmpty) } }
+                            Button(restartRequired ? "刷新列表" : "重试") { Task { await fetch(reset: restartRequired || window.items.isEmpty, restoring: !restartRequired && restorePageCount > 0) } }
                         }
                     }
                     if !loading && error == nil && visibleItems.isEmpty {
@@ -131,7 +136,8 @@ struct FeedView: View {
         let hadPages = window.pageCount > 0
         if reset { generation = UUID() }
         let token = generation
-        let pages = restoring ? max(1, window.pageCount) : 1
+        if reset { restorePageCount = restoring ? max(1, restorePageCount, window.pageCount) : 0 }
+        let pages = max(1, restorePageCount)
         loading = true; error = nil; restartRequired = false
         if reset { window = FeedWindow(); loadedKey = key }
         var result = window
@@ -146,6 +152,7 @@ struct FeedView: View {
             }
             guard filter == key && generation == token else { return }
             window = result; loading = false
+            restorePageCount = 0
             if restoring { restorePosition() }
             else if reset && hadPages { restoreID = nil; restoreToken = UUID() }
         } catch {
@@ -153,7 +160,7 @@ struct FeedView: View {
             loading = false
             if !Task.isCancelled {
                 if case ClientError.invalidCursor = error { restartRequired = true }
-                self.error = error.localizedDescription
+                self.error = readingErrorMessage(error)
             } else { loadedKey = nil }
         }
     }
