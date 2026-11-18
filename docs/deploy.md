@@ -45,6 +45,31 @@ docker compose up -d --build
 - 海外信源抓不到时，在 `.env` 里设置 `EGRESS_PROXY_URL`：抓信源和图片时走这个代理，调用模型接口不走。
 - 对外提供网站服务需要先完成 ICP 备案，备案号填在 `site/site.ts` 的 `icp`。
 
+### 没有公网 IP 时用阿里云 Workbench 执行
+
+实例只有内网地址、本机也不方便直连 SSH 时，用阿里云 Workbench CLI 把命令送到实例里执行。装一次：
+
+```bash
+curl -fsSL https://workbench-cli.oss-cn-hangzhou.aliyuncs.com/install.sh | bash
+```
+
+它默认装到 `/usr/local/bin`，没有写权限时用 `-d` 指定自己的目录：
+
+```bash
+curl -fsSL https://workbench-cli.oss-cn-hangzhou.aliyuncs.com/install.sh -o /tmp/wb.sh && bash /tmp/wb.sh -d "$HOME/bin"
+```
+
+配好 AK（`workbench config`）后，`exec` 在实例上跑命令，`upload` / `download` 传文件。这条路只是换了执行位置，镜像仍在服务器上构建，本机的 Docker 和 git 都不参与：
+
+```bash
+workbench exec -i <实例 ID> --timeout 1500 -c 'cd /root/myhot && git pull && docker compose build --build-arg NPM_REGISTRY=https://registry.npmmirror.com'
+```
+
+两点要注意：
+
+- 每次 `exec` 都是全新的 shell，上一条里的 `cd`、`export` 不保留，多个步骤要用 `&&` 串起来。
+- 并发会话有配额，短时间内连着调用会返回 `Forbidden.SessionLimit`（403），等约十分钟自行恢复。构建、停服、迁移和验证尽量合并进少数几次 `exec`。
+
 ### 配域名和 HTTPS
 
 先把域名解析到服务器，然后在 `.env` 里设置：
