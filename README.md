@@ -129,6 +129,10 @@ RSS 包含精选、全部动态、全文及日报 / 周报 / 月报订阅；全�
 
 建议先用自己标注的样本运行 `scripts/eval-selection.ts`，再决定是否调整评分与门槛。完整步骤见[定制指南](docs/customize.md)。
 
+## 原生移动客户端
+
+原生 iOS 首版源码位于 [`apps/ios/`](apps/ios/)，默认连接 `www.finhub.website`，提供分类资讯、已读与继续阅读、热点、简报、收藏与部分原生编年史图表。已在 iPhone 16e 模拟器运行，签名分发待完成。范围与运行方式见[移动端说明](docs/mobile.md)。Android 原生客户端已通过 Debug APK 编译和 11 项单元测试，真机验收待完成。源码位于 [`apps/android/`](apps/android/)，构建与范围见 [Android 说明](apps/android/README.md)。
+
 ## 文档与参与
 
 - [部署与运维](docs/deploy.md)：环境、域名、HTTPS、更新、备份与费用。

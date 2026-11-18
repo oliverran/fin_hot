@@ -1,0 +1,30 @@
+[
+  {
+    "key": "ai-finance",
+    "label": "AI金融"
+  },
+  {
+    "key": "policy",
+    "label": "政策监管"
+  },
+  {
+    "key": "market",
+    "label": "市场"
+  },
+  {
+    "key": "funds",
+    "label": "公募私募"
+  },
+  {
+    "key": "industry",
+    "label": "行业动态"
+  },
+  {
+    "key": "research",
+    "label": "研究"
+  },
+  {
+    "key": "opinion",
+    "label": "观点"
+  }
+]
