@@ -48,12 +48,26 @@ struct ArticleCard: View {
             if let summary = item.summary, !summary.isEmpty {
                 Text(summary).font(.subheadline).foregroundStyle(.secondary).lineLimit(3)
             }
-            if let category = app.categories.first(where: { $0.key == item.category }) {
-                Text(category.label).font(.caption).foregroundStyle(.secondary)
-            }
-            Text(String((item.publishedAt ?? item.timelineAt ?? item.discoveredAt ?? "").prefix(10))).font(.caption).foregroundStyle(.secondary)
+            HStack(spacing: 8) {
+                if let category = app.categories.first(where: { $0.key == item.category }) {
+                    Text(category.label)
+                }
+                if let timestamp = item.publishedAt ?? item.timelineAt ?? item.discoveredAt {
+                    Text(Self.timestamp(timestamp))
+                }
+            }.font(.caption).foregroundStyle(.secondary)
         }.padding(.vertical, 10)
     }
+
+    private static func timestamp(_ raw: String) -> String {
+        let iso = Date.ISO8601FormatStyle()
+        guard let date = (try? iso.parse(raw)) ?? (try? Date.ISO8601FormatStyle(includingFractionalSeconds: true).parse(raw)) else {
+            return raw
+        }
+        let format = Date.VerbatimFormatStyle(format: "\(year: .defaultDigits)-\(month: .twoDigits)-\(day: .twoDigits) \(hour: .twoDigits(clock: .twentyFourHour, hourCycle: .zeroBased)):\(minute: .twoDigits)", timeZone: TimeZone(identifier: "Asia/Shanghai")!, calendar: Calendar(identifier: .gregorian))
+        return date.formatted(format)
+    }
+
 }
 
 struct MarkdownText: View {

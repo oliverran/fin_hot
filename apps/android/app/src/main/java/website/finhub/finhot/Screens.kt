@@ -5,6 +5,12 @@ import android.text.Html
 import android.text.method.LinkMovementMethod
 import android.widget.TextView
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -42,7 +48,7 @@ import java.net.URI
 @Composable fun FinHOTApp(vm: FinHOTModel) {
     val titles = listOf("FinHOT", "热点事件", "金融简报", "编年史", "我的")
     val labels = listOf("资讯", "热点", "简报", "编年史", "我的")
-    val icons = listOf(Icons.Default.Home, Icons.Default.Star, Icons.Default.DateRange, Icons.Default.Info, Icons.Default.Person)
+    val icons = listOf(Icons.Default.Home, Icons.Default.Star, Icons.Default.DateRange, null, Icons.Default.Person)
     val route = vm.stack.lastOrNull()
     val context = LocalContext.current
     BackHandler(enabled = route != null) { vm.back() }
@@ -59,12 +65,33 @@ import java.net.URI
             Screen.Bookmarks -> "我的收藏"; Screen.History -> "阅读记录"; is Screen.Policy -> route.title
         }) }, navigationIcon = { if (route != null) IconButton(onClick = vm::back) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "返回") } },
             actions = { if (route is Screen.ArticlePage) {
+                var sizesOpen by remember { mutableStateOf(false) }
+                Box {
+                    TextButton(onClick = { sizesOpen = true }) { Text("字号") }
+                    DropdownMenu(sizesOpen, { sizesOpen = false }) {
+                        listOf(18 to "标准", 20 to "较大", 24 to "大号").forEach { (size, label) ->
+                            DropdownMenuItem(
+                                text = { Text(label) },
+                                trailingIcon = {
+                                    if (vm.library.textSize == size) Icon(Icons.Default.Check, "已选择")
+                                },
+                                onClick = {
+                                    vm.textSize(size)
+                                    sizesOpen = false
+                                }
+                            )
+                        }
+                    }
+                }
                 TextButton(onClick = { vm.bookmark(route.id) }) { Text(if (route.id in vm.library.bookmarks) "已收藏" else "收藏") }
                 TextButton(onClick = { context.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply { type = "text/plain"; putExtra(Intent.EXTRA_TEXT, "${vm.api.base}/items/${route.id}") }, "分享资讯")) }) { Text("分享") }
             } })
     }, bottomBar = {
         if (route == null) NavigationBar { labels.forEachIndexed { index, label ->
-            NavigationBarItem(selected = vm.tab == index, onClick = { vm.tab = index }, icon = { Icon(icons[index], null) }, label = { Text(label) })
+            NavigationBarItem(selected = vm.tab == index, onClick = { vm.tab = index }, icon = {
+                val icon = icons[index]
+                if (icon != null) Icon(icon, null) else Icon(painterResource(R.drawable.ic_timeline), null)
+            }, label = { Text(label) })
         } }
     }) { padding ->
         Box(Modifier.fillMaxSize().padding(padding)) {
@@ -112,6 +139,8 @@ private data class RemoteState<T>(val value: T? = null, val error: String? = nul
 @Composable private fun FeedScreen(vm: FinHOTModel) {
     var search by rememberSaveable { mutableStateOf(vm.query.search) }
     var expanded by remember { mutableStateOf(false) }
+    val focus = LocalFocusManager.current
+    val searching = vm.query.search.isNotEmpty()
     val visible = vm.visibleItems
     val currentIDs by rememberUpdatedState(visible.map { it.id })
     val start = visible.indexOfFirst { it.id == vm.feedAnchor }.let { if (it < 0) 0 else it + 1 }
@@ -130,10 +159,10 @@ private data class RemoteState<T>(val value: T? = null, val error: String? = nul
     PullToRefreshBox(isRefreshing = vm.loading, onRefresh = { vm.refresh() }) {
         LazyColumn(state = list, modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(horizontal = 18.dp, vertical = 8.dp)) {
             item(key = "controls") {
-                Text("值得关注的金融动态 · 最近 7 天", style = MaterialTheme.typography.bodyMedium)
-                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    FilterChip(vm.query.mode == "selected", { vm.updateQuery(vm.query.copy(mode = "selected")) }, { Text("精选") })
-                    FilterChip(vm.query.mode == "all", { vm.updateQuery(vm.query.copy(mode = "all")) }, { Text("全部动态") })
+                Text("最近 7 天", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    FilterChip(!searching && vm.query.mode == "selected", { vm.updateQuery(vm.query.copy(mode = "selected")) }, { Text("精选") }, enabled = !searching)
+                    FilterChip(searching || vm.query.mode == "all", { vm.updateQuery(vm.query.copy(mode = "all")) }, { Text("全部动态") }, enabled = !searching)
                     Box {
                         TextButton(onClick = { expanded = true }) { Text(vm.categories.firstOrNull { it.key == vm.query.category }?.label ?: "全部分类") }
                         DropdownMenu(expanded, { expanded = false }) {
@@ -144,9 +173,19 @@ private data class RemoteState<T>(val value: T? = null, val error: String? = nul
                 }
                 OutlinedTextField(search, { search = it; if (it.isEmpty() && vm.query.search.isNotEmpty()) vm.updateQuery(vm.query.copy(search = "")) },
                     label = { Text("搜索全部动态") }, modifier = Modifier.fillMaxWidth(), singleLine = true,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search), keyboardActions = KeyboardActions(onSearch = { vm.updateQuery(vm.query.copy(search = search.trim())) }))
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search), keyboardActions = KeyboardActions(onSearch = {
+                        vm.updateQuery(vm.query.copy(search = search.trim()))
+                        focus.clearFocus()
+                    }))
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Row { Checkbox(vm.unreadOnly, { vm.unreadOnly = it }); Text("只看未读", Modifier.padding(top = 13.dp)) }
+                    Row(
+                        Modifier.heightIn(min = 48.dp).toggleable(vm.unreadOnly, role = Role.Checkbox) { vm.unreadOnly = it },
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Checkbox(vm.unreadOnly, onCheckedChange = null)
+                        Text("只看未读", style = MaterialTheme.typography.bodyMedium)
+                    }
                     TextButton(onClick = { vm.open(Screen.Topics) }) { Text("主题") }
                 }
             }
@@ -164,15 +203,42 @@ private data class RemoteState<T>(val value: T? = null, val error: String? = nul
     }
 }
 @Composable private fun ArticleCard(vm: FinHOTModel, item: Article, onClick: () -> Unit = { vm.open(Screen.ArticlePage(item.id)) }) {
-    Column(Modifier.fillMaxWidth().clickable(onClick = onClick).padding(vertical = 16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text("${item.source.name} · ${if (item.id in vm.library.readIDs) "已读" else "未读"}", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.labelMedium)
-        Text(item.title, style = MaterialTheme.typography.titleMedium)
-        item.summary?.let { Text(it, maxLines = 3, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant) }
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text((vm.categories.firstOrNull { it.key == item.category }?.label ?: "") + "  " + displayDate(item.publishedAt ?: item.discoveredAt), style = MaterialTheme.typography.labelSmall)
-            TextButton(onClick = { vm.bookmark(item.id) }) { Text(if (item.id in vm.library.bookmarks) "取消收藏" else "收藏") }
-            TextButton(onClick = { if (item.id in vm.library.readIDs) vm.markUnread(item.id) else vm.markRead(item.id) }) { Text(if (item.id in vm.library.readIDs) "标为未读" else "标为已读") }
+    val isRead = item.id in vm.library.readIDs
+    val saved = item.id in vm.library.bookmarks
+    var showActions by remember(item.id) { mutableStateOf(false) }
+    Column(
+        Modifier.fillMaxWidth().clickable(onClick = onClick).padding(top = 10.dp, bottom = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(item.source.name, Modifier.weight(1f), maxLines = 2, overflow = TextOverflow.Ellipsis,
+                color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.labelLarge)
+            Text(if (isRead) "已读" else "未读", style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Box {
+                IconButton(onClick = { showActions = true }) { Icon(Icons.Default.MoreVert, "文章操作") }
+                DropdownMenu(showActions, { showActions = false }) {
+                    DropdownMenuItem({ Text(if (saved) "取消收藏" else "收藏") }, {
+                        showActions = false
+                        vm.bookmark(item.id)
+                    })
+                    DropdownMenuItem({ Text(if (isRead) "标为未读" else "标为已读") }, {
+                        showActions = false
+                        if (isRead) vm.markUnread(item.id) else vm.markRead(item.id)
+                    })
+                }
+            }
         }
+        Text(item.title, style = MaterialTheme.typography.titleMedium)
+        item.summary?.let {
+            Text(it, maxLines = 3, overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        val metadata = listOfNotNull(vm.categories.firstOrNull { it.key == item.category }?.label,
+            displayDate(item.publishedAt ?: item.discoveredAt).takeIf { it.isNotBlank() },
+            "已收藏".takeIf { saved })
+        Text(metadata.joinToString(" · "), style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
     HorizontalDivider()
 }
@@ -189,9 +255,8 @@ private data class RemoteState<T>(val value: T? = null, val error: String? = nul
         item(key = "intro") {
             Text(item.source.name, color = MaterialTheme.colorScheme.primary)
             Text(item.title, style = MaterialTheme.typography.headlineLarge, modifier = Modifier.padding(vertical = 18.dp))
-            item.summary?.let { Text(it, style = MaterialTheme.typography.titleMedium) }
-            item.reason?.let { Text("为什么值得关注\n$it", Modifier.padding(vertical = 16.dp)) }
-            Row { listOf(18, 20, 24).forEach { size -> TextButton(onClick = { vm.textSize(size) }) { Text(if (size == 18) "标准" else if (size == 20) "较大" else "大号") } } }
+            item.summary?.let { Text(it, fontSize = vm.library.textSize.sp, lineHeight = (vm.library.textSize + 8).sp) }
+            item.reason?.let { Text("为什么值得关注\n$it", Modifier.padding(vertical = 16.dp), fontSize = vm.library.textSize.sp, lineHeight = (vm.library.textSize + 8).sp) }
             Text(if (item.readingMode == "summary-only") "本站提供摘要，完整报道请阅读原文。" else "正文依据网站授权范围展示。", style = MaterialTheme.typography.labelSmall)
         }
         items(document.blocks, key = { it.id }) { block ->

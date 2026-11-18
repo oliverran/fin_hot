@@ -31,10 +31,16 @@ struct FeedView: View {
             ScrollViewReader { proxy in
                 List {
                     Section {
-                        Text("值得关注的金融动态 · 最近 7 天").font(.subheadline).foregroundStyle(.secondary).id("feed-start")
-                        Picker("资讯范围", selection: $mode) {
-                            Text("精选").tag("selected"); Text("全部动态").tag("all")
-                        }.pickerStyle(.segmented)
+                        ViewThatFits(in: .horizontal) {
+                            HStack(spacing: 16) {
+                                Text("最近 7 天").font(.subheadline).foregroundStyle(.secondary).fixedSize()
+                                scopePicker
+                            }
+                            VStack(alignment: .leading) {
+                                Text("最近 7 天").font(.subheadline).foregroundStyle(.secondary)
+                                scopePicker
+                            }
+                        }.id("feed-start")
                         Picker("分类", selection: $category) {
                             Text("全部分类").tag("")
                             ForEach(app.categories) { Text($0.label).tag($0.key) }
@@ -95,10 +101,11 @@ struct FeedView: View {
                     } else { restorePosition() }
                 }
                 .onChange(of: phase) { _, phase in
-                    if phase == .active && path.isEmpty && window.pageCount > 0 { returnAnchor = topID; returnOrder = visibleItems.map(\.id); Task { await fetch(reset: true, restoring: true) } }
+                    if phase == .active && path.isEmpty && window.pageCount > 0 && (window.validUntil ?? .distantPast) <= Date() { returnAnchor = topID; returnOrder = visibleItems.map(\.id); Task { await fetch(reset: true, restoring: true) } }
                 }
             }
             .navigationTitle("FinHOT")
+            .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(for: String.self) { ArticleView(id: $0) }
             .searchable(text: $query, prompt: "搜索金融资讯")
             .onSubmit(of: .search) { submitted = query.trimmingCharacters(in: .whitespacesAndNewlines) }
@@ -106,6 +113,14 @@ struct FeedView: View {
             .toolbar { ToolbarItem(placement: .topBarTrailing) { NavigationLink { TopicsView() } label: { Label("主题", systemImage: "square.grid.2x2") } } }
         }
     }
+    private var scopePicker: some View {
+        Picker("资讯范围", selection: submitted.isEmpty ? $mode : .constant("all")) {
+            Text("精选").tag("selected")
+            Text("全部动态").tag("all")
+        }.pickerStyle(.segmented)
+            .disabled(!submitted.isEmpty)
+    }
+
     private func restorePosition() {
         restoreID = FeedWindow.restoredAnchor(returnAnchor, previousIDs: returnOrder, visibleIDs: visibleItems.map(\.id))
         restoreToken = UUID()
@@ -186,7 +201,7 @@ private struct ArticleReader: View {
                 VStack(alignment: .leading, spacing: 16) {
                     Text(item.source.name).font(.subheadline.weight(.semibold)).foregroundStyle(.tint)
                     Text(item.title).font(.largeTitle.bold())
-                    if let summary = item.summary { Text(summary).font(.title3).textSelection(.enabled) }
+                    if let summary = item.summary { Text(summary).font(textSize == 2 ? .title : textSize == 1 ? .title2 : .title3).textSelection(.enabled) }
                     if let reason = item.reason { GroupBox("为什么值得关注") { Text(reason).frame(maxWidth: .infinity, alignment: .leading) } }
                     Text(item.readingMode == "summary-only" ? "本站提供摘要，完整报道请阅读原文。" : "正文依据网站授权范围展示。")
                         .font(.footnote).foregroundStyle(.secondary)
