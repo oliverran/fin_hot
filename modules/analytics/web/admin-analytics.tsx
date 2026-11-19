@@ -100,6 +100,17 @@ const viewColumns: Array<Column<AdminAnalyticsRank>> = [
   { key: "visitors", label: "访客", align: "right", render: (r) => num(r.visitors) },
 ];
 
+const clientNames: Record<string, string> = {
+  ios: "iOS App", android: "安卓 App", "mobile-web": "移动网页", web: "其他网页", unknown: "历史网页（终端未区分）",
+};
+const clientColumns: Array<Column<AdminAnalytics["clients"][number]>> = [
+  { key: "key", label: "终端", render: (r) => clientNames[r.key] ?? r.key },
+  { key: "visitors", label: "访客", render: (r) => num(r.visitors) },
+  { key: "views", label: "浏览", render: (r) => num(r.views) },
+  { key: "clicks", label: "入口点击", render: (r) => num(r.clicks) },
+  { key: "opens", label: "App 冷启动", render: (r) => r.key === "ios" || r.key === "android" ? num(r.opens) : "—" },
+];
+
 const entryColumns: Array<Column<AdminAnalyticsEntry>> = [
   { key: "key", label: "入口", render: (r) => <span className="text-ink">{r.key}</span> },
   { key: "clicks", label: "点击", align: "right", render: (r) => num(r.clicks) },
@@ -174,7 +185,7 @@ export default function AdminAnalytics({ loaderData }: { loaderData: { analytics
   return (
     <AdminPage
       title="指标监控"
-      subtitle="公开页的匿名统计：每次页面浏览与关键入口点击各记一条，只存随机访客号，不含 IP、账号或用户代理；下半页是站自己的运行指标，末段是按密钥来源分渠道的模型费用。"
+      subtitle="网页与原生客户端共同统计浏览、访客与关键入口点击。访客按本地随机编号去重，跨端分别计数。"
       actions={<FilterChips param="days" options={[{ value: "14", label: "近 14 天" }, { value: "30", label: "近 30 天" }, { value: "90", label: "近 90 天" }]} />}
     >
       <h2 className="text-[16px] font-semibold text-ink">访客</h2>
@@ -184,6 +195,9 @@ export default function AdminAnalytics({ loaderData }: { loaderData: { analytics
         <Stat label="今日入口点击" value={num(data.today.clicks)} />
         <Stat label="窗口浏览" value={num(windowViews)} hint={`近 ${data.days} 天累计`} />
       </div>
+      <Card title="访问终端" right={`近 ${data.clientDays} 天明细`} pad={false} className="mt-4">
+        <DataTable rows={data.clients} columns={clientColumns} rowKey={(r) => r.key} empty="这段时间没有访问明细" />
+      </Card>
       <Card title="每日浏览趋势" right={`近 ${data.days} 天`} className="mt-4">
         <Bars
           days={data.trend}

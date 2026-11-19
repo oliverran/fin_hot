@@ -34,7 +34,7 @@ struct MoreView: View {
                 if let error { Text(error).foregroundStyle(.red) }
             }.onAppear { address = app.siteText }
             #endif
-        }.navigationTitle("我的")
+        }.navigationTitle("我的").readingMetrics("/more")
             .navigationDestination(for: LibraryPage.self) { page in
                 switch page {
                 case .history: ReadingHistoryView()
@@ -52,7 +52,7 @@ struct BookmarksView: View {
             ForEach(app.bookmarks.ids, id: \.self) { id in
                 BookmarkRow(id: id).swipeActions { Button("移除", role: .destructive) { app.toggle(id) } }
             }
-        }.navigationTitle("我的收藏")
+        }.navigationTitle("我的收藏").readingMetrics("/starred", entry: "我的收藏")
     }
 }
 struct BookmarkRow: View {
@@ -94,7 +94,7 @@ struct TopicsView: View {
                     }.padding(.vertical, 6)
                 }
             }
-        }.navigationTitle("金融主题")
+        }.navigationTitle("金融主题").readingMetrics("/topics", entry: "金融主题")
     }
 }
 struct TopicView: View {
@@ -112,7 +112,7 @@ struct TopicView: View {
                     Spacer(); if page < result.pageCount { Button("下一页") { page += 1 } }
                 }.buttonStyle(.borderless)
             }
-        }.id(page).navigationTitle(name)
+        }.id(page).navigationTitle(name).readingMetrics("/topics/detail", entry: "阅读主题")
     }
 }
 struct PolicyView: View {
@@ -122,7 +122,7 @@ struct PolicyView: View {
         ScrollView {
             MarkdownText(text: (Bundle.main.url(forResource: file, withExtension: "md").flatMap { try? String(contentsOf: $0, encoding: .utf8) }) ?? "内容暂不可用。")
                 .padding(22)
-        }.navigationTitle(name)
+        }.navigationTitle(name).readingMetrics("/" + file, entry: name)
     }
 }
 
@@ -137,6 +137,6 @@ struct ReadingHistoryView: View {
                 BookmarkRow(id: id)
                     .swipeActions { Button("标为未读") { app.markUnread(id) }.tint(.indigo) }
             }
-        }.navigationTitle("阅读记录")
+        }.navigationTitle("阅读记录").readingMetrics("/more/history", entry: "阅读记录")
     }
 }

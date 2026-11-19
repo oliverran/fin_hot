@@ -96,7 +96,7 @@ export default function ChronicleVolume() {
           )}
           {section.slugs.map((slug) => {
             const page = pageOf(group.key, slug);
-            return page ? <ChartPanel key={slug} page={page} anchor={`panel-${slug}`} /> : null;
+            return page ? <ChartPanel key={slug} page={page} anchor={`panel-${slug}`} first={slug === group.sections[0]?.slugs[0]} /> : null;
           })}
         </section>
       ))}

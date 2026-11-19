@@ -2,6 +2,8 @@ package website.finhub.finhot
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -18,6 +20,27 @@ class ApiClient(val base: String = BuildConfig.SITE_URL) {
     private val cache = LinkedHashMap<String, Cached>(16, 0.75f, true)
     private var retryUntil = 0L
     init { require(URI(base).scheme == "https" && URI(base).host != null) }
+    suspend fun collect(kind: String, path: String, visitor: String, label: String?) = withContext(Dispatchers.IO) {
+        val payload = buildJsonObject {
+            put("kind", kind); put("path", path); put("visitor", visitor)
+            if (label != null) put("label", label)
+        }
+        val connection = URI("$base/api/analytics/collect").toURL().openConnection() as HttpURLConnection
+        try {
+            connection.requestMethod = "POST"
+            connection.instanceFollowRedirects = false
+            connection.connectTimeout = 4000
+            connection.readTimeout = 4000
+            connection.doOutput = true
+            connection.setRequestProperty("Content-Type", "application/json")
+            connection.setRequestProperty("User-Agent", "FinHOT-Android/0.1")
+            connection.outputStream.use { it.write(payload.toString().toByteArray(Charsets.UTF_8)) }
+            connection.responseCode
+        } catch (_: java.io.IOException) {
+            // Offline reading and navigation do not wait for analytics or retry it.
+        } finally { connection.disconnect() }
+        Unit
+    }
     suspend fun get(path: String, query: Map<String, String> = emptyMap()): Resource = withContext(Dispatchers.IO) {
         val now = System.currentTimeMillis()
         synchronized(cache) {
@@ -52,9 +75,10 @@ class ApiClient(val base: String = BuildConfig.SITE_URL) {
             val maxAge = Regex("(?:^|,)\\s*max-age=(\\d+)").find(policy)?.groupValues?.get(1)?.toLongOrNull() ?: 0
             val age = maxOf(connection.getHeaderFieldLong("Age", 0) * 1000,
                 connection.getHeaderField("Date")?.let(::httpDate)?.let { System.currentTimeMillis() - it } ?: 0, 0)
-            val deadline = System.currentTimeMillis() + (maxAge * 1000 - age).coerceAtLeast(0)
+            val cacheable = !policy.contains("no-store", ignoreCase = true) && !policy.contains("no-cache", ignoreCase = true)
+            val deadline = if (cacheable) System.currentTimeMillis() + (maxAge * 1000 - age).coerceAtLeast(0) else now
             val parsed = wireJson.parseToJsonElement(body)
-            if (path.startsWith("api/v1/") && !policy.contains("no-store") && !policy.contains("no-cache")) synchronized(cache) {
+            if (path.startsWith("api/v1/") && cacheable) synchronized(cache) {
                 cache[url] = Cached(body, connection.getHeaderField("ETag") ?: cached?.etag, deadline, policy)
                 while (cache.size > 64) cache.remove(cache.keys.first())
             }

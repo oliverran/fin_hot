@@ -5,6 +5,7 @@ import type { EChartsOption } from "echarts";
 import { watchAppearance } from "@aihot/web/lib/local-state";
 import { chartOption, LIGHT_THEME, type ChartTheme, type ChronicleData } from "./options.ts";
 
+const loadEcharts = () => import("echarts");
 type Echarts = typeof import("echarts");
 type Chart = ReturnType<Echarts["init"]>;
 
@@ -34,7 +35,7 @@ export function Canvas({ data }: { data: ChronicleData }) {
     let dropped = false;
     let frame = 0;
     const draw = () => chart?.setOption(chartOption(data, theme()) as unknown as EChartsOption, true);
-    void import("echarts").then((echarts) => {
+    void loadEcharts().then((echarts) => {
       if (dropped) return;
       chart = echarts.init(el);
       draw();
@@ -71,26 +72,52 @@ function sourceLine(meta: ChronicleData["meta"]): string {
   return parts.join(" · ");
 }
 
-/** 一张图：先取数，画在固定高度的画布里。 */
-export function ChronicleChart({ src, name, className = "" }: { src: string; name: string; className?: string }) {
+/** 详情直接出图。卷页先读目标图，其余在滚动接近时取数。 */
+export function ChronicleChart({ src, name, panel, first, className = "" }: {
+  src: string; name: string; panel?: string; first?: boolean; className?: string;
+}) {
+  const figure = useRef<HTMLElement>(null);
   const [state, setState] = useState<{ data: ChronicleData } | "error" | null>(null);
   useEffect(() => {
     const controller = new AbortController();
-    setState(null);
-    fetch(src, { headers: { accept: "application/json" }, signal: controller.signal })
-      .then((res) => (res.ok ? (res.json() as Promise<ChronicleData>) : Promise.reject(new Error(`api ${res.status}`))))
-      .then((data) => {
-        if (!controller.signal.aborted) setState({ data });
-      })
-      .catch(() => {
-        if (!controller.signal.aborted) setState("error");
-      });
-    return () => controller.abort();
-  }, [src]);
+    let observer: IntersectionObserver | undefined;
+    let started = false;
+    function load() {
+      if (started || controller.signal.aborted) return;
+      started = true;
+      observer?.disconnect();
+      window.removeEventListener("hashchange", onHashChange);
+      const data = fetch(src, { headers: { accept: "application/json" }, signal: controller.signal })
+        .then((res) => {
+          if (!res.ok) throw new Error(`api ${res.status}`);
+          return res.json() as Promise<ChronicleData>;
+        });
+      Promise.all([data, loadEcharts()])
+        .then(([data]) => { if (!controller.signal.aborted) setState({ data }); })
+        .catch(() => { if (!controller.signal.aborted) setState("error"); });
+    }
+    function onHashChange() {
+      if (location.hash === `#${panel}`) load();
+    }
+    if (!panel || location.hash === `#${panel}` || (first && !location.hash)) {
+      load();
+    } else if (figure.current) {
+      observer = new IntersectionObserver((entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) load();
+      }, { rootMargin: "320px 0px" });
+      observer.observe(figure.current);
+      window.addEventListener("hashchange", onHashChange);
+    }
+    return () => {
+      controller.abort();
+      observer?.disconnect();
+      window.removeEventListener("hashchange", onHashChange);
+    };
+  }, [src, panel, first]);
   const data = state !== null && state !== "error" ? state.data : null;
   const note = data ? sourceLine(data.meta) : "";
   return (
-    <figure className={className}>
+    <figure ref={figure} className={className}>
       {state === null && <div className="h-[320px] w-full animate-pulse rounded-tile bg-bg-sunk sm:h-[420px]" aria-hidden="true" />}
       {state === "error" && (
         <p className="well flex h-[220px] items-center justify-center rounded-card px-5 text-center text-[13px] leading-relaxed text-ink-3">

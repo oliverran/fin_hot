@@ -49,8 +49,24 @@ final class AppState: ObservableObject {
         bookmarks = BookmarkStore(ids: UserDefaults.standard.stringArray(forKey: "bookmarks:\(siteText)") ?? [])
         reading = Self.loadReading(siteText)
     }
+    private var countedLaunch = false
+    func countLaunch() {
+        guard !countedLaunch else { return }
+        countedLaunch = true
+        track("open", "/")
+    }
+    func track(_ kind: String, _ path: String, _ label: String? = nil) {
+        guard let client else { return }
+        let key = "analyticsVisitor:" + siteText
+        let defaults = UserDefaults.standard
+        let visitor: String
+        if let saved = defaults.string(forKey: key) { visitor = saved }
+        else { visitor = UUID().uuidString; defaults.set(visitor, forKey: key) }
+        Task { await client.collect(kind: kind, path: path, visitor: visitor, label: label) }
+    }
     func toggle(_ id: String) {
         bookmarks.toggle(id)
+        track("click", "/starred", bookmarks.ids.contains(id) ? "收藏" : "取消收藏")
         UserDefaults.standard.set(bookmarks.ids, forKey: "bookmarks:\(siteText)")
     }
     func markRead(_ id: String) {
@@ -75,15 +91,40 @@ final class AppState: ObservableObject {
     }
 }
 
-struct MainTabs: View {
-    var body: some View {
-        TabView {
-            FeedView().tabItem { Label("资讯", systemImage: "newspaper") }
-            NavigationStack { HotView() }.tabItem { Label("热点", systemImage: "flame") }
-            NavigationStack { ReportsView() }.tabItem { Label("简报", systemImage: "doc.text") }
-            NavigationStack { ChronicleView() }.tabItem { Label("编年史", systemImage: "chart.xyaxis.line") }
-            NavigationStack { MoreView() }.tabItem { Label("我的", systemImage: "person.crop.circle") }
+// A pushed destination counts one entry click. Returning to it counts another view.
+private struct ReadingMetrics: ViewModifier {
+    @EnvironmentObject private var app: AppState
+    let path: String
+    let entry: String?
+    @State private var entered = false
+    func body(content: Content) -> some View {
+        content.onAppear {
+            if !entered, let entry { app.track("click", path, entry) }
+            entered = true
+            app.track("pageview", path)
         }
+    }
+}
+extension View {
+    func readingMetrics(_ path: String, entry: String? = nil) -> some View {
+        modifier(ReadingMetrics(path: path, entry: entry))
+    }
+}
+
+struct MainTabs: View {
+    @EnvironmentObject private var app: AppState
+    @State private var selection = "/"
+    private let labels = ["/": "资讯", "/hot": "热点", "/daily": "简报", "/chronicle": "编年史", "/more": "我的"]
+    var body: some View {
+        TabView(selection: $selection) {
+            FeedView().tabItem { Label("资讯", systemImage: "newspaper") }.tag("/")
+            NavigationStack { HotView() }.tabItem { Label("热点", systemImage: "flame") }.tag("/hot")
+            NavigationStack { ReportsView() }.tabItem { Label("简报", systemImage: "doc.text") }.tag("/daily")
+            ChronicleView().tabItem { Label("编年史", systemImage: "chart.xyaxis.line") }.tag("/chronicle")
+            NavigationStack { MoreView() }.tabItem { Label("我的", systemImage: "person.crop.circle") }.tag("/more")
+        }
+        .onAppear { app.countLaunch() }
+        .onChange(of: selection) { _, path in app.track("click", path, labels[path]) }
     }
 }
 

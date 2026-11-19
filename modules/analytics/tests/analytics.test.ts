@@ -103,6 +103,33 @@ test("落库与查询：今日浏览、访客、点击与三张排行", async ()
   assert.equal(report.modules.find((m) => m.key === "编年史")?.views, 1);
 });
 
+test("手机网页、原生启动和入口点击进入同一份报表，旧明细保留原有口径", async () => {
+  await sql`DELETE FROM analytics_events`;
+  for (const [agent, kind, visitor] of [
+    ["Mozilla/5.0 (iPhone) Mobile Safari", "pageview", "mobile-web-01"],
+    ["FinHOT-iOS/0.1", "open", "ios-client-01"],
+    ["FinHOT-iOS/0.1", "pageview", "ios-client-01"],
+    ["FinHOT-Android/0.1", "open", "android-client-01"],
+    ["FinHOT-Android/0.1", "click", "android-client-01"],
+    ["Mozilla/5.0 (iPhone)", "open", "ignored-web-01"],
+  ]) {
+    const response = await app.inject({ method: "POST", url: "/api/analytics/collect",
+      headers: { "user-agent": agent }, payload: { kind, visitor, path: kind === "open" ? "/" : "/items", label: "阅读资讯" } });
+    assert.equal(response.statusCode, 204);
+  }
+  await sql`INSERT INTO analytics_events (day, at, kind, path, module, visitor)
+    VALUES (${beijingDate(new Date())}, now(), 'pageview', '/', '精选', 'historic-01')`;
+  const report = await analyticsReport(90);
+  assert.equal(report.today.views, 3);
+  assert.equal(report.today.clicks, 1);
+  assert.equal(report.today.visitors, 4);
+  assert.equal(report.clientDays, 30);
+  assert.deepEqual(report.clients.find(c => c.key === "ios"), { key: "ios", opens: 1, views: 1, clicks: 0, visitors: 1 });
+  assert.deepEqual(report.clients.find(c => c.key === "android"), { key: "android", opens: 1, views: 0, clicks: 1, visitors: 1 });
+  assert.equal(report.clients.find(c => c.key === "mobile-web")?.opens, 0);
+  assert.equal(report.clients.find(c => c.key === "unknown")?.views, 1);
+});
+
 test("每日汇总：最近几天重算、当天不写，超过保留期的明细删掉", async () => {
   await sql`DELETE FROM analytics_events`;
   await sql`DELETE FROM analytics_daily`;
@@ -116,8 +143,9 @@ test("每日汇总：最近几天重算、当天不写，超过保留期的明�
     await record("2026-05-09", "visitor-yest");
     await record("2026-05-05", "visitor-old"); // 5 天前：超过 4 天保留期
 
+    await record("2026-05-06", "visitor-boundary"); // 4 天窗口为 05-07 至 05-10。
     const out = await analyticsRetention(now);
-    assert.equal(out.analyticsDeleted, 1);
+    assert.equal(out.analyticsDeleted, 2);
 
     const daily = await sql<{ day: string; views: number; visitors: number; clicks: number }[]>`
       SELECT day::text AS day, views, visitors, clicks FROM analytics_daily ORDER BY day`;

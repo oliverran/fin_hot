@@ -7,7 +7,7 @@
 import type { FastifyInstance } from "fastify";
 import { defineServerModule } from "@aihot/backend/modules";
 import { adminHandler } from "@aihot/api/routes/admin-auth";
-import { readEvent, recordEvent } from "./backend/collect.ts";
+import { analyticsClient, readEvent, recordEvent } from "./backend/collect.ts";
 import { flushHttp, noteHttp, UNMATCHED } from "./backend/http.ts";
 import { sampleProcess, SAMPLE_MS } from "./backend/ops.ts";
 import { analyticsReport, analyticsRetention } from "./backend/report.ts";
@@ -35,8 +35,9 @@ export default defineServerModule({
       reply.header("Cache-Control", "no-store");
       const limit = rateLimit();
       if (limit > 0 && limited(`collect:${req.ip}`, limit)) return reply.code(429).header("Retry-After", "60").send({ ok: false });
-      const event = readEvent(req.body);
-      if (event) await recordEvent(event);
+      const client = analyticsClient(req.headers["user-agent"]);
+      const event = readEvent(req.body, client);
+      if (event) await recordEvent(event, new Date(), client);
       return reply.code(204).send();
     });
     // 后台读取：窗口天数由页面给（days），越界收敛到 1..365。

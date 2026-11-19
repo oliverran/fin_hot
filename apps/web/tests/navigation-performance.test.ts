@@ -301,3 +301,34 @@ test('deep reading returns to its anchor, including folded dates',async()=>{
     await expect(page.getByRole('button',{name:'展开10月4日',exact:true})).toBeVisible();
   }finally{await context.close();}
 });
+
+test("a chronicle volume reads the first chart, the selected chapter and charts reached by scrolling", async () => {
+  const page = await chrome.newPage({ viewport: { width: 390, height: 844 } });
+  const reads: string[] = [];
+  await page.route("**/api/chronicle/broad/*.json", async (route) => {
+    const slug = new URL(route.request().url()).pathname.split("/").at(-1)!.replace(".json", "");
+    reads.push(slug);
+    await route.fulfill({ json: {
+      meta: { id: slug, name: slug, type: "line" },
+      series: [{ date: "2026-01-01", value: 10 }, { date: "2026-01-02", value: 11 }],
+    } });
+  });
+  const ready = (slug: string) => page.locator(`#panel-${slug} canvas`).waitFor({ state: "attached" });
+  try {
+    await visit(page, origin + "/chronicle/broad");
+    await ready("shanghai-composite");
+    assert.deepEqual(reads, ["shanghai-composite"]);
+    await page.locator('nav a[href="#panel-seasonality"]').click();
+    await ready("seasonality");
+    assert.ok(!reads.includes("hs300"));
+    await page.locator("#panel-hs300 figure").first().scrollIntoViewIfNeeded();
+    await ready("hs300");
+
+    reads.length = 0;
+    await page.goto(origin + "/chronicle/broad?direct=1#panel-seasonality");
+    await ready("seasonality");
+    assert.ok(!reads.includes("shanghai-composite"));
+  } finally {
+    await page.close();
+  }
+});

@@ -31,6 +31,10 @@ final class StubProtocol: URLProtocol, @unchecked Sendable {
             let field = url.path.contains("dailies") ? "date" : url.path.contains("weeklies") ? "week" : "month"
             // Withdrawn citations are absent from the public response, as in the server read layer.
             json = ["schemaVersion": 1, "report": [field: url.lastPathComponent, "headline": "金融简报", "sections": [["label": "政策", "items": [["title": "央行公告", "summary": "公开摘要", "source": ["name": "央行"], "links": ["aihot": "https://www.finhub.website/items/article-1", "original": "https://example.com/notice"]]]]], "flashes": []]]
+        } else if url.path.hasPrefix("/us-market/api/") {
+            headers["Cache-Control"] = url.path.contains("annual-returns") ? "no-store" : "public, max-age=900"
+            json = ["updated": "2026-11-18", "_attribution": UUID().uuidString,
+                    "series": [["date": "a", "close": 7.5, "value": -2], ["date": "b"]]]
         } else { json = ["url": url.absoluteString, "accept": request.value(forHTTPHeaderField: "Accept") ?? ""] }
         let body = url.lastPathComponent == "broken" ? Data("<html>maintenance</html>".utf8) : try! JSONSerialization.data(withJSONObject: json)
         client?.urlProtocol(self, didReceive: HTTPURLResponse(url: url, statusCode: status, httpVersion: nil, headerFields: headers)!, cacheStoragePolicy: .notAllowed)
@@ -58,7 +62,8 @@ final class StubProtocol: URLProtocol, @unchecked Sendable {
         checks.testRestorationAfterUnreadAndWithdrawal()
         try checks.testReadBookmarkReturnLoop()
         try await checks.testAppendingPagesDoesNotRenewOldContent()
-        print("Passed 16 native core behavior checks.")
+        try await checks.testUSChartWireAndFreshness()
+        print("Passed 17 native core behavior checks.")
     }
     func testSiteAddress() throws {
         for value in ["", "www.finhub.website", "http://www.finhub.website", "https://user:secret@host.com", "https://host.com/api", "https://host.com?token=x", "https://host.com/#x", "file:///tmp/a"] {
@@ -143,6 +148,19 @@ final class StubProtocol: URLProtocol, @unchecked Sendable {
         expectEqual(chart.dates, ["a", "b"])
         expectEqual(chart.lines.first { $0.name == "均线" }?.values, [nil, 2])
         expectEqual(chart.lines.first { $0.name == "比值" }?.values, [1, 3])
+    }
+    func testUSChartWireAndFreshness() async throws {
+        let api = try client()
+        let price = try await api.chart(group: "us", slug: "sp500/price", title: "标普 500")
+        let repeatPrice = try await api.chart(group: "us", slug: "sp500/price", title: "标普 500")
+        expectEqual(price.lines.first?.values, [7.5, nil])
+        expectEqual(price.meta.updatedAt, "2026-11-18")
+        expectEqual(price.meta.source, repeatPrice.meta.source)
+        let annual = try await api.chart(group: "us", slug: "sp500/annual-returns", title: "年度涨跌幅")
+        let repeatAnnual = try await api.chart(group: "us", slug: "sp500/annual-returns", title: "年度涨跌幅")
+        expectEqual(annual.meta.type, "bar")
+        expectEqual(annual.lines.first?.values, [-2, nil])
+        expectTrue(annual.meta.source != repeatAnnual.meta.source)
     }
     func testReadingRoundTrip() throws {
         var reading = ReadingState()

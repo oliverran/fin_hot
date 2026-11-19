@@ -2,6 +2,7 @@
 import { mkdir, writeFile, readFile } from "node:fs/promises";
 import { PUBLIC_API_CATEGORY_KEYS, CATEGORY_LABELS } from "../packages/contracts/src/taxonomy.ts";
 import { PAGES, LIVE_CHARTS } from "../modules/chronicle/catalog.ts";
+import { androidChronicle } from "./android-chronicle.ts";
 
 const kinds = new Set(["index", "drawdown", "annual", "rolling", "volatility", "annual-vol", "relative"]);
 const pages = PAGES.filter((page) => LIVE_CHARTS.some((chart) => chart.group === page.group && chart.slug === page.slug && kinds.has(chart.kind)));
@@ -14,7 +15,8 @@ console.log(`Synced ${categories.length} public categories.`);
 
 const androidAssets = new URL("../apps/android/app/src/main/assets/", import.meta.url);
 await mkdir(androidAssets, { recursive: true });
-await Promise.all(["categories.json", "chronicle.json"].map(async (name) => {
+await writeFile(new URL("../apps/ios/Resources/chronicle-reading.json", import.meta.url), JSON.stringify(androidChronicle(pages), null, 2) + "\n");
+await Promise.all(["categories.json", "chronicle.json", "chronicle-reading.json"].map(async (name) => {
   await writeFile(new URL(name, androidAssets), await readFile(new URL(`../apps/ios/Resources/${name}`, import.meta.url)));
 }));
 await Promise.all(["terms", "privacy"].map(async (name) => {

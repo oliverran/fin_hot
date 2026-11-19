@@ -6,12 +6,63 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class ReadingTests {
+    @Test fun readingPathsResolveInShippedBooks() {
+        val assets = java.io.File("src/main/assets")
+        val books = wireJson.decodeFromString<Chronicles>(assets.resolve("chronicle-reading.json").readText())
+        val aCharts = wireJson.decodeFromString<List<ChartPage>>(assets.resolve("chronicle.json").readText())
+        val charts = (aCharts + usCharts).map { "${it.group}/${it.slug}" }.toSet()
+        val linkedCharts = mutableSetOf<String>()
+        for (book in listOf(books.a, books.us)) {
+            for ((_, chapter) in book.chapters) {
+                assertTrue(chapter.lead.isNotBlank())
+                assertTrue(chapter.passages.isNotEmpty())
+                for (passage in chapter.passages) {
+                    assertEquals(chapter.id, book.references.getValue(passage.id).second.id)
+                    passage.related.forEach { assertTrue(it in book.references) }
+                    passage.chart?.let { linkedCharts.add(it) }
+                }
+                linkedCharts.addAll(chapter.comparisons.map { "us/$it" })
+            }
+        }
+        assertEquals(charts, linkedCharts)
+    }
+
     @Test fun chartKeepsBothLinesAlignedAcrossMissingObservations() {
         val input = """{"meta":{"name":"风格","type":"multi-line"},"series":{"dates":["a","b"],"seriesData":{"比值":[1,3],"均线":[null,2]}}}"""
         val chart = decodeChart(wireJson.parseToJsonElement(input))
         assertEquals(listOf("a", "b"), chart.dates)
         assertEquals(listOf(null, 2.0), chart.lines["均线"])
         assertEquals(listOf(1.0, 3.0), chart.lines["比值"])
+    }
+
+    @Test fun usPricesKeepDatesAndGapsAndUseClose() {
+        val data = wireJson.parseToJsonElement("""{"updated":"2026-11-18","_attribution":"来源","series":[{"date":"a","close":42,"drawdown":0},{"date":"b","close":null}]}""")
+        val chart = decodeUsChart(usCharts.first { it.slug == "sp500/price" }, data)
+        assertEquals(listOf("a", "b"), chart.dates)
+        assertEquals(listOf(42.0, null), chart.lines.values.single())
+        assertEquals("2026-11-18", chart.meta.updatedAt)
+        assertEquals("来源", chart.meta.source)
+    }
+
+    @Test fun chartReopenReusesParsedDataUntilServerExpiry() = kotlinx.coroutines.runBlocking {
+        val page = usCharts.first { it.slug == "ndx/annual-returns" }
+        val data = wireJson.parseToJsonElement("""{"series":[{"date":"2025-12-31","value":-2.4}]}""")
+        var requests = 0
+        var clock = 100L
+        val charts = MarketCharts({ path ->
+            assertEquals("us-market/api/ndx/annual-returns.json", path)
+            requests++
+            Resource(data, 200L)
+        }, { clock })
+        val first = charts.load(page)
+        assertEquals("bar", first.meta.type)
+        assertEquals(listOf(-2.4), first.lines.values.single())
+        assertSame(first, charts.load(page))
+        assertEquals(1, requests)
+        clock = 200L
+        charts.load(page)
+        charts.load(page)
+        assertEquals(3, requests)
     }
 
     @Test fun bookmarksKeepSaveOrderAfterRestart() {

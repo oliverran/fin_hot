@@ -65,8 +65,16 @@ export async function analyticsReport(days: number, now = new Date()): Promise<A
      WHERE day >= ${start} AND kind = 'click' AND label IS NOT NULL
      GROUP BY label ORDER BY clicks DESC, key LIMIT ${RANK_LIMIT}`;
 
+  const clientDays = Math.min(window, retentionDays());
+  const clients = await sql<AdminAnalytics["clients"]>`
+    SELECT coalesce(client, 'unknown') AS key, count(DISTINCT visitor) AS visitors,
+           count(*) FILTER (WHERE kind = 'pageview') AS views,
+           count(*) FILTER (WHERE kind = 'click') AS clicks,
+           count(*) FILTER (WHERE kind = 'open') AS opens
+      FROM analytics_events WHERE day BETWEEN ${addDays(today, 1 - clientDays)} AND ${today}
+     GROUP BY client ORDER BY views DESC, key`;
   const ops = await opsReport(window, now);
-  return { days: window, today: byDay.get(today) ?? { day: today, views: 0, visitors: 0, clicks: 0 }, trend, pages, modules, entries, ops };
+  return { days: window, today: byDay.get(today) ?? { day: today, views: 0, visitors: 0, clicks: 0 }, trend, pages, modules, entries, clients, clientDays, ops };
 }
 
 /** 每天把最近几天的明细重算进每日汇总（幂等），并删掉超过保留期的明细。 */
@@ -84,6 +92,6 @@ export async function analyticsRetention(now: Date): Promise<Record<string, unkn
      GROUP BY day
     ON CONFLICT (day) DO UPDATE
        SET views = excluded.views, visitors = excluded.visitors, clicks = excluded.clicks`;
-  const deleted = await sql`DELETE FROM analytics_events WHERE day < ${addDays(today, -retentionDays())}`;
+  const deleted = await sql`DELETE FROM analytics_events WHERE day < ${addDays(today, 1 - retentionDays())}`;
   return { analyticsRolled: rolled.count, analyticsDeleted: deleted.count };
 }

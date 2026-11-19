@@ -144,3 +144,25 @@ public struct ChronicleSeries: Decodable, Sendable {
         }
     }
 }
+
+struct USMarketHistory: Decodable, Sendable {
+    struct Observation: Decodable, Sendable {
+        let date: String
+        let close: Double?
+        let value: Double?
+    }
+    let series: [Observation]
+    let updated: String?
+    let _attribution: String?
+}
+
+extension ChronicleSeries {
+    init(history: USMarketHistory, slug: String, title: String) {
+        meta = Meta(name: title, type: slug.hasSuffix("/annual-returns") ? "bar" : "line",
+                    source: history._attribution, status: nil, updatedAt: history.updated,
+                    firstDate: history.series.first?.date, lastDate: history.series.last?.date)
+        dates = history.series.map(\.date)
+        let values = slug.hasSuffix("/price") ? history.series.map(\.close) : history.series.map(\.value)
+        lines = [Line(name: title, values: values)]
+    }
+}

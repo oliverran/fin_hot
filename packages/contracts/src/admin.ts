@@ -433,6 +433,8 @@ export interface AdminAnalytics {
   today: AdminAnalyticsDay;
   /** One row per day in the window, oldest first; a day with no data still appears. */
   trend: AdminAnalyticsDay[];
+  clients: Array<{ key: string; views: number; clicks: number; opens: number; visitors: number }>;
+  clientDays: number;
   /** Pages by address, most viewed first. */
   pages: AdminAnalyticsRank[];
   /** Sections by the group computed from the address, most viewed first. */

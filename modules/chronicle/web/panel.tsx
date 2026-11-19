@@ -25,14 +25,15 @@ function StatStrip({ stats }: { stats: ReadonlyArray<{ label: string; value: str
 /**
  * 图的正文：图表 + 关键数字 + 深度分析。卷页与详情页共用，标题与导语由调用方各自处理。
  */
-export function ChartBody({ page }: { page: ChartPage }) {
+export function ChartBody({ page, anchor, first }: { page: ChartPage; anchor?: string; first?: boolean }) {
   const extra = panelOf(page.group, page.slug);
+  const src = dataUrl(page.group, page.slug);
   return (
     <>
       <figure className="mt-4 card px-4 py-5 sm:px-6">
         <figcaption className="text-[15px] font-bold text-ink">{page.chartTitle}</figcaption>
         {page.chartNote && <p className="mt-1.5 text-[12.5px] leading-relaxed text-ink-4">{page.chartNote}</p>}
-        <ChronicleChart src={dataUrl(page.group, page.slug)} name={page.chartTitle} className="mt-4" />
+        <ChronicleChart key={src} src={src} panel={anchor} first={first} name={page.chartTitle} className="mt-4" />
       </figure>
 
       <StatStrip stats={extra.stats ?? []} />
@@ -50,7 +51,7 @@ export function ChartBody({ page }: { page: ChartPage }) {
  * 一张图连同它的解读。`anchor` 为图上锚点（卷内目录跳转用）；卷页里用完整版（带「单独打开」链接），
  * 详情页用 ChartBody 即可。
  */
-export function ChartPanel({ page, anchor }: { page: ChartPage; anchor?: string }) {
+export function ChartPanel({ page, anchor, first }: { page: ChartPage; anchor: string; first: boolean }) {
   return (
     <article id={anchor} className="scroll-mt-24 pt-8">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
@@ -61,7 +62,7 @@ export function ChartPanel({ page, anchor }: { page: ChartPage; anchor?: string 
       </div>
       <p className="mt-2 max-w-[46em] text-[14px] leading-[1.85] text-ink-3">{page.heroLead}</p>
 
-      <ChartBody page={page} />
+      <ChartBody page={page} anchor={anchor} first={first} />
 
       <p className="mt-4">
         <IntentLink viewTransition to={ROUTES.page(page.group, page.slug)} className="inline-flex items-center gap-1 text-[13px] text-accent hover:underline">

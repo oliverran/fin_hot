@@ -109,7 +109,7 @@ struct FeedView: View {
                     if phase == .active && path.isEmpty && window.pageCount > 0 && (window.validUntil ?? .distantPast) <= Date() { returnAnchor = topID; returnOrder = visibleItems.map(\.id); Task { await fetch(reset: true, restoring: true) } }
                 }
             }
-            .navigationTitle("FinHOT")
+            .navigationTitle("FinHOT").readingMetrics("/")
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(for: String.self) { ArticleView(id: $0) }
             .searchable(text: $query, prompt: "搜索金融资讯")
@@ -178,6 +178,7 @@ struct ArticleView: View {
             ArticleReader(item: item, baseURL: app.client!.site.url)
         }
         .navigationBarTitleDisplayMode(.inline)
+        .readingMetrics("/items", entry: "阅读资讯")
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
                 Button { app.toggle(id) } label: {

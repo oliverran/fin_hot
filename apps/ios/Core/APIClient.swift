@@ -30,6 +30,7 @@ public struct SiteAddress: Sendable, Equatable {
 public struct APIClient: Sendable {
     public let site: SiteAddress
     private let session: URLSession
+    private let chartCache = ChartCache()
     private let cooldown = RequestCooldown()
     private static let readingSession: URLSession = {
         let configuration = URLSessionConfiguration.ephemeral
@@ -42,12 +43,38 @@ public struct APIClient: Sendable {
         self.site = site
         self.session = session ?? Self.readingSession
     }
+    public func collect(kind: String, path: String, visitor: String, label: String? = nil) async {
+        var body = ["kind": kind, "path": path, "visitor": visitor]
+        body["label"] = label
+        var request = URLRequest(url: site.page("api/analytics/collect"), timeoutInterval: 4)
+        request.httpMethod = "POST"
+        request.httpShouldHandleCookies = false
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("FinHOT-iOS/0.1", forHTTPHeaderField: "User-Agent")
+        request.httpBody = try? JSONEncoder().encode(body)
+        _ = try? await session.data(for: request)
+    }
     public func siteGet<T: Decodable & Sendable>(_ path: String, query: [URLQueryItem] = []) async throws -> T {
         return try await resource("api/site/" + path, query: query)
     }
     public func resource<T: Decodable & Sendable>(_ path: String, query: [URLQueryItem] = []) async throws -> T {
         let response: (value: T, deadline: Date) = try await response(path, query: query)
         return response.value
+    }
+    public func chart(group: String, slug: String, title: String) async throws -> ChronicleSeries {
+        let path = group == "us" ? "us-market/api/\(slug).json" : "api/chronicle/\(group)/\(slug).json"
+        if let cached = await chartCache.value(path) { return cached }
+        let series: ChronicleSeries
+        let expiry: Date
+        if group == "us" {
+            let history: (value: USMarketHistory, deadline: Date) = try await response(path, query: [])
+            series = ChronicleSeries(history: history.value, slug: slug, title: title)
+            expiry = history.deadline
+        } else {
+            (series, expiry) = try await response(path, query: [])
+        }
+        await chartCache.save(series, path: path, expiry: expiry)
+        return series
     }
     func response<T: Decodable & Sendable>(_ path: String, query: [URLQueryItem]) async throws -> (value: T, deadline: Date) {
         try await cooldown.check()
@@ -93,6 +120,23 @@ public struct APIClient: Sendable {
         let statedAge = Double(response.value(forHTTPHeaderField: "Age") ?? "0") ?? 0
         let datedAge = response.value(forHTTPHeaderField: "Date").flatMap(httpDate).map { now.timeIntervalSince($0) } ?? 0
         return now.addingTimeInterval(max(0, maxAge - max(0, max(statedAge, datedAge))))
+    }
+}
+
+private actor ChartCache {
+    private var entries: [(path: String, series: ChronicleSeries, expiry: Date)] = []
+    func value(_ path: String) -> ChronicleSeries? {
+        guard let index = entries.firstIndex(where: { $0.path == path }) else { return nil }
+        let entry = entries.remove(at: index)
+        guard entry.expiry > Date() else { return nil }
+        entries.append(entry)
+        return entry.series
+    }
+    func save(_ series: ChronicleSeries, path: String, expiry: Date) {
+        entries.removeAll { $0.path == path }
+        guard expiry > Date() else { return }
+        entries.append((path, series, expiry))
+        if entries.count > 4 { entries.removeFirst() }
     }
 }
 

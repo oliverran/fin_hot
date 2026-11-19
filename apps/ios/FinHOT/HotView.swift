@@ -20,7 +20,7 @@ struct HotView: View {
                 }
                 if hot.entries.isEmpty { ContentUnavailableView("暂无热点", systemImage: "flame") }
             }.listStyle(.plain)
-        }.navigationTitle("热点事件")
+        }.navigationTitle("热点事件").readingMetrics("/hot")
     }
 }
 struct StoryView: View {
@@ -45,7 +45,7 @@ struct StoryView: View {
                     }
                 }
             }.listStyle(.plain)
-        }.navigationTitle("事件追踪").navigationBarTitleDisplayMode(.inline)
+        }.navigationTitle("事件追踪").readingMetrics("/story", entry: "事件追踪").navigationBarTitleDisplayMode(.inline)
             .toolbar { ShareLink(item: app.client!.site.page("story/\(id)")) }
     }
 }
