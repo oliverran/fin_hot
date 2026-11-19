@@ -14,6 +14,6 @@ iOS 0.1.2（构建号 3）与 Android 共用编年史卷章，支持 A 股与美
 
 0.1.3（构建号 4）增加匿名冷启动、浏览和关键入口点击统计，与手机网页、安卓汇入同一后台。
 
-从仓库根目录同步两端使用的分类、卷章与图表文案：`node scripts/sync-ios-resources.ts`。
+从仓库根目录同步两端使用的分类、卷章、图表以及使用规则和隐私说明：`node scripts/sync-ios-resources.ts`。
 
 完整功能范围、当前限制、设备验收与分发步骤见 [移动端说明](../../docs/mobile.md)。已通过 Xcode 26.3 / iOS 26.2 SDK 的模拟器 Debug 和真机无签名 Release 编译；已在 iPhone 16e 模拟器运行，真机签名与分发待完成。

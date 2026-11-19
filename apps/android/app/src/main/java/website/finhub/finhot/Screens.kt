@@ -58,6 +58,11 @@ import java.net.URI
     val labels = listOf("资讯", "热点", "简报", "编年史", "我的")
     val route = vm.stack.lastOrNull()
     val context = LocalContext.current
+    val policy = if (route is Screen.Policy) remember(context, route.file) {
+        context.assets.open("policies.json").bufferedReader().use {
+            wireJson.decodeFromString<Map<String, PolicyDocument>>(it.readText()).getValue(route.file)
+        }
+    } else null
     BackHandler(enabled = route != null) { vm.back() }
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     DisposableEffect(lifecycle) {
@@ -77,7 +82,7 @@ import java.net.URI
             is Screen.Chapter -> vm.currentBook().volume(route.volume).title
             Screen.ChartIndex -> "图表索引"
             is Screen.Chart -> "历史图表"; is Screen.TopicPage -> route.name; Screen.Topics -> "金融主题"
-            Screen.Bookmarks -> "我的收藏"; Screen.History -> "阅读记录"; is Screen.Policy -> route.title
+            Screen.Bookmarks -> "我的收藏"; Screen.History -> "阅读记录"; is Screen.Policy -> policy?.title ?: route.title
         }, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis) },
             navigationIcon = { if (route != null) IconButton(onClick = vm::back) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "返回") } },
             actions = { if (route == null && vm.tab == 0) {
@@ -168,10 +173,7 @@ import java.net.URI
                 Screen.Topics -> TopicsScreen(vm)
                 Screen.Bookmarks -> SavedScreen(vm, vm.library.bookmarks, false)
                 Screen.History -> SavedScreen(vm, vm.library.readIDs, true)
-                is Screen.Policy -> {
-                    val text = remember(route.file) { context.assets.open("${route.file}.md").bufferedReader().use { it.readText() } }
-                    LazyColumn { item { Text(text, Modifier.padding(20.dp)) } }
-                }
+                is Screen.Policy -> PolicyReader(checkNotNull(policy), vm.library.textSize)
             } }
         }
     }

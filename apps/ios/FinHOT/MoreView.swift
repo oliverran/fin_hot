@@ -115,14 +115,75 @@ struct TopicView: View {
         }.id(page).navigationTitle(name).readingMetrics("/topics/detail", entry: "阅读主题")
     }
 }
+private struct PolicyDocument: Decodable {
+    struct Field: Decodable { let label, value: String }
+    struct Run: Decodable, Hashable {
+        let text: String
+        let url: URL?
+    }
+    struct Section: Decodable { let heading: String; let paragraphs: [[Run]] }
+    let title, intro: String
+    let metadata: [Field]
+    let sections: [Section]
+
+    static let bundled: [String: Self] = {
+        guard let url = Bundle.main.url(forResource: "policies", withExtension: "json"),
+              let data = try? Data(contentsOf: url) else { return [:] }
+        return (try? JSONDecoder().decode([String: Self].self, from: data)) ?? [:]
+    }()
+}
+
 struct PolicyView: View {
     let name: String
     let file: String
+    @AppStorage("readerTextSize") private var size = 0
+
     var body: some View {
+        let document = PolicyDocument.bundled[file]
         ScrollView {
-            MarkdownText(text: (Bundle.main.url(forResource: file, withExtension: "md").flatMap { try? String(contentsOf: $0, encoding: .utf8) }) ?? "内容暂不可用。")
-                .padding(22)
-        }.navigationTitle(name).readingMetrics("/" + file, entry: name)
+            if let document {
+                VStack(alignment: .leading, spacing: 24) {
+                    VStack(alignment: .leading, spacing: 10) {
+                        ForEach(document.metadata, id: \.label) { field in
+                            LabeledContent(field.label) { Text(field.value).foregroundStyle(.primary) }
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .font(.subheadline)
+                    .padding(16)
+                    .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
+                    Text(document.intro)
+                        .foregroundStyle(.secondary)
+                        .padding(.leading, 12)
+                        .overlay(alignment: .leading) { Capsule().fill(.tint).frame(width: 3) }
+                    ForEach(document.sections, id: \.heading) { section in
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text(section.heading)
+                                .font(size == 2 ? .title.bold() : .title3.bold())
+                                .accessibilityAddTraits(.isHeader)
+                            ForEach(section.paragraphs, id: \.self) { paragraph in
+                                Text(paragraph.reduce(into: AttributedString()) { text, run in
+                                    var span = AttributedString(run.text)
+                                    span.link = run.url
+                                    text.append(span)
+                                })
+                            }
+                        }
+                    }
+                }
+                .font(size == 2 ? .title2 : size == 1 ? .title3 : .body)
+                .lineSpacing(5)
+                .textSelection(.enabled)
+                .frame(maxWidth: 640, alignment: .leading)
+                .padding(20)
+                .frame(maxWidth: .infinity)
+            } else {
+                Text("内容暂不可用。").padding()
+            }
+        }
+        .navigationTitle(document?.title ?? name)
+        .navigationBarTitleDisplayMode(.inline)
+        .readingMetrics("/" + file, entry: name)
     }
 }
 

@@ -10,7 +10,7 @@ Kotlin + Jetpack Compose 原生客户端，最低 Android 8.0（API 26），默�
 
 需要 JDK 21、Android SDK Platform 36、Build Tools 36.0.0，以及 Android Studio 或 Gradle 8.13。
 
-1. 在仓库根目录运行 `node scripts/sync-ios-resources.ts`，为两端同步网站分类、图表目录，为 Android 同步条款文案。
+1. 在仓库根目录运行 `node scripts/sync-ios-resources.ts`，为两端同步网站分类、图表目录以及使用规则和隐私说明。
 2. 用 Android Studio 打开本目录；或设置 `ANDROID_HOME` 为 SDK 路径。
 3. 执行 `./gradlew :app:testDebugUnitTest :app:assembleDebug`。
 

@@ -109,6 +109,12 @@ cloudflared 会在 `X-Forwarded-For` 里带上访客地址，`TRUST_PROXY=true` 
 
 ### 更新
 
+#### 2026-11-19 · 移动端 0.1.4
+
+1. 同步移动资源，以构建号 5 构建客户端。安卓沿用官网发行证书签名，核对[移动端发布记录](mobile.md#014-发布记录)中的 SHA-256。
+2. 将 APK 放入 `modules/mobile-download/web/release/FinHOT.apk` 后构建网页镜像。保留上版 APK 与镜像，验证候选镜像的下载文件后，仅更新 web 服务。
+3. 在公网检查 `/download` 的安卓二维码、`/download/android` 返回的 APK 校验值和 `/changelog`。iPhone 个人安装使用原 Bundle ID 和开发团队进行覆盖安装。
+
 #### 2026-11-19 · 网页编年史与移动端 0.1.3
 
 1. 构建与本次源码对应的镜像。官网发行包放在 `modules/mobile-download/web/release/FinHOT.apk` 后再构建网页。APK 的包名、版本、证书和文件校验值见[移动端发布记录](mobile.md#013-发布记录)。
