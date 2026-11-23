@@ -103,7 +103,7 @@ test("落库与查询：今日浏览、访客、点击与三张排行", async ()
   assert.equal(report.modules.find((m) => m.key === "编年史")?.views, 1);
 });
 
-test("手机网页、原生启动和入口点击进入同一份报表，旧明细保留原有口径", async () => {
+test("手机网页、原生启动和入口点击进入同一份报表，只命中一次的访客不计入", async () => {
   await sql`DELETE FROM analytics_events`;
   for (const [agent, kind, visitor] of [
     ["Mozilla/5.0 (iPhone) Mobile Safari", "pageview", "mobile-web-01"],
@@ -120,14 +120,15 @@ test("手机网页、原生启动和入口点击进入同一份报表，旧明�
   await sql`INSERT INTO analytics_events (day, at, kind, path, module, visitor)
     VALUES (${beijingDate(new Date())}, now(), 'pageview', '/', '精选', 'historic-01')`;
   const report = await analyticsReport(90);
-  assert.equal(report.today.views, 3);
+  // 只命中一次的整条都不计：浏览、点击、访客里都看不到它
+  assert.equal(report.today.views, 1);
   assert.equal(report.today.clicks, 1);
-  assert.equal(report.today.visitors, 4);
+  assert.equal(report.today.visitors, 2);
   assert.equal(report.clientDays, 30);
   assert.deepEqual(report.clients.find(c => c.key === "ios"), { key: "ios", opens: 1, views: 1, clicks: 0, visitors: 1 });
   assert.deepEqual(report.clients.find(c => c.key === "android"), { key: "android", opens: 1, views: 0, clicks: 1, visitors: 1 });
-  assert.equal(report.clients.find(c => c.key === "mobile-web")?.opens, 0);
-  assert.equal(report.clients.find(c => c.key === "unknown")?.views, 1);
+  assert.equal(report.clients.find(c => c.key === "mobile-web"), undefined); // 只命中一次，整条不计
+  assert.equal(report.clients.find(c => c.key === "unknown"), undefined); // 只命中一次，整条不计
 });
 
 test("每日汇总：最近几天重算、当天不写，超过保留期的明细删掉", async () => {
@@ -141,6 +142,7 @@ test("每日汇总：最近几天重算、当天不写，超过保留期的明�
     await record("2026-05-10", "visitor-today"); // 当天：不进汇总
     await record("2026-05-09", "visitor-yest");
     await record("2026-05-09", "visitor-yest");
+    await record("2026-05-09", "visitor-bounce"); // 只命中一次：整条不计，浏览与访客都不算
     await record("2026-05-05", "visitor-old"); // 5 天前：超过 4 天保留期
 
     await record("2026-05-06", "visitor-boundary"); // 4 天窗口为 05-07 至 05-10。
@@ -149,7 +151,8 @@ test("每日汇总：最近几天重算、当天不写，超过保留期的明�
 
     const daily = await sql<{ day: string; views: number; visitors: number; clicks: number }[]>`
       SELECT day::text AS day, views, visitors, clicks FROM analytics_daily ORDER BY day`;
-    // 只有 05-09 写进了汇总（重算窗口是 05-08 与 05-09），当天 05-10 不写
+    // 重算覆盖明细里还在的每一天（< 当天）并回填：05-09 两条 visitor-yest 落进汇总，只命中一次的整条不计；
+    // 当天 05-10 不写，只剩单次命中的 05-05、05-06 没进汇总
     assert.deepEqual([...daily], [{ day: "2026-05-09", views: 2, visitors: 1, clicks: 0 }]);
 
     const days = await sql<{ day: string }[]>`SELECT DISTINCT day::text AS day FROM analytics_events ORDER BY day`;

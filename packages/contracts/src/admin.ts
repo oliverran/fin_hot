@@ -402,27 +402,30 @@ export interface AdminSelectBenchCases {
 
 // Analytics (指标监控)
 
-/** One day of the visitor trend: page views, unique visitors and key entry clicks. */
+/** One day of the visitor trend: page views, real visitors and key entry clicks. */
 export interface AdminAnalyticsDay {
   /** YYYY-MM-DD, Beijing. */
   day: string;
   views: number;
+  /** Visitor ids with at least two events that day; a single-hit id counts as machine traffic and is left out of every number. */
   visitors: number;
   clicks: number;
 }
 
-/** One row of a view ranking: what was opened and how many visitors did. */
+/** One row of a view ranking: what was opened and how many real visitors did, as in AdminAnalyticsDay. */
 export interface AdminAnalyticsRank {
   /** The page address, or the section's group name. */
   key: string;
   views: number;
+  /** Real visitors only, as in AdminAnalyticsDay. */
   visitors: number;
 }
 
-/** One row of the key entry clicks: the entry's label. */
+/** One row of the key entry clicks: the entry's label; counts real visitor-days only, as in AdminAnalyticsDay. */
 export interface AdminAnalyticsEntry {
   key: string;
   clicks: number;
+  /** Real visitors only, as in AdminAnalyticsDay. */
   visitors: number;
 }
 

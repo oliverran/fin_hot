@@ -185,7 +185,7 @@ export default function AdminAnalytics({ loaderData }: { loaderData: { analytics
   return (
     <AdminPage
       title="指标监控"
-      subtitle="网页与原生客户端共同统计浏览、访客与关键入口点击。访客按本地随机编号去重，跨端分别计数。"
+      subtitle="网页与原生客户端共同统计浏览、访客与关键入口点击。只统计当天留下两次以上事件的真人：同一访客号当天只命中一次的（机器流量）整条不计，浏览、点击与访客都按这个口径；跨端分别计数。"
       actions={<FilterChips param="days" options={[{ value: "14", label: "近 14 天" }, { value: "30", label: "近 30 天" }, { value: "90", label: "近 90 天" }]} />}
     >
       <h2 className="text-[16px] font-semibold text-ink">访客</h2>
