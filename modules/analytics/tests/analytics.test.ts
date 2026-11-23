@@ -151,17 +151,21 @@ test("每日汇总：最近几天重算、当天不写，超过保留期的明�
 
     const daily = await sql<{ day: string; views: number; visitors: number; clicks: number }[]>`
       SELECT day::text AS day, views, visitors, clicks FROM analytics_daily ORDER BY day`;
-    // 重算覆盖明细里还在的每一天（< 当天）并回填：05-09 两条 visitor-yest 落进汇总，只命中一次的整条不计；
-    // 当天 05-10 不写，只剩单次命中的 05-05、05-06 没进汇总
-    assert.deepEqual([...daily], [{ day: "2026-05-09", views: 2, visitors: 1, clicks: 0 }]);
+    // 重算覆盖明细里还在的每一天（< 当天）并回填：05-09 两条 visitor-yest 落进汇总；
+    // 05-05、05-06 只有单次命中，重算成 0，不留旧口径的数字；当天 05-10 不写
+    assert.deepEqual([...daily], [
+      { day: "2026-05-05", views: 0, visitors: 0, clicks: 0 },
+      { day: "2026-05-06", views: 0, visitors: 0, clicks: 0 },
+      { day: "2026-05-09", views: 2, visitors: 1, clicks: 0 },
+    ]);
 
     const days = await sql<{ day: string }[]>`SELECT DISTINCT day::text AS day FROM analytics_events ORDER BY day`;
     assert.deepEqual(days.map((row) => row.day), ["2026-05-09", "2026-05-10"]);
 
-    // 重算幂等：再跑一次结果不变
+    // 重算幂等：再跑一次结果不变（明细已删的日子保留上次写下的 0）
     await analyticsRetention(now);
-    const again = await sql<{ views: number }[]>`SELECT views FROM analytics_daily`;
-    assert.deepEqual([...again], [{ views: 2 }]);
+    const again = await sql<{ views: number }[]>`SELECT views FROM analytics_daily ORDER BY day`;
+    assert.deepEqual([...again], [{ views: 0 }, { views: 0 }, { views: 2 }]);
   } finally {
     delete process.env.ANALYTICS_RETENTION_DAYS;
   }

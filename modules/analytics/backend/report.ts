@@ -101,7 +101,8 @@ export async function analyticsReport(days: number, now = new Date()): Promise<A
 /**
  * 每天把明细里还在的每一天重算进每日汇总（幂等），再删掉超过保留期的明细。
  * 重算覆盖整段明细窗口：明细还在的日子按最新口径对齐（含升级后第一次跑时对历史汇总的回填），
- * 明细已删的日子保留上次写下的汇总值。浏览、点击与访客同一套口径。
+ * 明细已删的日子保留上次写下的汇总值。只命中一次的日子算 0，不能留着旧口径的数字。
+ * 浏览、点击与访客同一套口径。
  */
 export async function analyticsRetention(now: Date): Promise<Record<string, unknown>> {
   const today = beijingDate(now);
@@ -109,11 +110,11 @@ export async function analyticsRetention(now: Date): Promise<Record<string, unkn
     WITH real AS (${realVisitorDays()})
     INSERT INTO analytics_daily (day, views, visitors, clicks)
     SELECT e.day,
-           count(*) FILTER (WHERE e.kind = 'pageview'),
-           count(DISTINCT e.visitor),
-           count(*) FILTER (WHERE e.kind = 'click')
+           count(*) FILTER (WHERE e.kind = 'pageview' AND r.visitor IS NOT NULL),
+           count(DISTINCT e.visitor) FILTER (WHERE r.visitor IS NOT NULL),
+           count(*) FILTER (WHERE e.kind = 'click' AND r.visitor IS NOT NULL)
       FROM analytics_events e
-      JOIN real r ON r.day = e.day AND r.visitor = e.visitor
+      LEFT JOIN real r ON r.day = e.day AND r.visitor = e.visitor
      WHERE e.day < ${today}
      GROUP BY e.day
     ON CONFLICT (day) DO UPDATE
