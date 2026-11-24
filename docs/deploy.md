@@ -109,6 +109,14 @@ cloudflared 会在 `X-Forwarded-For` 里带上访客地址，`TRUST_PROXY=true` 
 
 ### 更新
 
+#### 2026-11-24 · 机会分区与默认模型切到 hy4-flash
+
+1. 构建与本次源码对应的镜像，保留上一版（`finhot:20261123-hy4`）供回退。停掉 `api`、`worker`、`web`，运行 `setup` 应用迁移，再按 `--profile https` 启动。
+2. 新增迁移 `0095_opportunities.sql`，只建 `opportunities` 表（五段分析列 `summary / catalyst / logic / watch / risk`，以及 `symbols`、`evidence` 依据、`model` 等），不删除已有数据；回退保留该表即可。
+3. 默认模型改为腾讯云 TokenHub 的 `hy4-flash`：判断类步骤（评分、归组、事件综述、周报月报、机会）走开了思考的 `hy4-flash-think`，其余步骤走默认模型（同一个模型、思考关着）。`LLM_BASE_URL` 指向 `https://tokenhub.tencentmaas.com/v1`，`LLM_API_KEY` 填对应密钥，并打开 `LLM_VISION=true`。
+4. 侧栏新增「机会」分区（`/opportunities`），工作日 A 股收盘后（16:30）生成当日机会，标的经 A 股全量清单与美股白名单核对后落库；后台「机会」页可查看并手动重跑。该分区只提供观察线索，不构成投资建议。
+5. 从公网验证 `/api/health`、`/opportunities`、`/changelog` 和后台机会页。
+
 #### 2026-11-19 · 移动端 0.1.4
 
 1. 同步移动资源，以构建号 5 构建客户端。安卓沿用官网发行证书签名，核对[移动端发布记录](mobile.md#014-发布记录)中的 SHA-256。
