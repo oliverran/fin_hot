@@ -1,6 +1,6 @@
 // 费用看板与「模型与评测」页按单价把服务商没有回传费用的调用（llm 这一路写的就是 null）估成钱。
 // 这里写入本部署各渠道的初始单价，幂等：已有的行不动（人工改过的单价不被覆盖）。
-// 数字是「忙时」（北京时间 08:00–22:00）的价，闲时更低；改单价请直接 UPDATE service_prices。
+// 数字是目录价；阿里云百炼的 qwen 忙时（北京时间 08:00–22:00）更贵、闲时更低，改单价请直接 UPDATE service_prices。
 // 可重跑：node --env-file=.env modules/costs/scripts/seed-prices.ts
 // 线上：docker exec -i aihot-api-1 node --env-file=.env modules/costs/scripts/seed-prices.ts
 import { closeDb, sql } from "@aihot/backend/db";
@@ -16,9 +16,10 @@ interface PriceRow {
 }
 
 const PRICES: PriceRow[] = [
-  // 默认模型（site/models.ts 的 `default`，读 LLM_*）：阿里云百炼网关上的 deepseek-v4.1-flash。
-  { service: "llm", model: "deepseek-v4.1-flash", input: 2, cached: 0.2, output: 8 },
-  { service: "llm", model: "", input: 2, cached: 0.2, output: 8 },
+  // 默认模型（site/models.ts 的 `default`，读 LLM_*）：腾讯云 TokenHub 上的 hy4-flash。
+  // 目录价；2026-11-30 12:00 前有 50% 限时折扣，折扣期内实际约为目录价的一半。
+  { service: "llm", model: "hy4-flash", input: 0.5, cached: 0.02, output: 2 },
+  { service: "llm", model: "", input: 0.5, cached: 0.02, output: 2 },
   // DeepSeek 官方直连：同一款 V4.1-Flash，缓存价便宜十倍。
   { service: "deepseek", model: "deepseek-flash", input: 2, cached: 0.04, output: 8 },
   { service: "deepseek", model: "", input: 2, cached: 0.04, output: 8 },

@@ -2,7 +2,8 @@
 import type { WebModule } from "@aihot/web/modules";
 import chronicle from "@aihot/chronicle/web";
 import analytics from "@aihot/analytics/web";
+import opportunities from "@aihot/opportunities/web";
 
 import mobileDownload from "../../modules/mobile-download/web.tsx";
 
-export const WEB_MODULES: readonly WebModule[] = [chronicle, analytics, mobileDownload];
+export const WEB_MODULES: readonly WebModule[] = [chronicle, analytics, opportunities, mobileDownload];

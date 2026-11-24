@@ -3,5 +3,6 @@ import type { ServerModule } from "@aihot/backend/modules";
 import chronicle from "@aihot/chronicle/server";
 import analytics from "@aihot/analytics/server";
 import costs from "@aihot/costs/server";
+import opportunities from "@aihot/opportunities/server";
 
-export const SERVER_MODULES: readonly ServerModule[] = [chronicle, analytics, costs];
+export const SERVER_MODULES: readonly ServerModule[] = [chronicle, analytics, costs, opportunities];

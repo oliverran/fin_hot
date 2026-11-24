@@ -166,10 +166,10 @@ test("429 account refusals stop at the primary while temporary throttling can us
   assert.equal(backup.hits(), calls + 1);
 });
 
-// The site backs the default model with an independently operated provider (site/models.ts). A step
-// left on the default must reach that backup when its provider is down, or the first paid call of the
-// analysis stops the whole pipeline.
-test("an analysis left on the default model reaches its evaluated backup when the provider is down", async () => {
+// The site backs each model it routes a step to with an independently operated provider (site/models.ts).
+// Every step must reach a backup when its provider is down, or the first paid call of the analysis stops
+// the whole pipeline.
+test("every step of an analysis reaches an evaluated backup when its provider is down", async () => {
   const answering = await stub((_hit, req) => {
     const step = analysisStep(req.body);
     const content = step === "prefilter" ? { label: "PASS", reason: "产品发行" }
@@ -180,7 +180,7 @@ test("an analysis left on the default model reaches its evaluated backup when th
   });
   const assigned = { LLM_BASE_URL: `${primary.url}/v1`, LLM_API_KEY: "test-key", LLM_MODEL: "one-model", MINIMAX_BASE_URL: `${answering.url}/v1`, MINIMAX_API_KEY: "test-key" };
   const saved = Object.entries(assigned).map(([key, value]) => [key, process.env[key], value] as const);
-  const steps = (Object.values(CAPABILITIES) as Capability[]).map((c) => [c.env, process.env[c.env], c.default === "default" ? "" : "default"] as const);
+  const steps = (Object.values(CAPABILITIES) as Capability[]).map((c) => [c.env, process.env[c.env], c.default] as const);
   const source = `test-failover-analyze-${T}`;
   primaryAnswer = () => new Reply(503, { error: "overloaded" });
   for (const [key, , value] of [...saved, ...steps]) process.env[key] = value;

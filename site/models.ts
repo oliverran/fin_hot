@@ -28,7 +28,7 @@ export const PRESETS: Record<string, ModelPreset> = {
       prefilter: "minimax-m3.1-flash", score: "minimax-m3.1-flash", understand: "minimax-m3.1-flash",
       summarize: "minimax-m3.1-flash", wording: "minimax-m3.1-flash", structure: "minimax-m3.1-flash",
       group: "minimax-m3.1-flash", groupReview: "minimax-m3.1-flash", digest: "minimax-m3.1-flash",
-      report: "minimax-m3.1-flash", translate: "minimax-m3.1-flash",
+      report: "minimax-m3.1-flash", translate: "minimax-m3.1-flash", opportunity: "minimax-m3.1-flash",
     },
   },
   "deepseek-flash-think": {
@@ -50,16 +50,24 @@ export const PRESETS: Record<string, ModelPreset> = {
     service: "dashscope", model: "qwen3-vl-flash", baseUrlEnv: "DASHSCOPE_BASE_URL", apiKeyEnv: "DASHSCOPE_API_KEY",
     extra: { enable_thinking: false }, jsonMode: false, vision: true,
   },
-  // MiniMax（OpenAI 兼容），作为默认模型的第一道备用：默认模型（`LLM_*` 指向的阿里云百炼网关）限流或
-  // 不可用时改用它。备用是一串：默认模型 → minimax-m3.1-flash → deepseek-flash（见上面它自己的 fallbackFor）。
-  // 它和默认模型一样先想再答，保留低强度推理，并给推理留出输出额度。
+  // MiniMax（OpenAI 兼容），作为默认模型（本站是 TokenHub 上的 hy4-flash）和上面的 hy4-flash-think 的第一道
+  // 备用：它们限流或不可用时改用它。备用是一串：主力模型 → minimax-m3.1-flash → deepseek-flash（见它自己的 fallbackFor）。
+  // 它和主力模型一样先想再答，保留低强度推理，并给推理留出输出额度。
   "minimax-m3.1-flash": {
     service: "minimax", model: "MiniMax-M3.1-Flash", baseUrlEnv: "MINIMAX_BASE_URL", apiKeyEnv: "MINIMAX_API_KEY",
     extra: { reasoning_effort: "low" }, reasoningTokens: 4000, jsonMode: true,
     fallbackFor: {
-      prefilter: "default", score: "default", understand: "default", summarize: "default", wording: "default",
-      structure: "default", group: "default", groupReview: "default", digest: "default", report: "default", translate: "default",
+      prefilter: "default", score: "hy4-flash-think", understand: "default", summarize: "default", wording: "default",
+      structure: "default", group: "hy4-flash-think", groupReview: "hy4-flash-think", digest: "hy4-flash-think",
+      report: "hy4-flash-think", translate: "default", opportunity: "hy4-flash-think",
     },
+  },
+  // 同一个 hy4-flash，开着思考，给评分、归组、事件综述和周报月报用；其余步骤走默认模型（.env 的 LLM_*，
+  // 同一个模型关掉思考）。推理 token 和答案共用输出额度，所以多留一些（只是上限，用多少算多少）。
+  // service 写 llm：地址、密钥、价格行和熔断都跟默认模型同一条，不是另一家服务商。
+  "hy4-flash-think": {
+    service: "llm", model: "hy4-flash", baseUrlEnv: "LLM_BASE_URL", apiKeyEnv: "LLM_API_KEY",
+    extra: { thinking: { type: "enabled" } }, reasoningTokens: 12000, jsonMode: true, vision: true,
   },
 };
 
@@ -67,4 +75,9 @@ export const PRESETS: Record<string, ModelPreset> = {
  * 每一步默认用的模型（步骤见后台“模型与评测”页），值是上面的名字或 default。没写的步骤用 default。
  * 例：{ score: "glm-5.3-flash-selection", groupReview: "mimo-v2.6-flash" }
  */
-export const DEFAULTS: Record<string, string> = {};
+export const DEFAULTS: Record<string, string> = {
+  // 要判断、要写的步骤开着思考；预筛、理解、摘要、改写、结构抽取、翻译这些结构化步骤留给默认模型（思考关着）。
+  // opportunity 是机会模块结合行情背景与已发布资讯挑机会与标的的步骤，和事件综述、周报月报一样要判断与写作。
+  score: "hy4-flash-think", group: "hy4-flash-think", groupReview: "hy4-flash-think",
+  digest: "hy4-flash-think", report: "hy4-flash-think", opportunity: "hy4-flash-think",
+};

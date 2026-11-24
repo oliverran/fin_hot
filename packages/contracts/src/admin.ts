@@ -626,3 +626,75 @@ export interface AdminCosts {
   /** Service × model rows by cost, dearest first. */
   models: AdminCostModel[];
 }
+
+// Opportunities (投资机会)
+
+/** 一个标的：A 股或美股，代码与名称都取自真实清单（A 股全量 + 美股大盘白名单）。 */
+export interface AdminOpportunitySymbol {
+  code: string;
+  name: string;
+  market: "cn" | "us";
+  /** 一句话说明，可省略。 */
+  note?: string;
+}
+
+/** 一条依据：报道的标题、原文地址、发布日期（YYYY-MM-DD，北京）与发布方名称。 */
+export interface AdminOpportunityEvidence {
+  title: string;
+  url: string;
+  /** YYYY-MM-DD, Beijing. */
+  date: string;
+  /** 发布方名称，用于标注来源与判断是否交叉印证。 */
+  source: string;
+}
+
+/** 一条机会卡片：方向、标题、分块的分析、标的与依据。读者页与后台共用同一份数据。 */
+export interface AdminOpportunityCard {
+  id: number;
+  /** 方向：偏多 / 偏空 / 中性（页面上统一说「观察」）。 */
+  direction: "bullish" | "bearish" | "neutral";
+  title: string;
+  /** 结论：一句话判断。 */
+  summary: string;
+  /** 前因与催化。 */
+  catalyst: string;
+  /** 逻辑链条。 */
+  logic: string;
+  /** 后续观察点。 */
+  watch: string;
+  /** 风险。 */
+  risk: string;
+  symbols: AdminOpportunitySymbol[];
+  evidence: AdminOpportunityEvidence[];
+  /** 写出这条机会的模型名。 */
+  model: string | null;
+  createdAt: Timestamp;
+}
+
+/** 某一天的机会。 */
+export interface AdminOpportunityDay {
+  /** YYYY-MM-DD, Beijing. */
+  date: string;
+  cards: AdminOpportunityCard[];
+}
+
+export interface AdminOpportunities {
+  /** The window the page asked for, in days (1..90). */
+  days: number;
+  /** 窗口内最近一次生成的时间；还没有结果时是 null。 */
+  updatedAt: Timestamp | null;
+  /** 窗口内的卡片总数。 */
+  total: number;
+  /** 按日期倒序，当天内按生成顺序。 */
+  items: AdminOpportunityDay[];
+}
+
+/** 手动重跑（POST /api/admin/opportunities/run）的结果。 */
+export interface AdminOpportunityRun {
+  /** 重跑的日期（YYYY-MM-DD，北京）。 */
+  date: string;
+  /** 写入了几条。 */
+  written: number;
+  /** 写出这些机会的模型名。 */
+  model: string | null;
+}
