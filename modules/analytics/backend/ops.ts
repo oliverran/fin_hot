@@ -3,13 +3,14 @@
 // AT TIME ZONE 换算，不随手机会话的时区变。窗口与访客指标同一个 days。
 import { loadavg } from "node:os";
 import { sql } from "@aihot/backend/db";
+import { MODELS } from "@aihot/backend/providers/llm";
 import { addDays, beijingDate, beijingMidnight, BEIJING_TIMEZONE } from "@aihot/contracts/time";
 import type { AdminAnalyticsCollect, AdminAnalyticsJobs, AdminAnalyticsModels, AdminAnalyticsOps, AdminAnalyticsProcess } from "@aihot/contracts/admin";
 import { httpReport } from "./http.ts";
 
 /** 采样周期，与 server.ts 里的定时器一致。 */
 export const SAMPLE_MS = 60_000;
-/** 排行取多少行。 */
+/** 排行取多少行；默认模型（LLM_MODEL）的行不受这个上限影响，再多也留着。 */
 const ROW_LIMIT = 30;
 
 const round1 = (n: number) => Math.round(n * 10) / 10;
@@ -60,6 +61,7 @@ export async function opsReport(days: number, now = new Date()): Promise<AdminAn
   const today = beijingDate(now);
   const startDay = addDays(today, -(window - 1));
   const start = beijingMidnight(startDay);
+  const defaultModel = MODELS.default?.model ?? "";
   const [http, totals, modelTrend, modelRows, backlog, jobTrend, collectTrend] = await Promise.all([
     httpReport(window, now),
     sql<{ calls: number; failed: number; cost: number; currency: string | null; tokens_in: number; tokens_out: number; p95: number | null }[]>`
@@ -81,13 +83,19 @@ export async function opsReport(days: number, now = new Date()): Promise<AdminAn
        WHERE started_at >= ${start} AND origin = 'live' AND model IS NOT NULL
        GROUP BY 1 ORDER BY 1`,
     sql<AdminAnalyticsModels["rows"]>`
-      SELECT r.purpose, a.model, count(*)::int AS calls,
-             count(*) FILTER (WHERE a.status = 'failed')::int AS failed,
-             coalesce(percentile_disc(0.95) WITHIN GROUP (ORDER BY a.latency_ms), 0) AS msP95,
-             coalesce(sum(a.cost) FILTER (WHERE a.cost_basis = 'actual'), 0)::float8 AS cost
-        FROM receipt_attempts a JOIN receipts r ON r.id = a.receipt_id
-       WHERE a.started_at >= ${start} AND a.origin = 'live' AND a.model IS NOT NULL
-       GROUP BY 1, 2 ORDER BY 3 DESC, 1 LIMIT ${ROW_LIMIT}`,
+      SELECT t.purpose, t.model, t.calls, t.failed, t."msP95", t.cost
+        FROM (
+          SELECT r.purpose, a.model, count(*)::int AS calls,
+                 count(*) FILTER (WHERE a.status = 'failed')::int AS failed,
+                 coalesce(percentile_disc(0.95) WITHIN GROUP (ORDER BY a.latency_ms), 0) AS "msP95",
+                 coalesce(sum(a.cost) FILTER (WHERE a.cost_basis = 'actual'), 0)::float8 AS cost,
+                 row_number() OVER (ORDER BY count(*) DESC, r.purpose) AS rn
+            FROM receipt_attempts a JOIN receipts r ON r.id = a.receipt_id
+           WHERE a.started_at >= ${start} AND a.origin = 'live' AND a.model IS NOT NULL
+           GROUP BY 1, 2
+        ) t
+       WHERE t.rn <= ${ROW_LIMIT} OR t.model = ${defaultModel}
+       ORDER BY t.calls DESC, t.purpose`,
     sql<{ name: string; state: string; n: number; oldest: Date | null }[]>`
       SELECT name, state, count(*)::int AS n, min(created_on) AS oldest FROM pgboss.job
        WHERE state IN ('created', 'retry', 'active') GROUP BY 1, 2 ORDER BY 1, 2`,

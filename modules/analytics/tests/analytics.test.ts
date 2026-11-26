@@ -257,3 +257,39 @@ test("运维汇总：窗口补齐，模型、采集与队列成形", async () =>
   assert.ok(Array.isArray(ops.jobs.backlog));
   assert.equal(ops.collect.runs, ops.collect.trend.reduce((sum, d) => sum + d.runs, 0));
 });
+
+let seq = 0;
+/** 直接落一条实发调用：receipt 是逻辑请求，attempt 是这一次发送。 */
+async function liveCall(purpose: string, model: string, startedAt: string, latencyMs = 10) {
+  const [receipt] = await sql<{ id: string }[]>`
+    INSERT INTO receipts (logical_key, service, model, purpose, status, origin)
+    VALUES (${`ops-test-${++seq}`}, 'llm', ${model}, ${purpose}, 'received', 'live') RETURNING id`;
+  await sql`
+    INSERT INTO receipt_attempts (receipt_id, attempt, service, model, origin, status, latency_ms, started_at)
+    VALUES (${receipt!.id}, 1, 'llm', ${model}, 'live', 'received', ${latencyMs}, ${new Date(startedAt)})`;
+}
+
+test("运维汇总：默认模型的行不被排行上限截断", async () => {
+  await sql`DELETE FROM receipts`;
+  const now = new Date("2026-05-10T04:00:00Z");
+  // 40 个用途各两次调用，把前 30 名的榜位占满
+  for (let i = 0; i < 40; i++) {
+    const purpose = `busy-${String(i).padStart(2, "0")}`;
+    await liveCall(purpose, "busy-model", "2026-05-10T04:00:00Z");
+    await liveCall(purpose, "busy-model", "2026-05-10T04:00:00Z");
+  }
+  // 默认模型这一行调用量最小，名次落在榜外
+  process.env.LLM_MODEL = "hy4-flash";
+  await liveCall("score_article", "hy4-flash", "2026-05-10T04:00:00Z", 250);
+  try {
+    const rows = (await opsReport(30, now)).models.rows;
+    assert.equal(rows.length, 31); // 前 30 名 + 默认模型那一行
+    assert.equal(rows.filter((r) => r.model === "busy-model").length, 30);
+    const mine = rows.find((r) => r.model === "hy4-flash");
+    assert.equal(mine?.purpose, "score_article");
+    assert.equal(mine?.calls, 1);
+    assert.equal(mine?.msP95, 250);
+  } finally {
+    delete process.env.LLM_MODEL;
+  }
+});

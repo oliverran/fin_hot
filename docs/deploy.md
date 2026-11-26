@@ -109,6 +109,15 @@ cloudflared 会在 `X-Forwarded-For` 里带上访客地址，`TRUST_PROXY=true` 
 
 ### 更新
 
+#### 2026-11-26 · 资讯「AI 导读」加长
+
+没有数据库迁移、没有新增环境变量、没有配置改动。
+
+1. 资讯的「AI 导读」目标从「80–160 字、最多 3 句」放宽到「150–250 字、最多 5 句」：改了写作提示词（`industry/prompts/` 的 `summarize-article.md`、`summarize-long-post.md`、`rules-answer-first-summary.md`、`content-understanding.md`）和摘要长度护栏（`packages/backend/src/editorial/writing.ts`）。短推文翻译路径不变。
+2. 只影响之后新评判的资讯，已有条目的摘要不会批量重写；想让某条立即改写，可在后台「内容诊断」里重新评估这一篇。
+3. 后台「指标监控」按用途与模型的排行不再裁掉默认模型的行，并修好 P95 耗时列偶尔显示为空的问题（读取层 `modules/analytics/backend/ops.ts`）。
+4. 更新按常规步骤 `git pull && docker compose build`，停 `api worker web`、`docker compose run --rm setup`、`docker compose up -d`；提示词与护栏在 `api`、`worker` 里，这两个服务必须重建。从公网核对 `/changelog` 能看到新条目。
+
 #### 2026-11-24 · 机会分区与默认模型切到 hy4-flash
 
 1. 构建与本次源码对应的镜像，保留上一版（`finhot:20261123-hy4`）供回退。停掉 `api`、`worker`、`web`，运行 `setup` 应用迁移，再按 `--profile https` 启动。
