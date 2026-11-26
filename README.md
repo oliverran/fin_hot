@@ -95,6 +95,8 @@ docker compose logs --tail=100 api worker web
 
 ## 接入你的 Agent 或阅读器
 
+> 想先体验？[用 FinHOT MCP 做一份中文财经早报](docs/examples/finhot-mcp-morning-brief.md)，无需自部署或 API Key，附提示词和一次真实调用的链接样例。
+
 站点运行后，从 `/agent` 选择适合的接入方式；以下路径相对于你的站点地址。
 
 | 入口 | 用途 |
