@@ -18,7 +18,7 @@ export function meta() {
 
 const ENDPOINTS: Array<[string, string]> = [
   ["GET /api/chronicle/_manifest.json", "行情最后写入的时间、三组地址与实时图表清单。"],
-  ["GET /api/chronicle/live?code=&kind=", "精选页那张实时图的数据；code 是 sh000001 或 sz399006，kind 是 minute（分时）或 day（日K）。"],
+  ["GET /api/chronicle/live?code=&kind=", "精选页那张实时图的数据；code 是 sh000001、sz399006（沪深）或 usDJI、usIXIC（美股：道琼斯、纳斯达克综合指数），kind 是 minute（分时）或 day（日K）。"],
   ["GET /api/chronicle/{group}/{slug}.json", "一张图的全部数据；group 是 broad、sectors 或 clusters。"],
 ];
 

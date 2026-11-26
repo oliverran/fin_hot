@@ -630,13 +630,19 @@ export const LIVE_CHARTS: readonly LiveChart[] = [
   { group: "clusters", slug: "predecessors", kind: "cluster-themes", indexName: "金融 / 资源 / 地产 / 消费" },
 ];
 
-/** 精选页第一屏那张实时图跟的两只指数（腾讯写法，与 LIVE_CHARTS 里的代码一致）。 */
-export const LIVE_INDICES = ["sh000001", "sz399006"] as const;
+/** 精选页第一屏那张实时图跟的指数：沪深两只（腾讯写法，与 LIVE_CHARTS 里的代码一致）与美股两只（只在实时图里出现）。 */
+export const LIVE_INDICES = ["sh000001", "sz399006", "usDJI", "usIXIC"] as const;
 export type LiveIndex = (typeof LIVE_INDICES)[number];
+
+/** 实时图里美股两只的中文名；沪深两只的名字在 LIVE_CHARTS 里。 */
+const LIVE_INDEX_NAMES: Record<string, string> = {
+  usDJI: "道琼斯",
+  usIXIC: "纳斯达克综合指数",
+};
 
 /** 一只指数的中文名；与编年史图表上的写法保持一致。 */
 export function indexName(code: string): string {
-  return LIVE_CHARTS.find((chart) => chart.code === code)?.indexName ?? code;
+  return LIVE_INDEX_NAMES[code] ?? LIVE_CHARTS.find((chart) => chart.code === code)?.indexName ?? code;
 }
 
 const BY_KEY = new Map(PAGES.map((page) => [`${page.group}/${page.slug}`, page]));

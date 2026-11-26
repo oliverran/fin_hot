@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import { after, test } from "node:test";
 import { config } from "@aihot/backend/config";
 import { Reply, stub } from "../../../tests/setup.ts";
+import { indexName } from "../catalog.ts";
 import { fetchLive, parseEastDay, parseEastMinutes, parseTencentMinutes } from "../backend/live.ts";
 
 config.allowPrivateNetworkFetch = true;
@@ -32,6 +33,26 @@ const tencentMinutesBody = {
     sh000001: {
       data: { data: ["0930 3605.65 6231985 9297140974.10", "0931 3605.70 6235000 9298000000.00"] },
       qt: { sh000001: ["1", "上证指数", "000001", "3605.70", "3600.12"] },
+    },
+  },
+};
+// 腾讯美股：日线在 usfqkline 的 data[代码].day，行是 [日期,开,收,高,低,量,…]；分钟行同样是「时间(HHMM) 价 累计量」。
+const tencentUsDayBody = {
+  code: 0,
+  data: {
+    usDJI: {
+      day: [
+        ["2026-11-24", "49200.00", "49469.86", "49600.00", "49100.00", "500000000.00", {}, "0.00", "1.00", "0.00", "0.00"],
+        ["2026-11-25", "49469.86", "50182.95", "50395.24", "48913.74", "754711074.00", {}, "0.00", "2.00", "0.00", "0.00"],
+      ],
+    },
+  },
+};
+const tencentUsMinutesBody = {
+  data: {
+    usDJI: {
+      data: { data: ["0930 49469.86 0", "0931 49253.45 46776583"] },
+      qt: { usDJI: ["real", "道琼斯", ".DJI", "49469.86", "50018.70"] },
     },
   },
 };
@@ -143,4 +164,50 @@ test("日K的昨收取前一根收盘，日报价跟着它走", async () => {
   assert.equal(live.quote?.price, 3605);
   assert.equal(live.quote?.change, -5);
   assert.deepEqual(live.bars.map((bar) => bar.date), ["2026-10-28", "2026-10-29"]);
+});
+
+test("美股两只的中文名：道琼斯、纳斯达克综合指数", () => {
+  assert.equal(indexName("usDJI"), "道琼斯");
+  assert.equal(indexName("usIXIC"), "纳斯达克综合指数");
+  assert.equal(indexName("sh000001"), "上证综指");
+});
+
+test("美股分时：走东财 trends2，代码用 100.DJIA", async () => {
+  const seen: string[] = [];
+  const east = await stub((_hit, req) => { seen.push(req.url ?? ""); return eastMinutesBody; });
+  servers.push(east);
+
+  const live = await fetchLive("usDJI", "minute", { minute: [east.url], day: [east.url], tencent: east.url });
+  assert.equal(live.source, "东方财富公开行情接口");
+  assert.equal(live.name, "道琼斯");
+  assert.match(seen[0]!, /secid=100\.DJIA/);
+});
+
+test("美股分时：东财不行时走腾讯 usMinute 端点", async () => {
+  const seen: string[] = [];
+  const dead = await stub(() => new Reply(503, {}));
+  const tencent = await stub((_hit, req) => { seen.push(req.url ?? ""); return tencentUsMinutesBody; });
+  servers.push(dead, tencent);
+
+  const live = await fetchLive("usDJI", "minute", { minute: [dead.url], day: [dead.url], tencent: tencent.url });
+  assert.equal(live.source, "腾讯证券公开行情接口");
+  assert.match(seen[0]!, /\/appstock\/app\/usMinute\/query/);
+  assert.equal(live.preClose, 50018.7);
+  assert.equal(live.quote?.price, 49253.45);
+});
+
+test("美股日K：东财日线只有空表，直接走腾讯 usfqkline", async () => {
+  const east = await stub(() => eastDayBody);
+  const seen: string[] = [];
+  const tencent = await stub((_hit, req) => { seen.push(req.url ?? ""); return tencentUsDayBody; });
+  servers.push(east, tencent);
+
+  const live = await fetchLive("usDJI", "day", { minute: [east.url], day: [east.url], tencent: tencent.url });
+  assert.equal(east.hits(), 0, "美股日K不试东财");
+  assert.match(seen[0]!, /\/appstock\/app\/usfqkline\/get/);
+  assert.equal(live.source, "腾讯证券公开行情接口");
+  assert.equal(live.name, "道琼斯");
+  assert.equal(live.preClose, 49469.86);
+  assert.equal(live.quote?.price, 50182.95);
+  assert.deepEqual(live.bars.map((bar) => bar.date), ["2026-11-24", "2026-11-25"]);
 });

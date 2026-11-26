@@ -1,5 +1,6 @@
 // 编年史的实时行情：精选页那张分时 / 日K 图的数据。
 // 主源是东方财富的公开行情接口（分时走 trends2，日线走 kline），失败回退腾讯证券。
+// 美股两只指数的日线东财只回空表，直接走腾讯的 usfqkline；分时仍先试东财 trends2，回退腾讯 usMinute。
 // 第三方请求都走服务端（前端只读 /api/chronicle/live），这里再挂一层 15 秒的内存缓存，
 // 让同一个 15 秒窗口里的访客共用一份，第三方不会被反复打。
 import { guardedFetch, requireOk } from "@aihot/backend/lib/http-fetch";
@@ -21,11 +22,16 @@ const DAY_BARS = 120;
 const SOURCE_EASTMONEY = "东方财富公开行情接口";
 const SOURCE_TENCENT = "腾讯证券公开行情接口";
 
-/** 同两只指数在东财与腾讯两套接口里的代码写法。 */
+/** 四只指数在东财与腾讯两套接口里的代码写法。 */
 const CODES: Record<LiveIndex, { east: string; tencent: string }> = {
   sh000001: { east: "1.000001", tencent: "sh000001" },
   sz399006: { east: "0.399006", tencent: "sz399006" },
+  usDJI: { east: "100.DJIA", tencent: "usDJI" },
+  usIXIC: { east: "100.NDX", tencent: "usIXIC" },
 };
+
+/** 美股指数：腾讯走 usMinute / usfqkline 两套专门端点，东财的日线接口对它们只回空表。 */
+const US = new Set<LiveIndex>(["usDJI", "usIXIC"]);
 
 export interface LiveMinute {
   /** 时间，HH:MM。 */
@@ -195,7 +201,7 @@ async function eastDay(code: LiveIndex, base: string): Promise<LivePayload> {
 
 async function tencentMinutes(code: LiveIndex, base: string): Promise<LivePayload> {
   const tencent = CODES[code].tencent;
-  const url = `${base}/appstock/app/minute/query?code=${tencent}`;
+  const url = `${base}/appstock/app/${US.has(code) ? "usMinute" : "minute"}/query?code=${tencent}`;
   const response = requireOk(await guardedFetch(url, { timeoutMs: 10_000 }), `chronicle live ${code}`);
   const { preClose, minutes } = parseTencentMinutes(JSON.parse(response.text()) as unknown, tencent);
   if (minutes.length === 0) throw new Error(`tencent minute: no points for ${code}`);
@@ -203,7 +209,8 @@ async function tencentMinutes(code: LiveIndex, base: string): Promise<LivePayloa
 }
 
 async function tencentDay(code: LiveIndex, base: string): Promise<LivePayload> {
-  const bars = await fetchDayBars(CODES[code].tencent, { count: DAY_BARS }, `${base}/appstock/app/fqkline/get`);
+  const path = US.has(code) ? "usfqkline" : "fqkline";
+  const bars = await fetchDayBars(CODES[code].tencent, { count: DAY_BARS }, `${base}/appstock/app/${path}/get`);
   if (bars.length === 0) throw new Error(`tencent kline: no bars for ${code}`);
   return dayPayload(code, SOURCE_TENCENT, [...bars].sort((a, b) => a.date.localeCompare(b.date)));
 }
@@ -216,7 +223,9 @@ export async function fetchLive(
     minute: EASTMONEY_MINUTE_HOSTS, day: EASTMONEY_DAY_HOSTS, tencent: TENCENT,
   },
 ): Promise<LivePayload> {
-  for (const host of kind === "minute" ? base.minute : base.day) {
+  // 东财的日线接口对美股只回空表，美股日K直接走腾讯，省掉一次注定失败的请求。
+  const hosts: readonly string[] = kind === "day" && US.has(code) ? [] : kind === "minute" ? base.minute : base.day;
+  for (const host of hosts) {
     try {
       return kind === "minute" ? await eastMinutes(code, host) : await eastDay(code, host);
     } catch {

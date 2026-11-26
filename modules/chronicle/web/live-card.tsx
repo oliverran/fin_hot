@@ -1,11 +1,11 @@
-// 精选页第一屏的实时行情卡：上证综指与创业板指的分时 / 日K。
+// 精选页第一屏的实时行情卡：沪深与美股指数的分时 / 日K。
 // 数据由 /api/chronicle/live 提供（后端抓东财、腾讯，前端不直连第三方）；
-// 开盘时段每 15 秒轮询一次，切到后台就停，收盘后不再打接口。
+// 所选指数所在市场开盘时每 15 秒轮询一次，切到后台就停，收盘后不再打接口。
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import { beijingDate, beijingTime } from "@aihot/contracts/time";
 import type { LiveKind, LivePayload } from "../backend/live.ts";
-import { LIVE_INDICES, indexName } from "../catalog.ts";
+import { LIVE_INDICES, indexName, type LiveIndex } from "../catalog.ts";
 import { Canvas } from "./chart.tsx";
 import type { ChronicleData } from "./options.ts";
 
@@ -15,13 +15,36 @@ const KINDS: ReadonlyArray<{ key: LiveKind; label: string }> = [
 ];
 const POLL = 15_000;
 
+/** 每只实时图指数所属市场：A股按北京时间盘中刷新，美股按纽约时间盘中刷新。 */
+const MARKET: Record<LiveIndex, "cn" | "us"> = {
+  sh000001: "cn",
+  sz399006: "cn",
+  usDJI: "us",
+  usIXIC: "us",
+};
+
 /** 现在是不是沪深交易时段（北京时间，周一至周五 9:30-11:30 与 13:00-15:00）。 */
-export function tradingNow(now = new Date()): boolean {
+function cnTradingNow(now: Date): boolean {
   const day = new Date(`${beijingDate(now)}T00:00:00Z`).getUTCDay();
   if (day === 0 || day === 6) return false;
   const [hours, minutes] = beijingTime(now).split(":").map(Number);
   const at = hours! * 60 + minutes!;
   return (at >= 570 && at <= 690) || (at >= 780 && at <= 900);
+}
+
+/** 现在是不是美股常规交易时段（纽约时间，周一至周五 9:30-16:00；夏令时由时区数据换算）。 */
+function usTradingNow(now: Date): boolean {
+  const parts = new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", weekday: "short", hour: "2-digit", minute: "2-digit", hour12: false }).formatToParts(now);
+  const pick = (type: string) => parts.find((part) => part.type === type)?.value ?? "";
+  if (!["Mon", "Tue", "Wed", "Thu", "Fri"].includes(pick("weekday"))) return false;
+  // hour12:false 在午夜可能给成 "24"。
+  const at = (Number(pick("hour")) % 24) * 60 + Number(pick("minute"));
+  return at >= 570 && at <= 960;
+}
+
+/** 现在是不是这只指数所在市场的交易时段（决定要不要每 15 秒轮询）。 */
+export function tradingNow(code: LiveIndex, now = new Date()): boolean {
+  return MARKET[code] === "us" ? usTradingNow(now) : cnTradingNow(now);
 }
 
 /** 一份实时数据 → 画图要的形状；meta.type 决定 options.ts 用哪种图。 */
@@ -43,7 +66,7 @@ const signed = (value: number) => `${value > 0 ? "+" : ""}${value.toFixed(2)}`;
 export default function LiveCard() {
   const { pathname } = useLocation();
   const active = pathname === "/";
-  const [code, setCode] = useState<string>(LIVE_INDICES[0]);
+  const [code, setCode] = useState<LiveIndex>(LIVE_INDICES[0]);
   const [kind, setKind] = useState<LiveKind>("minute");
   const [live, setLive] = useState<LivePayload | null>(null);
   const [failed, setFailed] = useState(false);
@@ -66,10 +89,10 @@ export default function LiveCard() {
       }
     };
     // 回到前台补一次：后台期间停掉的轮询要接上。
-    const onVisible = () => { if (document.visibilityState === "visible" && tradingNow()) void load(); };
+    const onVisible = () => { if (document.visibilityState === "visible" && tradingNow(code)) void load(); };
     const tick = () => {
       if (stopped) return;
-      if (tradingNow() && document.visibilityState === "visible") void load();
+      if (tradingNow(code) && document.visibilityState === "visible") void load();
       timer = window.setTimeout(tick, POLL);
     };
     void load();
