@@ -109,6 +109,14 @@ cloudflared 会在 `X-Forwarded-For` 里带上访客地址，`TRUST_PROXY=true` 
 
 ### 更新
 
+#### 2026-11-26 · 华尔街见闻·快讯信源地址更新
+
+没有数据库迁移、没有新增环境变量、没有配置改动，不需要重建镜像。
+
+1. 华尔街见闻把公开内容 API 的域名从 `api-one.wallstcn.com` 迁到了 `api-one-wscn.awtmt.com`（路径与返回结构不变），旧域名已解析不出（NXDOMAIN），`json-wscn-lives` 信源因此一直报 `getaddrinfo ENOTFOUND`。仓库里该信源的示例地址（`industry/sources.json`）已改成新域名。
+2. 种子脚本只补缺、不更新已有信源（`scripts/seed.ts` 是 `ON CONFLICT DO NOTHING`），所以线上已存在的信源要单独更新：在后台「信源」详情页的「采集配置（JSON）」里把 `url` 的域名改成 `api-one-wscn.awtmt.com` 保存，再点「立即采集」。也可以直接改库里的 `config.url`，并把 `fail_count` 清零、`next_fetch_at` 设为 `now()`，免得等最长六小时的失败退避。
+3. 修好后核对最近一次 `fetch_runs` 由 `failed` 转 `ok`、`found_count` 有值、`fail_count` 归零、`health` 回到 `ok`。
+
 #### 2026-11-26 · 实时行情卡加入美股指数
 
 没有数据库迁移、没有新增环境变量、没有配置改动。
