@@ -16,6 +16,7 @@
     "@aihot/analytics": "*",
     "@aihot/chronicle": "*",
     "@aihot/costs": "*",
+    "@aihot/model-eval": "*",
     "@aihot/opportunities": "*"
   }
 }
