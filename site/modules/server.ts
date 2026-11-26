@@ -4,5 +4,6 @@ import chronicle from "@aihot/chronicle/server";
 import analytics from "@aihot/analytics/server";
 import costs from "@aihot/costs/server";
 import opportunities from "@aihot/opportunities/server";
+import modelEval from "@aihot/model-eval/server";
 
-export const SERVER_MODULES: readonly ServerModule[] = [chronicle, analytics, costs, opportunities];
+export const SERVER_MODULES: readonly ServerModule[] = [chronicle, analytics, costs, opportunities, modelEval];

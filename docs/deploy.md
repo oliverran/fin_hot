@@ -109,6 +109,19 @@ cloudflared 会在 `X-Forwarded-For` 里带上访客地址，`TRUST_PROXY=true` 
 
 ### 更新
 
+#### 2026-11-26 · 后台新增「评测前沿」页（模型对比帕累托图）
+
+没有数据库迁移、没有新增环境变量、没有配置改动。
+
+1. 新增模块 `modules/model-eval/`：后台「系统 → 评测前沿」（`/admin/model-eval`）把一次模型对比运行画成「成本 × 质量」的帕累托前沿图，横轴是每条样本的估算成本（元，缺价时可切「千令牌/样本」），纵轴是质量（默认完整准确率，可切 F1／精确率／召回率），泡泡大小看平均耗时，非支配点连成阶梯前沿线。数据来自 SelectBench 的对比运行（`selectbench_runs` 里由 `scripts/eval-selection.ts` 自动导入的那一批），读取层是模块自己的 `backend/pareto.ts`，接口 `/api/admin/model-eval` 只对管理员开放；成本按 `service_prices` 目录价把这次运行记录的 token 估成钱再除以样本数，没有单价的渠道不画进前沿、只列进明细表。
+2. 附一个抽样本的脚本 `modules/model-eval/scripts/export-gold.ts`：从库里抽「精选评分」看得到的候选资料（分析里 `relevance=pass` 且打过分的），写成 `.data/gold.jsonl` 的骨架（`gold.decision` 留成 `"?"` 待人工标注）。抽样一半取已选中的、一半取卡线难例、少量明显不该选的，写出的顺序打乱、不把本站的判定写进文件，避免标注时被带偏。用法：
+   ```bash
+   node --env-file=.env modules/model-eval/scripts/export-gold.ts            # 默认 .data/gold.jsonl
+   node --env-file=.env modules/model-eval/scripts/export-gold.ts --limit 200 --seed 7
+   ```
+   在服务器上跑：`docker exec -i aihot-api-1 node --env-file=.env modules/model-eval/scripts/export-gold.ts --out /tmp/gold.jsonl`。标完 `gold.decision` 后按 `docs/selection.md` 跑 `scripts/eval-selection.ts`，结果会自动导入 SelectBench，评测前沿页随即出图。
+3. 更新按常规步骤 `git pull && docker compose build`，停 `api worker web`、`docker compose run --rm setup`、`docker compose up -d`；本次涉及 `api`（接口）与 `web`（后台页）两个服务，没有迁移可跳过 `setup`。从后台「系统」里能打开「评测前沿」，没有运行数据时页面显示空状态。
+
 #### 2026-11-26 · 华尔街见闻·快讯信源地址更新
 
 没有数据库迁移、没有新增环境变量、没有配置改动，不需要重建镜像。

@@ -5,7 +5,8 @@ import type { ModuleDeclaration } from "@aihot/contracts/modules";
 import chronicle from "@aihot/chronicle/module";
 import analytics from "@aihot/analytics/module";
 import opportunities from "@aihot/opportunities/module";
+import modelEval from "@aihot/model-eval/module";
 
 import mobileDownload from "../../modules/mobile-download/module.ts";
 
-export const MODULES: readonly ModuleDeclaration[] = [chronicle, analytics, opportunities, mobileDownload];
+export const MODULES: readonly ModuleDeclaration[] = [chronicle, analytics, opportunities, modelEval, mobileDownload];

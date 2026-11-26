@@ -698,3 +698,48 @@ export interface AdminOpportunityRun {
   /** 写出这些机会的模型名。 */
   model: string | null;
 }
+
+// Model evaluation (评测前沿)
+
+/** 一次对比运行里的一个模型：前台画图要用的质量指标、每条样本的估算成本与延迟。 */
+export interface AdminModelEvalPoint {
+  model: string;
+  /** 这个模型走的渠道（site/models.ts 的 service），用来对单价；认不出就是 null。 */
+  service: string | null;
+  /** 金标里真正参与判定的条数（「either」不计）。 */
+  decisive: number;
+  accuracy: number;
+  coverage: number;
+  completeAccuracy: number;
+  precision: number;
+  recall: number;
+  f1: number;
+  selectedRate: number;
+  goldSelectRate: number;
+  errors: number;
+  tokensIn: number;
+  tokensOut: number;
+  avgLatencyMs: number;
+  /** 每条样本的估算成本（元）；该渠道没有单价就是 null。 */
+  costPerCase: number | null;
+  currency: string | null;
+}
+
+export interface AdminModelEvalRun {
+  id: string;
+  label: string;
+  split: string | null;
+  sampleSize: number;
+  promptVersion: string | null;
+  createdAt: Timestamp;
+}
+
+export interface AdminModelEval {
+  /** 当前展示的运行；还没有任何运行时是 null。 */
+  run: AdminModelEvalRun | null;
+  /** 可切换的运行，按时间倒序。 */
+  runs: AdminModelEvalRun[];
+  points: AdminModelEvalPoint[];
+  /** 成本口径与缺价的说明，页面直接照抄。 */
+  note: string;
+}
