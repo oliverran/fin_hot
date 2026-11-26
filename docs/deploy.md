@@ -120,7 +120,7 @@ cloudflared 会在 `X-Forwarded-For` 里带上访客地址，`TRUST_PROXY=true` 
    node --env-file=.env modules/model-eval/scripts/export-gold.ts --limit 200 --seed 7
    ```
    在服务器上跑：`docker exec -i aihot-api-1 node --env-file=.env modules/model-eval/scripts/export-gold.ts --out /tmp/gold.jsonl`。标完 `gold.decision` 后按 `docs/selection.md` 跑 `scripts/eval-selection.ts`，结果会自动导入 SelectBench，评测前沿页随即出图。
-3. 更新按常规步骤 `git pull && docker compose build`，停 `api worker web`、`docker compose run --rm setup`、`docker compose up -d`；本次涉及 `api`（接口）与 `web`（后台页）两个服务，没有迁移可跳过 `setup`。从后台「系统」里能打开「评测前沿」，没有运行数据时页面显示空状态。
+3. 更新按常规步骤 `git pull && docker compose build`，停 `api worker web`、`docker compose run --rm setup`、`docker compose up -d`；本次涉及 `api`（接口）与 `web`（后台页）两个服务，没有迁移可跳过 `setup`。`worker` 也会加载这份模块清单，但这个模块没有定时任务，一起重建只是让镜像与提交一致，不重建也不影响行为。从后台「系统」里能打开「评测前沿」，没有运行数据时页面显示空状态。
 
 #### 2026-11-26 · 华尔街见闻·快讯信源地址更新
 
