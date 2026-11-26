@@ -69,6 +69,17 @@ export const PRESETS: Record<string, ModelPreset> = {
     service: "llm", model: "hy4-flash", baseUrlEnv: "LLM_BASE_URL", apiKeyEnv: "LLM_API_KEY",
     extra: { thinking: { type: "enabled" } }, reasoningTokens: 12000, jsonMode: true, vision: true,
   },
+  // 同一个 TokenHub 网关上的 deepseek-v4.1-flash（本站此前的默认模型），和 hy4-flash-think 一样开着思考，
+  // 用来在评测里同批对比评分。service 也写 llm：地址、密钥、价格行和熔断都跟默认模型同一条。
+  "deepseek-v4.1-flash": {
+    service: "llm", model: "deepseek-v4.1-flash", baseUrlEnv: "LLM_BASE_URL", apiKeyEnv: "LLM_API_KEY",
+    extra: { thinking: { type: "enabled" } }, reasoningTokens: 12000, jsonMode: true,
+  },
+  // 网关给出的日期快照版本（曾在 11-05 试用过），同一个地址与密钥，用来对照主线模型。
+  "deepseek-v4.1-flash-1017": {
+    service: "llm", model: "deepseek-v4.1-flash-1017", baseUrlEnv: "LLM_BASE_URL", apiKeyEnv: "LLM_API_KEY",
+    extra: { thinking: { type: "enabled" } }, reasoningTokens: 12000, jsonMode: true,
+  },
 };
 
 /**
