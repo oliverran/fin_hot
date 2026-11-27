@@ -40,7 +40,10 @@ function xOf(p: AdminModelEvalPoint, axis: CostKey, sampleSize: number): number 
   return p.costPerCase;
 }
 
-const xTick = (v: number, axis: CostKey) => (axis === "tokens" ? `${v.toFixed(1)}k` : `¥${v < 1 ? v.toFixed(3) : v.toFixed(2)}`);
+/** 去掉小数末尾多余的 0；整数不动。 */
+const trim = (s: string) => (s.includes(".") ? s.replace(/\.?0+$/, "") : s);
+const xTick = (v: number, axis: CostKey) =>
+  axis === "tokens" ? `${trim(v.toFixed(v < 10 ? 1 : 0))}k` : `¥${trim(v < 0.01 ? v.toFixed(4) : v < 1 ? v.toFixed(3) : v.toFixed(2))}`;
 
 /** 非支配点：没有人同时更便宜且更准。按横坐标升序返回，纵坐标随之递增。 */
 function paretoFrontier<T extends { x: number; y: number }>(items: T[]): T[] {
@@ -51,88 +54,147 @@ function paretoFrontier<T extends { x: number; y: number }>(items: T[]): T[] {
   return out;
 }
 
-const WM = 58;
+const WM = 66; // 左：纵轴刻度 + 轴名
 const WT = 26;
-const WR = 28;
-const WB = 46;
-const W = 760;
-const H = 460;
+const WR = 34;
+const RH = 56; // 下：横轴刻度 + 轴名
+const W = 880;
+const H = 480;
+const PW = W - WM - WR;
+const PH = H - WT - RH;
 
-/** 帕累托散点图：横轴越小越好、纵轴越大越好；前端现算前沿，一条阶梯线连起非支配点。 */
+/** 成本/令牌常跨一两个数量级，用对数轴把点摊开；两端各留一点余量，点不贴边。 */
+function logPos(min: number, max: number, lo: number, hi: number) {
+  const a = Math.log10(min) - 0.1;
+  const b = Math.log10(max) + 0.1;
+  return (v: number) => lo + ((Math.log10(v) - a) / (b - a)) * (hi - lo);
+}
+
+/** 1/2/5 × 10ⁿ 的刻度；太稀疏（跨度过小）时退回对数等分。 */
+function logTicks(min: number, max: number): number[] {
+  const out: number[] = [];
+  for (let e = Math.floor(Math.log10(min)); e <= Math.ceil(Math.log10(max)); e++) {
+    for (const m of [1, 2, 5]) {
+      const v = m * 10 ** e;
+      if (v >= min * 0.999 && v <= max * 1.001) out.push(v);
+    }
+  }
+  return out.length >= 3 ? out : [0, 0.25, 0.5, 0.75, 1].map((f) => min * (max / min) ** f);
+}
+
+/** 标签排版：先试圆点上方，贴顶或压到已排的标签就改放下方；x 夹在图内，别越出右边界。 */
+function layoutLabels(items: { x: number; y: number; r: number; w: number }[]) {
+  const boxes: { x1: number; x2: number; y1: number; y2: number }[] = [];
+  return items.map((it) => {
+    const half = Math.min(it.w, PW) / 2 + 2;
+    const cx = Math.min(Math.max(it.x, WM + half), W - WR - half);
+    for (const dy of [-it.r - 6, it.r + 11]) {
+      const y = it.y + dy;
+      if (y - 11 < WT || y + 3 > H - RH) continue;
+      const box = { x1: cx - half, x2: cx + half, y1: y - 11, y2: y + 3 };
+      if (boxes.some((b) => b.x1 < box.x2 && b.x2 > box.x1 && b.y1 < box.y2 && b.y2 > box.y1)) continue;
+      boxes.push(box);
+      return { x: cx, y };
+    }
+    const y = it.y - it.r - 6;
+    const box = { x1: cx - half, x2: cx + half, y1: y - 11, y2: y + 3 };
+    boxes.push(box);
+    return { x: cx, y };
+  });
+}
+
+/** 帕累托散点图：横轴越小越好、纵轴越大越好。泡泡面积看平均耗时（越大越慢），
+ *  一条虚线串起非支配点，右下淡淡的阴影是被支配的区域（又贵又差）。 */
 function ParetoChart({ points, colors, quality, axis, sampleSize }: { points: AdminModelEvalPoint[]; colors: Map<string, string>; quality: QualityKey; axis: CostKey; sampleSize: number }) {
   const plotted = points
     .map((p) => ({ p, x: xOf(p, axis, sampleSize), y: p[quality] }))
     .filter((o): o is { p: AdminModelEvalPoint; x: number; y: number } => o.x !== null && Number.isFinite(o.x));
   if (!plotted.length) return <Empty>这次运行里没有可画的模型：要么该口径下的数据缺失（如渠道没有单价），要么还没有逐条结果。</Empty>;
 
-  const front = new Set(paretoFrontier(plotted));
   const xs = plotted.map((o) => o.x);
   const ys = plotted.map((o) => o.y);
-  const xMax = Math.max(...xs) * 1.08 || 1;
+  const X = logPos(Math.min(...xs), Math.max(...xs), WM, W - WR);
   const yMin = Math.max(0, Math.min(...ys) - 0.05);
   const yMax = Math.min(1, Math.max(...ys) + 0.05);
-  const X = (v: number) => WM + (v / xMax) * (W - WM - WR);
-  const Y = (v: number) => WT + (1 - (v - yMin) / Math.max(1e-6, yMax - yMin)) * (H - WT - WB);
+  const Y = (v: number) => WT + (1 - (v - yMin) / Math.max(1e-6, yMax - yMin)) * PH;
+
+  // 半径按 √耗时，面积才和耗时成正比；拉到 5–17px，快慢一眼分得出。
   const lat = plotted.map((o) => o.p.avgLatencyMs);
   const latMin = Math.min(...lat);
   const latMax = Math.max(...lat);
-  const R = (v: number) => (latMax > latMin ? 5 + 6 * ((v - latMin) / (latMax - latMin)) : 6.5);
+  const sMin = Math.sqrt(latMin);
+  const sMax = Math.sqrt(latMax);
+  const R = (v: number) => (sMax > sMin ? 5 + 12 * ((Math.sqrt(v) - sMin) / (sMax - sMin)) : 9);
 
+  const front = new Set(paretoFrontier(plotted));
   // 阶梯：从左起，向右一步、向上一格，表示「再贵一点能换到的最高质量」。
   const steps = paretoFrontier(plotted).sort((a, b) => a.x - b.x);
-  let d = `M${X(steps[0]!.x)} ${Y(steps[0]!.y)}`;
-  for (let i = 1; i < steps.length; i++) d += ` H${X(steps[i]!.x)} V${Y(steps[i]!.y)}`;
-  d += ` H${X(xMax)}`;
+  let stair = `M${X(steps[0]!.x)} ${Y(steps[0]!.y)}`;
+  for (let i = 1; i < steps.length; i++) stair += ` H${X(steps[i]!.x)} V${Y(steps[i]!.y)}`;
+  const dominated = `${stair} H${W - WR} V${H - RH} H${X(steps[0]!.x)} Z`;
 
-  const xTicks = [0, 0.25, 0.5, 0.75, 1].map((f) => f * xMax);
+  const labels = layoutLabels(plotted.map((o) => ({ x: X(o.x), y: Y(o.y), r: R(o.p.avgLatencyMs), w: o.p.model.length * 6.4 + 48 })));
+  const xTicks = logTicks(Math.min(...xs), Math.max(...xs));
   const yTicks = [0, 0.25, 0.5, 0.75, 1].map((f) => yMin + f * (yMax - yMin));
+  const qName = QUALITY.find((q) => q.key === quality)!.label;
+  const cName = COST.find((c) => c.key === axis)!.label;
+  const box = 2 * R(latMax) + 2;
 
   return (
     <div>
       <svg viewBox={`0 0 ${W} ${H}`} className="h-auto w-full" role="img" aria-label="不同模型在成本与质量上的帕累托前沿">
         {xTicks.map((t, i) => (
-          <g key={`x${i}`}>
-            <line x1={X(t)} x2={X(t)} y1={WT} y2={H - WB} stroke="currentColor" className="text-line-soft" strokeWidth="1" />
-            <text x={X(t)} y={H - WB + 18} textAnchor="middle" className="fill-ink-4 text-[11px]">{xTick(t, axis)}</text>
-          </g>
+          <line key={`xg${i}`} x1={X(t)} x2={X(t)} y1={WT} y2={H - RH} stroke="currentColor" className="text-line-soft" strokeWidth="1" strokeDasharray="3 4" />
         ))}
         {yTicks.map((t, i) => (
-          <g key={`y${i}`}>
-            <line x1={WM} x2={W - WR} y1={Y(t)} y2={Y(t)} stroke="currentColor" className="text-line-soft" strokeWidth="1" />
-            <text x={WM - 8} y={Y(t) + 3.5} textAnchor="end" className="fill-ink-4 text-[11px]">{pct(t, 0)}</text>
-          </g>
+          <line key={`yg${i}`} x1={WM} x2={W - WR} y1={Y(t)} y2={Y(t)} stroke="currentColor" className="text-line-soft" strokeWidth="1" strokeDasharray="3 4" />
         ))}
-        <line x1={WM} x2={W - WR} y1={H - WB} y2={H - WB} stroke="currentColor" className="text-line-strong" strokeWidth="1" />
-        <line x1={WM} x2={WM} y1={WT} y2={H - WB} stroke="currentColor" className="text-line-strong" strokeWidth="1" />
-        <text x={(WM + W - WR) / 2} y={H - 8} textAnchor="middle" className="fill-ink-4 text-[11px]">{COST.find((c) => c.key === axis)!.label}</text>
-        <text x={14} y={WT + (H - WT - WB) / 2} textAnchor="middle" transform={`rotate(-90 14 ${WT + (H - WT - WB) / 2})`} className="fill-ink-4 text-[11px]">
-          {QUALITY.find((q) => q.key === quality)!.label}
-        </text>
-        {steps.length > 1 && <path d={d} fill="none" stroke="currentColor" className="text-accent" strokeWidth="1.5" strokeDasharray="4 3" opacity="0.7" />}
+        <path d={dominated} className="fill-accent-softer" />
+        <line x1={WM} x2={W - WR} y1={H - RH} y2={H - RH} stroke="currentColor" className="text-line-strong" strokeWidth="1" />
+        <line x1={WM} x2={WM} y1={WT} y2={H - RH} stroke="currentColor" className="text-line-strong" strokeWidth="1" />
+        {xTicks.map((t, i) => (
+          <text key={`xt${i}`} x={X(t)} y={H - RH + 17} textAnchor="middle" className="fill-ink-4 text-[11px]">{xTick(t, axis)}</text>
+        ))}
+        {yTicks.map((t, i) => (
+          <text key={`yt${i}`} x={WM - 9} y={Y(t) + 3.5} textAnchor="end" className="fill-ink-4 text-[11px]">{pct(t, 0)}</text>
+        ))}
+        <text x={(WM + W - WR) / 2} y={H - 12} textAnchor="middle" className="fill-ink-3 text-[11.5px]">{`${cName} · 对数轴，越左越省`}</text>
+        <text x={16} y={WT + PH / 2} textAnchor="middle" transform={`rotate(-90 16 ${WT + PH / 2})`} className="fill-ink-3 text-[11.5px]">{`${qName} · 越上越好`}</text>
+        {steps.length > 1 && <path d={stair} fill="none" stroke="currentColor" className="text-accent" strokeWidth="1.8" strokeDasharray="5 4" />}
         {plotted.map((o) => (
-          <g key={o.p.model}>
-            <circle cx={X(o.x)} cy={Y(o.y)} r={R(o.p.avgLatencyMs)} fill={colors.get(o.p.model)} fillOpacity={front.has(o) ? 0.85 : 0.4} stroke={colors.get(o.p.model)} strokeWidth={front.has(o) ? 1.5 : 0} />
-            <title>{`${o.p.model}｜${COST.find((c) => c.key === axis)!.label} ${xTick(o.x, axis)}｜${QUALITY.find((q) => q.key === quality)!.label} ${pct(o.y)}｜平均耗时 ${(o.p.avgLatencyMs / 1000).toFixed(1)}s`}</title>
-          </g>
+          <circle key={o.p.model} cx={X(o.x)} cy={Y(o.y)} r={R(o.p.avgLatencyMs)} fill={colors.get(o.p.model)} fillOpacity={front.has(o) ? 0.9 : 0.3} stroke={colors.get(o.p.model)} strokeWidth={front.has(o) ? 0 : 1.4}>
+            <title>{`${o.p.model}｜${cName} ${xTick(o.x, axis)}｜${qName} ${pct(o.y)}｜平均耗时 ${(o.p.avgLatencyMs / 1000).toFixed(1)}s`}</title>
+          </circle>
         ))}
-        {plotted.map((o) => {
-          const below = Y(o.y) - R(o.p.avgLatencyMs) < WT + 14;
-          return (
-            <text key={`t${o.p.model}`} x={Math.min(X(o.x), W - WR - 24)} y={Y(o.y) + (below ? R(o.p.avgLatencyMs) + 13 : -R(o.p.avgLatencyMs) - 5)} textAnchor="middle" className="fill-ink-2 text-[10.5px]">
-              {o.p.model}
-            </text>
-          );
-        })}
+        {plotted.map((o, i) => (
+          <text key={`t${o.p.model}`} x={labels[i]!.x} y={labels[i]!.y} textAnchor="middle" stroke="var(--surface)" strokeWidth="3" style={{ paintOrder: "stroke" }} className="fill-ink-2 text-[11px]">
+            {o.p.model}
+            <tspan className="fill-ink-4">{` · ${(o.p.avgLatencyMs / 1000).toFixed(1)}s`}</tspan>
+          </text>
+        ))}
       </svg>
-      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[12px] text-ink-3">
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] text-ink-3">
         {plotted.map((o) => (
           <span key={`l${o.p.model}`} className="inline-flex items-center gap-1.5">
-            <span className="inline-block size-2.5 rounded-full" style={{ background: colors.get(o.p.model), opacity: front.has(o) ? 1 : 0.45 }} />
+            <span className="inline-block size-2.5 rounded-full" style={{ background: colors.get(o.p.model), opacity: front.has(o) ? 1 : 0.4 }} />
             {o.p.model}
             {front.has(o) && <Badge tone="accent">前沿</Badge>}
           </span>
         ))}
-        <span className="text-ink-4">泡泡越大 = 平均耗时越长；虚线 = 帕累托前沿</span>
+      </div>
+      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] text-ink-4">
+        <span className="inline-flex items-center gap-2">
+          平均耗时
+          {[latMin, (latMin + latMax) / 2, latMax].map((v) => (
+            <span key={v} className="inline-flex items-center gap-1">
+              <svg width={box} height={box} className="shrink-0">
+                <circle cx={box / 2} cy={box / 2} r={R(v)} className="fill-ink-4" fillOpacity="0.22" />
+              </svg>
+              <span className="num">{`${(v / 1000).toFixed(1)}s`}</span>
+            </span>
+          ))}
+        </span>
+        <span>泡泡越大越慢；虚线 = 帕累托前沿；右下阴影 = 又贵又差</span>
       </div>
     </div>
   );
