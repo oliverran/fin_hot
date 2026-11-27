@@ -26,6 +26,9 @@ const PRICES: PriceRow[] = [
   // 阿里云百炼上的 qwen 系列，宽召回/写作步骤用它。
   { service: "dashscope", model: "qwen3.7-flash", input: 0.2, cached: 0.04, output: 0.8 },
   { service: "dashscope", model: "qwen3.8-flash", input: 0.8, cached: null, output: 2.7 },
+  // 百炼上的 DeepSeek V4.1-Flash（评测对照用）。按忙时目录价（输入 2、缓存命中 0.04、输出 8），闲时减半。
+  { service: "dashscope", model: "deepseek-v4.1-flash", input: 2, cached: 0.04, output: 8 },
+  { service: "dashscope", model: "deepseek-v4.1-flash-1017", input: 2, cached: 0.04, output: 8 },
   // MiniMax（OpenAI 兼容）。
   { service: "minimax", model: "MiniMax-M3.1-Flash", input: 1, cached: 0.1, output: 4 },
   { service: "minimax", model: "", input: 1, cached: 0.1, output: 4 },
