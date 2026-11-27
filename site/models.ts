@@ -69,6 +69,12 @@ export const PRESETS: Record<string, ModelPreset> = {
     service: "llm", model: "hy4-flash", baseUrlEnv: "LLM_BASE_URL", apiKeyEnv: "LLM_API_KEY",
     extra: { thinking: { type: "enabled" } }, reasoningTokens: 12000, jsonMode: true, vision: true,
   },
+  // 同一个 hy4-flash，关掉思考：评测里和上面开着思考的版本同批跑，看判分尺度差在哪。
+  // 线上「默认模型」（.env 的 LLM_*）也是这个组合，这里写死成具名预设，评测的名字和含义不随 .env 变。
+  "hy4-flash-nothink": {
+    service: "llm", model: "hy4-flash", baseUrlEnv: "LLM_BASE_URL", apiKeyEnv: "LLM_API_KEY",
+    extra: { thinking: { type: "disabled" } }, jsonMode: true, vision: true,
+  },
   // 阿里云百炼上的同一个 deepseek-v4.1-flash（本站此前的默认模型），和 hy4-flash-think 一样开着思考，
   // 用来在评测里同批对比评分。service 写 dashscope：走 DASHSCOPE_* 的地址与密钥，价格行和熔断也归它。
   "deepseek-v4.1-flash": {
