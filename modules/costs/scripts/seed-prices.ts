@@ -29,6 +29,9 @@ const PRICES: PriceRow[] = [
   // 百炼上的 DeepSeek V4.1-Flash（评测对照用）。按忙时目录价（输入 2、缓存命中 0.04、输出 8），闲时减半。
   { service: "dashscope", model: "deepseek-v4.1-flash", input: 2, cached: 0.04, output: 8 },
   { service: "dashscope", model: "deepseek-v4.1-flash-1017", input: 2, cached: 0.04, output: 8 },
+  // 评测对照用的另两个百炼模型：DeepSeek-V4-Pro 与 GLM-5.3，都是华北2（北京）目录价。
+  { service: "dashscope", model: "deepseek-v4-pro", input: 12, cached: 1, output: 24 },
+  { service: "dashscope", model: "glm-5.3", input: 8, cached: 2, output: 28 },
   // MiniMax（OpenAI 兼容）。
   { service: "minimax", model: "MiniMax-M3.1-Flash", input: 1, cached: 0.1, output: 4 },
   { service: "minimax", model: "", input: 1, cached: 0.1, output: 4 },

@@ -80,6 +80,22 @@ export const PRESETS: Record<string, ModelPreset> = {
     service: "dashscope", model: "deepseek-v4.1-flash-1017", baseUrlEnv: "DASHSCOPE_BASE_URL", apiKeyEnv: "DASHSCOPE_API_KEY",
     extra: { thinking: { type: "enabled" } }, reasoningTokens: 12000, jsonMode: true,
   },
+  // 下面三个是评测对照用的百炼预设，都走 DASHSCOPE_*，只用来在「评测前沿」同批比评分质量，不参与线上流程。
+  // 同一个 deepseek-v4.1-flash-1017，关掉思考：和上面开着思考的版本同批跑，看判分尺度差在哪。
+  "deepseek-v4.1-flash-1017-nothink": {
+    service: "dashscope", model: "deepseek-v4.1-flash-1017", baseUrlEnv: "DASHSCOPE_BASE_URL", apiKeyEnv: "DASHSCOPE_API_KEY",
+    extra: { thinking: { type: "disabled" } }, jsonMode: true,
+  },
+  // 百炼上的 DeepSeek-V4-Pro（旗舰，1.6T），开着思考。
+  "deepseek-v4-pro": {
+    service: "dashscope", model: "deepseek-v4-pro", baseUrlEnv: "DASHSCOPE_BASE_URL", apiKeyEnv: "DASHSCOPE_API_KEY",
+    extra: { thinking: { type: "enabled" } }, reasoningTokens: 12000, jsonMode: true,
+  },
+  // 百炼上的 GLM-5.3（智谱旗舰；本账号未开通 GLM-5.3-Flash，用这个代替），开着思考。
+  "glm-5.3-bailian": {
+    service: "dashscope", model: "glm-5.3", baseUrlEnv: "DASHSCOPE_BASE_URL", apiKeyEnv: "DASHSCOPE_API_KEY",
+    extra: { thinking: { type: "enabled" } }, reasoningTokens: 12000, jsonMode: true,
+  },
 };
 
 /**

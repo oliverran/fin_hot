@@ -109,14 +109,15 @@ cloudflared 会在 `X-Forwarded-For` 里带上访客地址，`TRUST_PROXY=true` 
 
 ### 更新
 
-#### 2026-11-27 · 评测对照里的 DeepSeek 预设改走阿里云百炼
+#### 2026-11-27 · 评测对照的 DeepSeek 预设改走阿里云百炼，并补三个对照模型
 
 没有数据库迁移、没有新增环境变量。
 
 1. `site/models.ts` 里的 `deepseek-v4.1-flash` / `deepseek-v4.1-flash-1017` 两个预设此前 `service` 写成 `llm`，被当成腾讯云 TokenHub 上的模型，实际调用一直返回 HTTP 402（TokenHub 上这两个模型的免费额度已耗尽）。现在改成 `service: "dashscope"`，走 `DASHSCOPE_BASE_URL` / `DASHSCOPE_API_KEY`（阿里云百炼的 OpenAI 兼容端点），地址与密钥和站内的 qwen 预设同一条。
-2. 百炼这两个模型此前在 `service_prices` 里没有单价，「评测前沿」页不会把它们画进帕累托前沿。种子脚本 `modules/costs/scripts/seed-prices.ts` 补了两行（忙时目录价：输入 2、缓存命中 0.04、输出 8 元/百万 token；闲时减半），幂等，已有的行不动。在服务器上补一次：`docker exec -i aihot-api-1 node --env-file=.env modules/costs/scripts/seed-prices.ts`。
-3. 更新按常规步骤 `git pull && docker compose build`，停 `api worker web`、`docker compose run --rm setup`、`docker compose up -d`；本次涉及 `api`（抽样的评测脚本跑在 api 容器里）与 `web`（后台页读单价），没有迁移可跳过 `setup`。
-4. 复核：重跑 `scripts/eval-selection.ts` 时这两个 DeepSeek 模型的错误数应归零，`/admin/model-eval` 的帕累托前沿图上能看到它们带成本的点。
+2. 新增三个只用于评测对照的百炼预设：`deepseek-v4.1-flash-1017-nothink`（同一个快照版，关掉思考）、`deepseek-v4-pro`、`glm-5.3-bailian`。它们不写进 `DEFAULTS`，也不参与线上流程，只用来在同一批样本上比评分质量。百炼控制台里 GLM-5.3-Flash 未开通（调用返回 `product is not activated`），这里用同厂已开通的 `glm-5.3` 代替；要跑 flash 版需先在百炼控制台开通该模型。
+3. 百炼上述模型此前在 `service_prices` 里没有单价，「评测前沿」页不会把它们画进帕累托前沿。种子脚本 `modules/costs/scripts/seed-prices.ts` 补了目录价（华北2北京，元/百万 token）：`deepseek-v4.1-flash` 与 `deepseek-v4.1-flash-1017` 忙时输入 2、缓存命中 0.04、输出 8（闲时减半）；`deepseek-v4-pro` 输入 12、缓存命中 1、输出 24；`glm-5.3` 输入 8、缓存命中 2、输出 28。`deepseek-v4.1-flash-1017-nothink` 与 `deepseek-v4.1-flash-1017` 共用同一个模型名，沿用同一行单价。脚本幂等，已有的行不动。在服务器上补一次：`docker exec -i aihot-api-1 node --env-file=.env modules/costs/scripts/seed-prices.ts`。
+4. 更新按常规步骤 `git pull && docker compose build`，停 `api worker web`、`docker compose run --rm setup`、`docker compose up -d`；本次涉及 `api`（抽样的评测脚本跑在 api 容器里）与 `web`（后台页读单价），没有迁移可跳过 `setup`。
+5. 复核：重跑 `scripts/eval-selection.ts` 时百炼这几个模型（含关思考的 `-1017-nothink`）的错误数应为 0，`/admin/model-eval` 的帕累托前沿图上能看到它们带成本的点。
 
 #### 2026-11-26 · 后台新增「评测前沿」页（模型对比帕累托图）
 
